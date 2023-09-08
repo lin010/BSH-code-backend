@@ -285,6 +285,21 @@ class SettingController extends MallController
             }
         }
     }
+    /**
+     * 获取商城多个设置
+     * xuyaoxiang
+     * @return \yii\web\Response
+     */
+    public function actionMallMore()
+    {
+        if (\Yii::$app->request->isAjax) {
+            $MallSettingForm = new MallSettingForm();
+            //获取
+            $MallSettingForm->attributes = \Yii::$app->request->get();
+            $res = $MallSettingForm->getValueByKeysApiData();
+            return $this->asJson($res);
+        }
+    }
 
     /**
      * @Author: 广东七件事 zal

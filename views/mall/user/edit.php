@@ -49,10 +49,7 @@
                 </el-form-item>-->
                 <el-form-item label="会员类型" prop="role_type">
                     <el-select @change="roleTypeChange" size="small" v-model="form.role_type" placeholder="请选择会员类型">
-                        <el-option key="user" label="VIP会员" value="user"></el-option>
-                        <el-option key="branch_office" label="城市服务商" value="branch_office"></el-option>
-                        <el-option key="partner" label="区域服务商" value="partner"></el-option>
-                        <el-option key="store" label="VIP代理商" value="store"></el-option>
+                        <el-option v-for="(typeName,typeKey) in userRoleTypes" :key="typeKey" :label="typeName" :value="typeKey"></el-option>
                     </el-select>
                 </el-form-item>
 
@@ -121,6 +118,7 @@
         el: '#app',
         data() {
             return {
+                userRoleTypes: USER_ROLE_TYPES,
                 form: {
                     share: {},
                     role_type: 'user',
@@ -143,13 +141,13 @@
         methods: {
             roleTypeChange(e){
                 if(e == "branch_office"){
-                    this.form.role_type_label = "城市服务商";
+                    this.form.role_type_label = USER_ROLE_TYPES['branch_office'];
                 }else if(e == "partner"){
-                    this.form.role_type_label = "区域服务商";
+                    this.form.role_type_label = USER_ROLE_TYPES['partner'];
                 }else if(e == "store"){
-                    this.form.role_type_label = "VIP代理商";
+                    this.form.role_type_label = USER_ROLE_TYPES['store'];
                 }else{
-                    this.form.role_type_label = "VIP会员";
+                    this.form.role_type_label = USER_ROLE_TYPES['user'];
                 }
             },
             //搜索

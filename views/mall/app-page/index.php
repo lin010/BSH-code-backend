@@ -264,7 +264,7 @@
         </span>
     </el-dialog>
 </div>
-<script src="https://cdn.jsdelivr.net/clipboard.js/1.5.12/clipboard.min.js"></script>
+<script src="<?= Yii::$app->request->baseUrl ?>/statics/js/clipboard.min.js"></script>
 <script>
     var clipboard = new Clipboard('.copy-btn');
 

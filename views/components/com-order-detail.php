@@ -508,10 +508,7 @@ Yii::$app->loadComponentView('order/com-city');
                                     </el-table-column>
                                     <el-table-column label="等级">
                                         <template slot-scope="scope">
-                                            <div v-if="scope.row.role_type=='branch_office'">城市服务商</div>
-                                            <div v-if="scope.row.role_type=='partner'">区域服务商</div>
-                                            <div v-if="scope.row.role_type=='store'">VIP代理商</div>
-                                            <div v-if="scope.row.role_type=='user'">用户</div>
+                                            <div v-for="(typeName,typeKey) in userRoleTypes" v-if="scope.row.role_type==typeKey">{{typeName}}</div>
                                         </template>
                                     </el-table-column>
                                     <el-table-column prop="price" label="佣金">
@@ -573,17 +570,17 @@ Yii::$app->loadComponentView('order/com-city');
                                 ￥{{scope.row.total_price}}
                             </template>
                         </el-table-column>
-                        <el-table-column align="center" label="积分" width="120">
+                        <el-table-column align="center" :label="currencyAlias.integral_alias" width="120">
                             <template slot-scope="scope">
                                 <span style="color:darkred">￥-{{scope.row.use_score_price}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column align="center" label="金豆" width="120">
+                        <el-table-column align="center" :label="currencyAlias.red_envelope_alias" width="120">
                             <template slot-scope="scope">
                                 <span style="color:darkred">￥-{{scope.row.integral_price}}</span>
                             </template>
                         </el-table-column>
-                        <el-table-column align="center" label="红包" width="120">
+                        <el-table-column align="center" :label="currencyAlias.silver_beans_alias" width="120">
                             <template slot-scope="scope">
                                 <span style="color:darkred">￥-{{scope.row.shopping_voucher_decode_price}}</span>
                             </template>
@@ -599,10 +596,10 @@ Yii::$app->loadComponentView('order/com-city');
                         <el-form-item label="会员折扣" v-if="order.member_discount_price != 0.00">
                             <span style="color:#ff4544;">-￥{{ order.member_discount_price }}</span>
                         </el-form-item>
-                        <el-form-item label="积分抵扣" v-if="order.score_deduction_price != 0.00">
+                        <el-form-item :label="currencyAlias.integral_alias+'抵扣'" v-if="order.score_deduction_price != 0.00">
                             <span style="color:#ff4544;">-￥{{ order.score_deduction_price }}</span>
                         </el-form-item>
-                        <el-form-item label="金豆券抵扣" v-if="order.integral_deduction_price != 0.00">
+                        <el-form-item :label="currencyAlias.red_envelope_alias+'券抵扣'" v-if="order.integral_deduction_price != 0.00">
                             <span style="color:#ff4544;">-￥{{ order.integral_deduction_price }}</span>
                         </el-form-item>
                         <el-form-item label="优惠券抵扣" v-if="order.coupon_discount_price != 0.00">
@@ -629,13 +626,13 @@ Yii::$app->loadComponentView('order/com-city');
                             <span v-if="order.back_price > 0.00" style="color:#ff4544;">-￥{{ order.back_price }}</span>
                             <span v-if="order.back_price < 0.00" style="color:#ff4544;">￥{{ -order.back_price }}</span>
                         </el-form-item>
-                        <el-form-item label="积分抵扣">
+                        <el-form-item :label="currencyAlias.integral_alias+'抵扣'">
                             <span style="color:#ff4544;">-￥{{ order.score_deduction_price }}</span>
                         </el-form-item>
-                        <el-form-item label="金豆抵扣">
+                        <el-form-item :label="currencyAlias.red_envelope_alias+'抵扣'">
                             <span style="color:#ff4544;">-￥{{ order.integral_deduction_price }}</span>
                         </el-form-item>
-                        <el-form-item label="红包抵扣">
+                        <el-form-item :label="currencyAlias.silver_beans_alias+'抵扣'">
                             <span style="color:#ff4544;">-￥{{ order.shopping_voucher_decode_price }}</span>
                         </el-form-item>
                         <el-form-item label="实付款">
@@ -777,6 +774,7 @@ Yii::$app->loadComponentView('order/com-city');
         },
         data() {
             return {
+                userRoleTypes: USER_ROLE_TYPES,
                 loading: false,
                 newOrder: {},// 传给各子组件的订单信息
                 addressVisible: false,// 修改收货地址
@@ -797,6 +795,12 @@ Yii::$app->loadComponentView('order/com-city');
                 price_logs: [],
                 btnLoading: false,
                 citySendVisible: false,//选择配送员
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         watch: {
@@ -808,6 +812,7 @@ Yii::$app->loadComponentView('order/com-city');
             }
         },
         created() {
+            this.getCurrencyAliasData();
             // 数据从父组件传入
             if (!this.isNewRequest) {
                 this.getDetail();
@@ -1019,6 +1024,22 @@ Yii::$app->loadComponentView('order/com-city');
                 myWindow = window.open('', '_blank');
                 myWindow.document.write(htmlData);
                 myWindow.focus();
+            },
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
             },
         }
     })

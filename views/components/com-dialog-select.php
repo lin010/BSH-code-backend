@@ -1,13 +1,4 @@
-<?php
-/**
- * @link:http://www.gdqijianshi.com/
- * @copyright: Copyright (c) 2020 广东七件事集团
- * Created by PhpStorm
- * Author: ganxiaohao
- * Date: 2020-04-24
- * Time: 19:33
- */
-?>
+
 <style>
     .com-dialog-dialog {
         min-width: 700px;
@@ -73,7 +64,7 @@
     Vue.component('com-dialog-select', {
         template: '#com-dialog-select',
         props: {
-			visible : Boolean,
+            visible : Boolean,
             url: {
                 type: String,
                 default: 'mall/goods/index'

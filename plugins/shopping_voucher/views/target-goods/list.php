@@ -8,7 +8,7 @@ echo $this->render("../com/com-tab-target");
         <com-tab-target :current="activeName"></com-tab-target>
 
         <div class="table-body">
-            <el-alert title="说明：用户在商城下单，可使用红包进行抵扣支付" type="info" :closable="false" style="margin-bottom: 20px;"></el-alert>
+            <el-alert :title="`说明：用户在商城下单，可使用${currencyAlias.silver_beans_alias}进行抵扣支付`" type="info" :closable="false" style="margin-bottom: 20px;"></el-alert>
 
             <div class="input-item">
                 <el-input @keyup.enter.native="search" placeholder="请输入关键词搜索" v-model="searchData.keyword" clearable @clear="search">
@@ -39,7 +39,7 @@ echo $this->render("../com/com-tab-target");
                         </div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="voucher_price" width="200" label="红包价"></el-table-column>
+                <el-table-column prop="voucher_price" width="200" :label="currencyAlias.silver_beans_alias"></el-table-column>
                 <el-table-column prop="scope" width="150" label="添加时间">
                     <template slot-scope="scope">
                         {{scope.row.created_at|dateTimeFormat('Y-m-d')}}
@@ -102,6 +102,12 @@ echo $this->render("../com/com-tab-target");
                 list: [],
                 pagination: null,
                 loading: false,
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
 
             };
         },
@@ -180,9 +186,26 @@ echo $this->render("../com/com-tab-target");
             },
             close(){
                 this.editDialogVisible = false;
-            }
+            },
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
         },
         mounted: function() {
+            this.getCurrencyAliasData();
             this.getList();
         }
     });

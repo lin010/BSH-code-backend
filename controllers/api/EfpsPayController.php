@@ -34,6 +34,15 @@ class EfpsPayController extends ApiController{
         $form->attributes = $this->requestData;
         return $this->asJson($form->wechatPay());
     }
+    /**
+     * 汇付微信支付
+     * @return array
+     */
+    public function actionBswechat(){
+        $form = new EfpsPayForm();
+        $form->attributes = $this->requestData;
+        return $this->asJson($form->bswechatPay());
+    }
 
     /**
      * 支付宝支付

@@ -43,7 +43,6 @@ class MchApplyInfoForm extends BaseModel{
                     $applyModel->save();
                 }
             }
-
             return [
                 'code' => ApiCode::CODE_SUCCESS,
                 'data' => $this->getData($applyModel)

@@ -33,10 +33,7 @@
                             <div>推荐人：{{scope.row.parent_nickname}}</div>
                             <div>推荐人手机：{{scope.row.parent_mobile}}</DIV>
                             <div>推荐人等级：
-                                <span v-if="scope.row.parent_role_type == 'branch_office'">城市服务商</span>
-                                <span v-if="scope.row.parent_role_type == 'partner'">区域服务商</span>
-                                <span v-if="scope.row.parent_role_type == 'store'">VIP代理商</span>
-                                <span v-if="scope.row.parent_role_type == 'user'">VIP会员</span>
+                                <span v-for="(typeName,typeKey) in userRoleTypes"  v-if="scope.row.parent_role_type == typeKey">{{typeName}}</span>
                             </DIV>
                         </div>
                     </template>
@@ -178,10 +175,7 @@
                             <div>{{apply.data.parent_mobile}}</div>
                         </el-form-item>
                         <el-form-item label="推荐人等级：">
-                            <div v-if="apply.data.parent_role_type == 'store'">VIP代理商</div>
-                            <div v-if="apply.data.parent_role_type == 'partner'">区域服务商</div>
-                            <div v-if="apply.data.parent_role_type == 'branch_office'">城市服务商</div>
-                            <div v-if="apply.data.parent_role_type == 'user'">VIP会员</div>
+                            <div v-for="(typeName,typeKey) in userRoleTypes"  v-if="apply.data.parent_role_type == typeKey">{{typeName}}</div>
                         </el-form-item>
                     </el-tab-pane>
                     <el-tab-pane label="企业信息">
@@ -224,6 +218,7 @@
         el: '#app',
         data() {
             return {
+                userRoleTypes: USER_ROLE_TYPES,
                 list: [],
                 listLoading: false,
                 page: 1,

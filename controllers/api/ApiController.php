@@ -26,6 +26,7 @@ use app\logic\RelationLogic;
 use app\models\DistrictData;
 use app\models\Formid;
 use app\models\Mall;
+use app\models\MallSetting;
 use app\models\User;
 use app\models\UserInfo;
 use Exception;
@@ -87,7 +88,6 @@ class ApiController extends BaseController
         $headers = \Yii::$app->request->headers;
 
         $this->getParamsData();
-
         //TODO 临时应付小程序上线审核处理 2021/08/13
         $devUrl = "mpwx.mingyuanriji.cn";
         if($headers['x-app-platform'] == "mp-wx" && \Yii::$app->getRequest()->getHostName() != $devUrl){
@@ -496,4 +496,5 @@ class ApiController extends BaseController
         }
         return $this;
     }
+
 }

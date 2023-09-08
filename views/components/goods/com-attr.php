@@ -193,9 +193,9 @@
                     if(key == "price"){
                         newObj['price'] = '价格';
                         if(this.commissonPrice == 1){
-                            newObj['branch_office_price'] = '城市服务商';
-                            newObj['partner_price'] = '区域服务商';
-                            newObj['store_price'] = 'VIP';
+                            newObj['branch_office_price'] = USER_ROLE_TYPES.branch_office;
+                            newObj['partner_price'] = USER_ROLE_TYPES.partner;
+                            newObj['store_price'] = USER_ROLE_TYPES.store;
                         }
                     }else{
                         newObj[key] = obj[key];

@@ -8,7 +8,7 @@ echo $this->render("../com/com-tab-from");
         <com-tab-from :current="activeName"></com-tab-from>
 
         <div class="table-body">
-            <el-alert title="说明：用户通过现金支付大礼包订单，成功后可获得赠送红包" type="info" :closable="false" style="margin-bottom: 20px;"></el-alert>
+            <el-alert :title="`说明：用户通过现金支付大礼包订单，成功后可获得赠送${currencyAlias.silver_beans_alias}`" type="info" :closable="false" style="margin-bottom: 20px;"></el-alert>
 
             <el-tabs v-model="activeName2" type="border-card">
                 <el-tab-pane label="通用配置" name="first">
@@ -30,10 +30,7 @@ echo $this->render("../com/com-tab-from");
                                 <el-table :data="commonSet.recommender" border style="margin-top:10px;width: 40%">
                                     <el-table-column label="级别" width="110" align="center">
                                         <template slot-scope="scope">
-                                            <span v-if="scope.row.type == 'branch_office'">城市服务商</span>
-                                            <span v-if="scope.row.type == 'partner'">区域服务商</span>
-                                            <span v-if="scope.row.type == 'store'">VIP代理商</span>
-                                            <span v-if="scope.row.type == 'user'">VIP会员</span>
+                                            <span v-for="(typeName,typeKey) in userRoleTypes"  v-if="scope.row.type == typeKey">{{typeName}}</span>
                                         </template>
                                     </el-table-column>
                                     <el-table-column label="比例">
@@ -95,10 +92,7 @@ echo $this->render("../com/com-tab-from");
                                 </div>
                                 <div><b>推荐人：</b>
                                     <div v-for="recommender in scope.row.recommender">
-                                        <span v-if="recommender.type == 'branch_office'">城市服务商</span>
-                                        <span v-if="recommender.type == 'partner'">区域服务商</span>
-                                        <span v-if="recommender.type == 'store'">VIP代理商</span>
-                                        <span v-if="recommender.type == 'user'">VIP会员</span>
+                                        <span v-for="(typeName,typeKey) in userRoleTypes"  v-if="recommender.type == typeKey">{{typeName}}</span>
                                         <span v-if="recommender.give_type == 1">按比例{{recommender.give_value}}%赠送</span>
                                         <span v-if="recommender.give_type == 2">按固定值{{recommender.give_value}}赠送</span>
                                     </div>
@@ -177,10 +171,7 @@ echo $this->render("../com/com-tab-from");
                     <el-table :data="aloneSet.recommender" border style="margin-top:10px;width: 70%">
                         <el-table-column label="级别" width="110" align="center">
                             <template slot-scope="scope">
-                                <span v-if="scope.row.type == 'branch_office'">城市服务商</span>
-                                <span v-if="scope.row.type == 'partner'">区域服务商</span>
-                                <span v-if="scope.row.type == 'store'">VIP代理商</span>
-                                <span v-if="scope.row.type == 'user'">VIP会员</span>
+                                <span v-for="(typeName,typeKey) in userRoleTypes"  v-if="scope.row.type == typeKey">{{typeName}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column label="比例">
@@ -212,6 +203,7 @@ echo $this->render("../com/com-tab-from");
         el: '#app',
         data() {
             return {
+                userRoleTypes: USER_ROLE_TYPES,
                 activeName: 'giftpacks',
                 activeName2: 'first',
                 editDialogVisible: false,
@@ -254,9 +246,31 @@ echo $this->render("../com/com-tab-from");
                     start_at: '',
                     recommender: []
                 },
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         methods: {
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
             editStore(row){
                 console.log(row);
                 this.dialogContent = true;
@@ -412,6 +426,7 @@ echo $this->render("../com/com-tab-from");
             }
         },
         mounted: function() {
+            this.getCurrencyAliasData();
             this.getList();
         }
     });

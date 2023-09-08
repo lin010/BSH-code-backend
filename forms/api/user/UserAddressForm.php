@@ -100,6 +100,21 @@ class UserAddressForm extends BaseModel
             'data' => $districtArr
         ];
     }
+    /**
+     * 自动读取地址列表标准版-用于汇付天下
+     * @date 2023-08-15
+     * @return array
+     */
+    public function autoFullAddressInfo()
+    {
+        $districtArr = new DistrictArr();
+        $districtArr = $districtArr::getArr();
+        return [
+            'code' => ApiCode::CODE_SUCCESS,
+            'msg' => '获取成功',
+            'data' => json_decode(file_get_contents('statics' . DIRECTORY_SEPARATOR . 'text' . DIRECTORY_SEPARATOR . 'auto_address.json'),true) 
+        ];
+    }
 
     /**
      * 获取用户地址列表

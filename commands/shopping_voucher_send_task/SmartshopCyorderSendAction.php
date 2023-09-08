@@ -4,6 +4,7 @@ namespace app\commands\shopping_voucher_send_task;
 
 use app\commands\BaseAction;
 use app\models\Integral;
+use app\models\MallSetting;
 use app\models\User;
 use app\plugins\shopping_voucher\forms\common\ShoppingVoucherLogModifiyForm;
 use app\plugins\smart_shop\forms\common\StoreAccountBalanceModifyForm;
@@ -49,6 +50,8 @@ class SmartshopCyorderSendAction extends BaseAction {
             if(!$localCyorder){
                 throw new \Exception("数据异常，订单[ID:".$id."]不存在");
             }
+            $silver_beans_alias = MallSetting::getValueByKey('silver_beans_alias',$localCyorder->mall_id);
+            $integral_alias = MallSetting::getValueByKey('integral_alias',$localCyorder->mall_id);
 
             //目前业务只有红包储值赠送功能
             $storeSet = StoreSet::findOne([
@@ -58,18 +61,18 @@ class SmartshopCyorderSendAction extends BaseAction {
 
             //没有开通红包赠送功能的跳过
             if(!$storeSet){
-                throw new \Exception("智慧经营>>门店红包赠送业务>>ID:".$localCyorder->id.">>没有开通红包赠送功能");
+                throw new \Exception("智慧经营>>门店".$silver_beans_alias."赠送业务>>ID:".$localCyorder->id.">>没有开通".$silver_beans_alias."赠送功能");
             }
 
             //没有支付手机号的跳过
             if(empty($localCyorder->pay_user_mobile)){
-                throw new \Exception("智慧经营>>门店红包赠送业务>>ID:".$localCyorder->id.">>支付用户没有绑定手机号");
+                throw new \Exception("智慧经营>>门店".$silver_beans_alias."赠送业务>>ID:".$localCyorder->id.">>支付用户没有绑定手机号");
             }
 
             //获取要赠送的用户
             $user = User::findOne(["mobile" => $localCyorder->pay_user_mobile]);
             if(!$user){
-                throw new \Exception("智慧经营>>门店红包赠送业务>>ID:".$localCyorder->id.">>赠送用户信息不存在");
+                throw new \Exception("智慧经营>>门店".$silver_beans_alias."赠送业务>>ID:".$localCyorder->id.">>赠送用户信息不存在");
             }
 
             //获取账户
@@ -79,7 +82,7 @@ class SmartshopCyorderSendAction extends BaseAction {
                 "ss_store_id" => $localCyorder->ss_store_id
             ]);
             if(!$account){
-                throw new \Exception("智慧经营>>门店红包赠送业务>>ID:".$localCyorder->id.">>门店账户不存在");
+                throw new \Exception("智慧经营>>门店".$silver_beans_alias."赠送业务>>ID:".$localCyorder->id.">>门店账户不存在");
             }
 
             //计算出红包+积分赠送需要的金额
@@ -92,14 +95,14 @@ class SmartshopCyorderSendAction extends BaseAction {
 
             //账户余额扣减
             if($account->balance < $totalPrice){
-                throw new \Exception("智慧经营>>门店红包赠送业务>>ID:".$localCyorder->id.">>余额不足");
+                throw new \Exception("智慧经营>>门店".$silver_beans_alias."赠送业务>>ID:".$localCyorder->id.">>余额不足");
             }
             if($totalPrice > 0){
                 $modifyForm = new StoreAccountBalanceModifyForm([
                     "source_type" => "cyorder",
                     "source_id"   => $localCyorder->id,
                     "balance"     => $totalPrice,
-                    "desc"        => "红包+积分赠送业务储值扣减"
+                    "desc"        => $silver_beans_alias."+".$integral_alias."赠送业务储值扣减"
                 ]);
                 $modifyForm->sub($account);
             }
@@ -109,7 +112,7 @@ class SmartshopCyorderSendAction extends BaseAction {
                 if($shoppingVoucherNum > 0){
                     $modifyForm = new ShoppingVoucherLogModifiyForm([
                         "money"       => $shoppingVoucherNum,
-                        "desc"        => "门店消费获得赠送红包",
+                        "desc"        => "门店消费获得赠送".$silver_beans_alias,
                         "source_id"   => $localCyorder->id,
                         "source_type" => "from_smart_shop_cyorder"
                     ]);
@@ -142,7 +145,7 @@ class SmartshopCyorderSendAction extends BaseAction {
                     "price"   => $scorePrice,
                     "rate"    => 0.03
                 ]));
-                Integral::addIntegralPlan($user->id, $scoreSetting, '门店消费获得赠送积分', 0, 0, $localCyorder->mall_id);
+                Integral::addIntegralPlan($user->id, $scoreSetting, '门店消费获得赠送'.$integral_alias, 0, 0, $localCyorder->mall_id);
             }
 
             //更新订单信息
@@ -152,7 +155,7 @@ class SmartshopCyorderSendAction extends BaseAction {
 
             $t->commit();
 
-            $this->controller->commandOut("智慧经营>>门店红包赠送业务>>ID:".$localCyorder->id.">>处理成功");
+            $this->controller->commandOut("智慧经营>>门店".$silver_beans_alias."赠送业务>>ID:".$localCyorder->id.">>处理成功");
 
         }catch (\Exception $e){
             $t->rollBack();

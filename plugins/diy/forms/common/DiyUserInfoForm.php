@@ -12,12 +12,13 @@ use app\forms\mall\user_center\UserCenterForm;
 use app\models\MallMembers;
 use app\models\BaseModel;
 use app\models\Option;
+use app\models\User;
 
 class DiyUserInfoForm extends BaseModel
 {
     public function getInfo()
     {
-        $level_name = 'VIP会员';
+        $level_name = User::USER_ROLE_TYPES[User::USER_TYPE_1];
         $level_pic = '';
         if (\Yii::$app->user->identity->identity->member_level != 0) {
             $level = MallMembers::findOne([

@@ -95,7 +95,7 @@
         </el-dialog>
     </div>
 </template>
-<script src="//cdn.jsdelivr.net/npm/sortablejs@1.8.3/Sortable.min.js"></script>
+<script src="<?= Yii::$app->request->baseUrl ?>/statics/js/Sortable.min.js"></script>
 <script>
     Vue.component('diy-banner', {
         template: '#diy-banner',

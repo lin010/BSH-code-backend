@@ -92,11 +92,11 @@
                 <div class="label">支付方式</div>
                 <el-select size="small" style="width: 120px" v-model="search.pay_type" @change="toSearch"
                            placeholder="支付方式">
-                    <el-option label="金豆" :value="0"></el-option>
-                    <el-option label="余额" :value="1"></el-option>
+                    <el-option :label="currencyAlias.red_envelope_alias" :value="0"></el-option>
+                    <el-option :label="currencyAlias.balance_alias" :value="1"></el-option>
                     <el-option label="现金" :value="2"></el-option>
-                    <el-option label="积分" :value="3"></el-option>
-                    <el-option label="红包" :value="4"></el-option>
+                    <el-option :label="currencyAlias.integral_alias" :value="3"></el-option>
+                    <el-option :label="currencyAlias.silver_beans_alias" :value="4"></el-option>
                 </el-select>
             </div>
 
@@ -211,6 +211,12 @@
                 newActiveName: null,
                 isShowClear: false,
                 orderCount:'mall/order/order-count',
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             }
         },
         methods: {
@@ -294,10 +300,27 @@
                 }).catch(e => {
                 });
             },
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
         },
         created() {
             this.search = this.newSearch;
             this.newActiveName = this.activeName;
+            this.getCurrencyAliasData();
             this.checkSearch();
             this.getOrderCount();
         }

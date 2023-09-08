@@ -341,7 +341,13 @@ Yii::$app->loadComponentView('com-user-finance-stat');
                 }
             },
             getUsers(){
-                this.forDlgSelect.visible = true;
+                // this.forDlgSelect.visible = true;
+                this.$set(this.forDlgSelect,'visible',true);
+                this.$nextTick(() => {  
+                        // 在DOM更新完成后执行需要的操作  
+                        // 确保el-dialog已经展示出来  
+                        console.log('对话框已经展示出来');  
+                      });  
             },
             selectUser(row){
                 this.incomeForm.user_id = row.user_id;

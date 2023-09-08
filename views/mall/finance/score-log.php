@@ -2,7 +2,7 @@
     <el-card shadow="never" style="border:0" body-style="background-color: #f3f3f3;padding: 10px 0 0;">
         <div slot="header">
             <div>
-                <span>积分记录</span>
+                <span>{{currencyAlias.integral_alias}}记录</span>
                 <div style="float: right;">
                     <com-export-dialog :field_list='export_list' :params="searchData" @selected="exportConfirm"></com-export-dialog>
                 </div>
@@ -61,7 +61,7 @@
             <el-table :data="form" border style="width: 100%" v-loading="listLoading">
                 <el-table-column prop="id" label="ID" width="100"></el-table-column>
                 <el-table-column prop="nickname" label="昵称"></el-table-column>
-                <el-table-column label="收支情况(积分)" width="150">
+                <el-table-column :label="'收支情况('+currencyAlias.integral_alias+')'" width="150">
                     <template slot-scope="scope">
                         <div style="font-size: 18px;color: #68CF3D" v-if="scope.row.type == 1">+{{scope.row.score}}</div>
                         <div style="font-size: 18px;color: #F6AA5A" v-if="scope.row.type == 2">-{{scope.row.score}}</div>
@@ -176,6 +176,13 @@
                         value:'nickname'
                     },
                 ],
+
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         methods: {
@@ -290,8 +297,25 @@
                 });
                 this.statisticsLoading = true;
             },
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
         },
     mounted: function() {
+        this.getCurrencyAliasData();
         this.getList();
     }
 });

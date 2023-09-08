@@ -99,6 +99,53 @@
                         </el-col>
                     </el-row>
                 </el-tab-pane>
+                <el-tab-pane label="汇付天下微信支付" name="bspay">
+                    <el-row>
+                        <el-col :span="24">
+                            <div class="title">
+                                <span>汇付天下微信支付配置</span>
+                            </div>
+                            <div class="form-body">
+                                <el-form-item label="启用汇付天下微信支付" prop="bswechat_status">
+                                    <el-switch v-model="ruleForm.bswechat_status" active-value="1"
+                                               inactive-value="0"></el-switch>
+                                </el-form-item>
+                                <el-form-item label="商户号" prop="bspay_wechat_merchid">
+                                    <el-input v-model="ruleForm.bspay_wechat_merchid"></el-input>
+                                </el-form-item>
+                                <el-form-item label="sys_id" prop="bspay_wechat_sys_id">
+                                    <el-input v-model.trim="ruleForm.bspay_wechat_sys_id"></el-input>
+                                </el-form-item>
+                                <el-form-item label="out_acct_id" prop="bspay_wechat_out_acct_id">
+                                    <el-input v-model.trim="ruleForm.bspay_wechat_out_acct_id"></el-input>
+                                </el-form-item>
+                                <el-form-item label="product_id" prop="bspay_wechat_product_id">
+                                    <el-input v-model.trim="ruleForm.bspay_wechat_product_id"></el-input>
+                                </el-form-item>
+                                <el-form-item label="汇付天下公钥(PUBLIC_KEY)" prop="bspay_wechat_public_key">
+                                    <el-input @focus="hiddenBs.bspay_wechat_public_key = false"
+                                              v-if="hiddenBs.bspay_wechat_public_key"
+                                              readonly
+                                              type="textarea"
+                                              :rows="5"
+                                              placeholder="已隐藏内容，点击查看或编辑">
+                                    </el-input>
+                                    <el-input v-else type="textarea" :rows="5" v-model="ruleForm.bspay_wechat_public_key"></el-input>
+                                </el-form-item>
+                                <el-form-item label="商户应用私钥(PRIVATE_KEY)" prop="bspay_wechat_private_key">
+                                    <el-input @focus="hiddenBs.bspay_wechat_private_key = false"
+                                              v-if="hiddenBs.bspay_wechat_private_key"
+                                              readonly
+                                              type="textarea"
+                                              :rows="5"
+                                              placeholder="已隐藏内容，点击查看或编辑">
+                                    </el-input>
+                                    <el-input v-else type="textarea" :rows="5" v-model="ruleForm.bspay_wechat_private_key"></el-input>
+                                </el-form-item>
+                            </div>
+                        </el-col>
+                    </el-row>
+                </el-tab-pane>                
                 <el-tab-pane label="积分设置" name="score">
                     <el-row>
                         <el-col :span="24">
@@ -207,6 +254,74 @@
                         </el-col>
                     </el-row>
                 </el-tab-pane>
+                <el-tab-pane label="金豆提现" name="integralcash">
+                    <el-row>
+                        <el-col :span="24">
+                            <div class="title">
+                                <span>提现设置</span>
+                            </div>
+                            <div class="form-body">
+                                <el-form-item label="开启金豆提现" prop="is_integral_cash">
+                                    <el-switch v-model="ruleForm.is_integral_cash" active-value="1"
+                                               inactive-value="0"></el-switch>
+                                </el-form-item>
+                                <el-form-item label="提现方式" prop="integral_cash_type" required>
+                                    <label slot="label">提现方式
+                                        <!-- <el-tooltip class="item" effect="dark"
+                                                    content="自动打款支付，需要申请相应小程序的相应功能，
+                                                    例如：微信需要申请企业付款到零钱功能"
+                                                    placement="top">
+                                            <i class="el-icon-info"></i>
+                                        </el-tooltip> -->
+                                    </label>
+                                    <el-checkbox-group v-model="ruleForm.integral_cash_type">
+                                        <!-- <el-checkbox label="auto">微信自动打款</el-checkbox> -->
+                                        <!-- <el-checkbox label="wechat">微信线下转账</el-checkbox> -->
+                                        <!-- <el-checkbox label="alipay">支付宝线下转账</el-checkbox> -->
+                                        <el-checkbox label="bank">银行卡线下转账</el-checkbox>
+                                        <!-- <el-checkbox label="balance">余额提现</el-checkbox> -->
+                                    </el-checkbox-group>
+                                </el-form-item>
+                                <el-form-item label="最少提现额度" prop="integral_min_money" required>
+                                    <el-input type="number" v-model.number="ruleForm.integral_min_money">
+                                        <template slot="append">元</template>
+                                    </el-input>
+                                </el-form-item>
+                                <el-form-item label="每日提现上限" prop="integral_day_max_money" required>
+                                    <label slot="label">每日提现上限
+                                        <el-tooltip class="item" effect="dark"
+                                                    content="-1元表示不限制每日提现金额"
+                                                    placement="top">
+                                            <i class="el-icon-info"></i>
+                                        </el-tooltip>
+                                    </label>
+                                    <el-input type="number" v-model.number="ruleForm.integral_day_max_money">
+                                        <template slot="append">元</template>
+                                    </el-input>
+                                </el-form-item>
+                                <el-form-item label="提现手续费" prop="integral_cash_service_fee" required>
+                                    <label slot="label">提现手续费
+                                        <el-tooltip class="item" effect="dark"
+                                                    content="0表示不设置提现手续费"
+                                                    placement="top">
+                                            <i class="el-icon-info"></i>
+                                        </el-tooltip>
+                                    </label>
+                                    <el-input type="number" v-model.number="ruleForm.integral_cash_service_fee">
+                                        <template slot="append">%</template>
+                                    </el-input>
+                                    <div>
+                                        <span class="text-danger">提现手续费额外从提现中扣除</span><br>
+                                        例如：<span style="color: #F56C6C;font-size: 12px">10%</span>的提现手续费：<br>
+                                        提现<span style="color: #F56C6C;font-size: 12px">100</span>元，扣除手续费<span
+                                                style="color: #F56C6C;font-size: 12px">10</span>元，
+                                        实际到手<span style="color: #F56C6C;font-size: 12px">90</span>元
+                                    </div>
+                                </el-form-item>
+                            </div>
+                        </el-col>
+                    </el-row>
+                </el-tab-pane>
 
                 <el-tab-pane label="充值金额" name="recharge">
                     <el-row>
@@ -295,11 +410,22 @@
                     wechat_cert_pem: true,
                     wechat_key_pem: true,
                 },
+                hiddenBs: {
+                    bspay_wechat_public_key: true,
+                    bspay_wechat_private_key: true,
+                },
                 ruleForm: {
                     cash_type:[],
                     min_money:0,
                     cash_service_fee:0,
                     is_income_cash: 0,
+
+                    integral_cash_type:[],
+                    integral_min_money:0,
+                    integral_cash_service_fee:0,
+                    is_integral_cash: 0,
+                    integral_day_max_money:0,
+                    
                     score_rule: '',
                     score_status: 0,
                     integral_status:0,
@@ -314,7 +440,13 @@
                     wechat_key_pem: '',
                     wechat_mch_id: '',
                     wechat_pay_secret: '',
-                    balance_status: 0,
+                    bswechat_status: 0,
+                    bspay_wechat_merchid: '',
+                    bspay_wechat_sys_id: '',
+                    bspay_wechat_out_acct_id: '',
+                    bspay_wechat_product_id: '',
+                    bspay_wechat_public_key: '',
+                    bspay_wechat_private_key: 0,
                     pay_password_status:0,
                     recharge:{
                         recharge_money1:0,
@@ -354,6 +486,12 @@
                 if (this.ruleForm.wechat_status == 1) {
                     if (this.ruleForm.wechat_app_id == '' || this.ruleForm.wechat_mch_id == '' || this.ruleForm.wechat_key == '') {
                         self.$message.error('请完善微信支付信息！');
+                        return;
+                    }
+                }
+                if (this.ruleForm.bswechat_status == 1) {
+                    if (this.ruleForm.bspay_wechat_merchid == '' || this.ruleForm.bspay_wechat_sys_id == '' || this.ruleForm.bspay_wechat_out_acct_id == '' || this.ruleForm.bspay_wechat_product_id == '' || this.ruleForm.bspay_wechat_public_key == '' || this.ruleForm.bspay_wechat_private_key == '') {
+                        self.$message.error('请完善汇付天下微信支付信息！');
                         return;
                     }
                 }

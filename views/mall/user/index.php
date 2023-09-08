@@ -68,10 +68,7 @@
                         <div style="font-size:12px;">
                             <div>上级名称：[ID:{{scope.row.parent_id}}]{{scope.row.parent_nickname}}</div>
                             <div>上级身份：
-                                <span v-if="scope.row.parent_role_type == 'branch_office'">城市服务商</span>
-                                <span v-if="scope.row.parent_role_type == 'partner'">区域服务商</span>
-                                <span v-if="scope.row.parent_role_type == 'store'">VIP代理商</span>
-                                <span v-if="scope.row.parent_role_type == 'user'">VIP会员</span>
+                                <span v-for="(typeName,typeKey) in userRoleTypes"  v-if="scope.row.parent_role_type == typeKey">{{typeName}}</span>
                             </div>
                             <div>上级手机：{{scope.row.parent_mobile}}</div>
                             <div>
@@ -92,10 +89,7 @@
 
                 <el-table-column prop="role_type" label="会员类型" width="120">
                     <template slot-scope="scope">
-                        <div v-if="scope.row.role_type == 'branch_office'">城市服务商</div>
-                        <div v-if="scope.row.role_type == 'partner'">区域服务商</div>
-                        <div v-if="scope.row.role_type == 'store'">VIP代理商</div>
-                        <div v-if="scope.row.role_type == 'user'">VIP会员</div>
+                        <span v-for="(typeName,typeKey) in userRoleTypes" v-if="scope.row.role_type == typeKey">{{typeName}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="order_count" label="订单数">
@@ -116,7 +110,7 @@
                                    v-text="scope.row.card_count"></el-button>
                     </template>
                 </el-table-column>
-                <el-table-column prop="balance" label="余额">
+                <el-table-column prop="balance" :label="currencyAlias.balance_alias">
                     <template slot-scope="scope">
                         <el-button type="text"
                                    @click="$navigate({r: 'mall/user/balance-log', user_id:scope.row.user_id})"
@@ -124,13 +118,13 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column prop="score" label="积分" width="130">
+                <el-table-column prop="score" :label="currencyAlias.integral_alias" width="130">
                     <template slot-scope="scope">
                         <div>
-                            动态积分：{{scope.row.score}}
+                            动态{{currencyAlias.integral_alias}}：{{scope.row.score}}
                         </div>
                         <div>
-                            静态积分：<el-button type="text" @click="$navigate({r: 'mall/finance/score-log', user_id:scope.row.user_id})"
+                            静态{{currencyAlias.integral_alias}}：<el-button type="text" @click="$navigate({r: 'mall/finance/score-log', user_id:scope.row.user_id})"
                                             v-text="scope.row.static_score"></el-button>
                         </div>
                     </template>
@@ -150,12 +144,12 @@
                                 <img src="statics/img/mall/edit.png" alt="">
                             </el-button>
                         </el-tooltip>
-                        <el-tooltip class="item" effect="dark" content="充值积分" placement="top">
+                        <el-tooltip class="item" effect="dark" :content="'充值'+currencyAlias.integral_alias" placement="top">
                             <el-button circle type="text" size="mini" @click="handleIntegral(scope.row)">
                                 <img src="statics/img/mall/integral.png" alt="">
                             </el-button>
                         </el-tooltip>
-                        <el-tooltip class="item" effect="dark" content="充值余额" placement="top">
+                        <el-tooltip class="item" effect="dark" :content="'充值'+currencyAlias.balance_alias" placement="top">
                             <el-button circle type="text" size="mini" @click="handleBalance(scope.row)">
                                 <img src="statics/img/mall/balance.png" alt="">
                             </el-button>
@@ -170,13 +164,13 @@
             </div>
         </div>
         <!-- 充值积分 -->
-        <el-dialog title="充值积分" :visible.sync="dialogIntegral" width="30%">
+        <el-dialog :title="'充值'+currencyAlias.integral_alias" :visible.sync="dialogIntegral" width="30%">
             <el-form :model="integralForm" label-width="80px" :rules="integralFormRules" ref="integralForm">
                 <el-form-item label="操作" prop="type">
                     <el-radio v-model="integralForm.type" label="1">充值</el-radio>
                     <el-radio v-model="integralForm.type" label="2">扣除</el-radio>
                 </el-form-item>
-                <el-form-item label="积分数" prop="num" size="small">
+                <el-form-item :label="currencyAlias.integral_alias+'数'" prop="num" size="small">
                     <el-input  v-model="integralForm.num" type="number"
                               :max="999999999"></el-input>
                 </el-form-item>
@@ -196,7 +190,7 @@
             </div>
         </el-dialog>
         <!-- 充值余额 -->
-        <el-dialog title="充值余额" :visible.sync="dialogBalance" width="30%">
+        <el-dialog :title="'充值'+currencyAlias.balance_alias" :visible.sync="dialogBalance" width="30%">
             <el-form :model="balanceForm" label-width="80px" :rules="balanceFormRules" ref="integralForm">
                 <el-form-item label="操作" prop="type">
                     <el-radio v-model="balanceForm.type" label="1">充值</el-radio>
@@ -224,10 +218,7 @@
         <el-dialog :title="'用户'+recommandData.nickname+'[ID:'+recommandData.id+']的推荐列表'" :visible.sync="dialogChildren" width="50%">
             <el-select size="small" v-model="recommandData.role_type" @change='childSearch' class="select">
                 <el-option key="" label="全部用户" value=""></el-option>
-                <el-option key="branch_office" label="城市服务商" value="branch_office"></el-option>
-                <el-option key="partner" label="区域服务商" value="partner"></el-option>
-                <el-option key="store" label="VIP代理商" value="store"></el-option>
-                <el-option key="user" label="VIP会员" value="user"></el-option>
+                <el-option v-for="(typeName,typeKey) in userRoleTypes"  :key="typeKey" :label="typeName" :value="typeKey"></el-option>
             </el-select>
 
             <el-select size="small" v-model="recommandData.team_type" @change='childSearch' class="select">
@@ -267,10 +258,7 @@
                 </el-table-column>
                 <el-table-column label="等级" width="110">
                     <template slot-scope="scope">
-                        <div v-if="scope.row.role_type == 'branch_office'">城市服务商</div>
-                        <div v-if="scope.row.role_type == 'partner'">区域服务商</div>
-                        <div v-if="scope.row.role_type == 'store'">VIP代理商</div>
-                        <div v-if="scope.row.role_type == 'user'">VIP会员</div>
+                        <span v-for="(typeName,typeKey) in userRoleTypes"  v-if="scope.row.parent_role_type == typeKey">{{typeName}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="mobile" label="手机" width="110"></el-table-column>
@@ -301,6 +289,7 @@
         el: '#app',
         data() {
             return {
+                userRoleTypes: USER_ROLE_TYPES,
                 searchData: {
                     keyword: '',
                     kw_type: '',
@@ -336,7 +325,7 @@
                         {required: true, message: '操作不能为空', trigger: 'blur'},
                     ],
                     num: [
-                        {required: true, message: '积分数不能为空', trigger: 'blur'},
+                        {required: true, message: '不能为空', trigger: 'blur'},
                     ],
                 },
 
@@ -353,7 +342,7 @@
                         {required: true, message: '操作不能为空', trigger: 'blur'},
                     ],
                     num: [
-                        {required: true, message: '金额不能为空', trigger: 'blur'},
+                        {required: true, message: '不能为空', trigger: 'blur'},
                     ],
                 },
 
@@ -375,24 +364,24 @@
                 childData: [],
                 allUser: [
                     {
-                        name:'全部用户',
-                        value:'0',
+                        name: '全部用户',
+                        value: '0',
                     },
                     {
-                        name:'城市服务商',
-                        value:'branch_office',
+                        name: USER_ROLE_TYPES['branch_office'],
+                        value: 'branch_office',
                     },
                     {
-                        name:'区域服务商',
-                        value:'partner',
+                        name: USER_ROLE_TYPES['partner'],
+                        value: 'partner',
                     },
                     {
-                        name:'VIP代理商',
-                        value:'store',
+                        name: USER_ROLE_TYPES['store'],
+                        value: 'store',
                     },
                     {
-                        name:'VIP会员',
-                        value:'user',
+                        name: USER_ROLE_TYPES['user'],
+                        value: 'user',
                     }
                 ],
                 allPlatform: [
@@ -435,9 +424,31 @@
                         value:'nickname',
                     }
                 ],
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             }
         },
         methods: {
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
             selectDateTime(e) {
                 if (e != null) {
                     this.recommandData.start_date = e[0];
@@ -639,6 +650,7 @@
             },
         },
         mounted: function () {
+            this.getCurrencyAliasData();
             this.page = getQuery('page') ? getQuery('page') : 1;
             this.getList();
             this.getMember();

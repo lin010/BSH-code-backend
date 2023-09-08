@@ -113,12 +113,7 @@ class MchListExportForm extends BaseModel{
             'parent_role_type' => '推荐人等级',
             'created_at'       => '申请时间'
         ];
-        $roleTypes = [
-            'store'         => 'VIP代理商',
-            'partner'       => '区域服务商',
-            'branch_office' => '城市服务商',
-            'user'          => 'VIP会员'
-        ];
+        $roleTypes = User::USER_ROLE_TYPES;
         $dataList = [];
         $number = 1;
         foreach ($list as $item) {

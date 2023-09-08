@@ -5,9 +5,9 @@ Yii::$app->loadComponentView('com-dialog-select');
     <el-card shadow="never" style="border:0" body-style="background-color: #f3f3f3;padding: 10px 0 0;">
         <div slot="header">
             <div>
-                <span>红包记录</span>
+                <span>{{currencyAlias.silver_beans_alias}}记录</span>
                 <div style="float: right;margin: -5px 0">
-                    <el-button @click="handleRecharge" type="primary" size="small">充值红包</el-button>
+                    <el-button @click="handleRecharge" type="primary" size="small">充值{{currencyAlias.silver_beans_alias}}</el-button>
                 </div>
                 <div style="margin-top: 15px" v-loading="statisticsLoading">
                     <div style="display: flex;justify-content: space-evenly">
@@ -77,7 +77,7 @@ Yii::$app->loadComponentView('com-dialog-select');
                         <div style="font-size: 18px;color: #F6AA5A" v-if="scope.row.type == 2">-{{scope.row.money}}</div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="current_money" label="当前红包（变动前）" width="200"></el-table-column>
+                <el-table-column prop="current_money" :label="'当前'+currencyAlias.silver_beans_alias+'（变动前）'" width="200"></el-table-column>
                 <el-table-column prop="desc" label="说明" width="400"></el-table-column>
                 <el-table-column prop="scope" label="日期">
                        <template slot-scope="scope">
@@ -99,7 +99,7 @@ Yii::$app->loadComponentView('com-dialog-select');
         </div>
 
         <!-- 充值收益 -->
-        <el-dialog title="充值红包" :visible.sync="dialogRecharge" width="30%">
+        <el-dialog :title="'充值'+currencyAlias.silver_beans_alias" :visible.sync="dialogRecharge" width="30%">
             <el-form :model="rechargeForm" label-width="80px" :rules="rechargeFormRules" ref="rechargeForm">
                 <el-form-item label="操作" prop="type">
                     <el-radio v-model="rechargeForm.type" label="1">充值</el-radio>
@@ -160,7 +160,7 @@ Yii::$app->loadComponentView('com-dialog-select');
                     title: "选择用户",
                     params: {},
                     columns: [
-                        {label:"红包", key:"shop_voucher_money"},
+                        {label:"{{currencyAlias.silver_beans_alias}}", key:"shop_voucher_money"},
                         {label:"手机号", key:"mobile"},
                         {label:"等级", key:"role_type_text"}
                     ],
@@ -255,6 +255,12 @@ Yii::$app->loadComponentView('com-dialog-select');
                         value:'from_order_detail'
                     },
                 ],
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         methods: {
@@ -380,8 +386,25 @@ Yii::$app->loadComponentView('com-dialog-select');
                 });
                 this.statisticsLoading = true;
             },
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
         },
     mounted: function() {
+        this.getCurrencyAliasData();
         this.getList();
     }
 });

@@ -4,7 +4,7 @@
  * @copyright: Copyright (c) 2020 广东七件事集团
  * author: zal
  */
-Yii::$app->loadComponentView('com-dialog-select');
+Yii::$app->loadComponentView('com-dialog-select-level');
 Yii::$app->loadComponentView('com-select-cat');
 Yii::$app->loadComponentView('com-rich-text')
 

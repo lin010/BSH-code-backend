@@ -59,10 +59,7 @@ Yii::$app->loadPluginComponentView('boss-level');
                     </el-table-column>
                     <el-table-column label="身份" prop="mobile" width="150">
                         <template slot-scope="scope">
-                            <div v-if="scope.row.userInfo[0].role_type == 'user'">VIP会员</div>
-                            <div v-if="scope.row.userInfo[0].role_type == 'branch_office'">城市服务商</div>
-                            <div v-if="scope.row.userInfo[0].role_type == 'partner'">区域服务商</div>
-                            <div v-if="scope.row.userInfo[0].role_type == 'store'">VIP代理商</div>
+                            <div v-for="(typeName,typeKey) in userRoleTypes"  v-if="scope.row.userInfo[0].role_type == typeKey">{{typeName}}</div>
                         </template>
                     </el-table-column>
                     <el-table-column label="累计佣金" prop="total_price" width="100">
@@ -174,6 +171,7 @@ Yii::$app->loadPluginComponentView('boss-level');
     const app = new Vue({
         el: '#app',
         data: {
+            userRoleTypes: USER_ROLE_TYPES,
             qrimg: '',
             showqr: false,
             avatar: '',

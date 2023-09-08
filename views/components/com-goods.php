@@ -437,10 +437,7 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
 
                                     <el-form-item label="购买权限" prop="purchase_permission">
                                         <el-checkbox-group v-model="ruleForm.purchase_permission">
-                                            <el-checkbox label="user">VIP会员</el-checkbox>
-                                            <el-checkbox label="store">VIP代理商</el-checkbox>
-                                            <el-checkbox label="partner">区域服务商</el-checkbox>
-                                            <el-checkbox label="branch_office">城市服务商</el-checkbox>
+                                            <el-checkbox v-for="(typeName,typeKey) in userRoleTypes"  :label="typeKey">{{typeName}}</el-checkbox>
                                         </el-checkbox-group>
                                     </el-form-item>
 
@@ -529,7 +526,7 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
                                             <el-card class="box-card" style="margin-top:10px;">
 
                                                 <div style="display: flex;align-items: center">
-                                                    <span style="width:100px;text-align:right;flex-shrink: 0" v-if="ruleForm.enable_commisson_price == 1" >VIP会员：</span>
+                                                    <span style="width:100px;text-align:right;flex-shrink: 0" v-if="ruleForm.enable_commisson_price == 1" >{{userRoleTypes.user}}：</span>
                                                     <div style="display:flex;flex-grow: 1">
                                                         <el-input type="number" oninput="this.value = this.value.replace(/[^0-9\.]/, '');" min="0" v-model="ruleForm.price" style="flex-grow: 1">
                                                             <template slot="append">元</template>
@@ -539,19 +536,19 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
 
                                                 <div v-if="ruleForm.enable_commisson_price == 1" style="">
                                                     <div style="display: flex;align-items: center;margin-top:10px;">
-                                                        <span style="width:100px;text-align:right;flex-shrink: 0">城市服务商：</span>
+                                                        <span style="width:100px;text-align:right;flex-shrink: 0">{{userRoleTypes.branch_office}}：</span>
                                                         <el-input type="number" oninput="this.value = this.value.replace(/[^0-9\.]/, '');" min="0" v-model="ruleForm.branch_office_price" style="flex-grow: 1">
                                                             <template slot="append">元</template>
                                                         </el-input>
                                                     </div>
                                                     <div style="display: flex;align-items: center;margin-top:10px;">
-                                                        <span style="width:100px;text-align:right;flex-shrink: 0">区域服务商：</span>
+                                                        <span style="width:100px;text-align:right;flex-shrink: 0">{{userRoleTypes.partner}}：</span>
                                                         <el-input type="number" oninput="this.value = this.value.replace(/[^0-9\.]/, '');" min="0" v-model="ruleForm.partner_price" style="flex-grow: 1">
                                                             <template slot="append">元</template>
                                                         </el-input>
                                                     </div>
                                                     <div style="display: flex;align-items: center;margin-top:10px;">
-                                                        <span style="width:100px;text-align:right;flex-shrink: 0">VIP代理商：</span>
+                                                        <span style="width:100px;text-align:right;flex-shrink: 0">{{userRoleTypes.store}}：</span>
                                                         <el-input type="number" oninput="this.value = this.value.replace(/[^0-9\.]/, '');" min="0" v-model="ruleForm.store_price" style="flex-grow: 1">
                                                             <template slot="append">元</template>
                                                         </el-input>
@@ -722,7 +719,7 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
 
                                         <el-card class="box-card" >
                                             <div style="padding:10px 10px;border:1px solid #eee;display:flex;align-items: center">
-                                                <span style="width:90px;text-align:right;flex-shrink: 0;">VIP会员：</span>
+                                                <span style="width:90px;text-align:right;flex-shrink: 0;">{{userRoleTypes.user}}：</span>
                                                 <el-tag @close="freightDelete()" v-if="ruleForm.freight" :key="ruleForm.freight.name" :disable-transitions="true" style="margin-right: 10px;" closable>
                                                     {{ruleForm.freight.name}}
                                                 </el-tag>
@@ -733,7 +730,7 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
 
                                                 <!-- 城市服务商运费模板 start-->
                                                 <div style="padding:10px 10px;border:1px solid #eee;display:flex;align-items: center">
-                                                    <span style="width:90px;text-align:right;flex-shrink: 0">城市服务商：</span>
+                                                    <span style="width:90px;text-align:right;flex-shrink: 0">{{userRoleTypes.branch_office}}：</span>
                                                     <el-tag @close="freightDelete('branch_office')" v-if="ruleForm.branch_office_freight" :key="ruleForm.branch_office_freight.name" :disable-transitions="true" style="margin-right: 10px;" closable>
                                                         {{ruleForm.branch_office_freight.name}}
                                                     </el-tag>
@@ -743,7 +740,7 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
 
                                                 <!-- 区域服务商运费模板 start-->
                                                 <div style="padding:10px 10px;border:1px solid #eee;display:flex;align-items: center">
-                                                    <span style="width:90px;text-align:right;flex-shrink: 0">区域服务商：</span>
+                                                    <span style="width:90px;text-align:right;flex-shrink: 0">{{userRoleTypes.partner}}：</span>
                                                     <el-tag @close="freightDelete('partner')" v-if="ruleForm.partner_freight" :key="ruleForm.partner_freight.name" :disable-transitions="true" style="margin-right: 10px;" closable>
                                                         {{ruleForm.partner_freight.name}}
                                                     </el-tag>
@@ -753,7 +750,7 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
 
                                                 <!-- VIP运费模板 start-->
                                                 <div style="padding:10px 10px;border:1px solid #eee;display:flex;align-items: center">
-                                                    <span style="width:90px;text-align:right;flex-shrink: 0">VIP：</span>
+                                                    <span style="width:90px;text-align:right;flex-shrink: 0">{{userRoleTypes.store}}：</span>
                                                     <el-tag @close="freightDelete('store')" v-if="ruleForm.store_freight" :key="ruleForm.store_freight.name" :disable-transitions="true" style="margin-right: 10px;" closable>
                                                         {{ruleForm.store_freight.name}}
                                                     </el-tag>
@@ -1067,9 +1064,9 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
                                         </el-switch>
                                         <div v-if="ruleForm.enable_upgrade_user_role == 1">
                                             <el-select v-model="ruleForm.upgrade_user_role_type">
-                                                <el-option :label="'VIP代理商'" :value="'store'"></el-option>
-                                                <el-option :label="'区域服务商'" :value="'partner'"></el-option>
-                                                <el-option :label="'城市服务商'" :value="'branch_office'"></el-option>
+                                                <el-option :label="userRoleTypes.store" :value="'store'"></el-option>
+                                                <el-option :label="userRoleTypes.partner" :value="'partner'"></el-option>
+                                                <el-option :label="userRoleTypes.branch_office" :value="'branch_office'"></el-option>
                                             </el-select>
                                         </div>
                                     </el-form-item>
@@ -1260,9 +1257,9 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
                         </com-goods-area>
                     </el-tab-pane>
 
-                    <el-tab-pane label="赠送红包设置" name="shopping_setting" v-if="goods_id > 0">
+                    <el-tab-pane :label="'赠送'+currencyAlias.silver_beans_alias+'设置'" name="shopping_setting" v-if="goods_id > 0">
                             <el-form ref="shoppingFormData" :rules="shoppingFormRule" label-width="30%" :model="shoppingFormData" size="small" >
-                                赠送红包设置
+                                赠送{{currencyAlias.silver_beans_alias}}设置
                                 <el-switch
                                         v-model="shoppingSwitchOpen"
                                         active-text="开启"
@@ -1280,7 +1277,7 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
                                     <el-form-item label="运费（运营费）" prop="enable_express">
                                         <el-switch
                                                 v-model="shoppingFormData.enable_express"
-                                                active-text="赠送红包"
+                                                :active-text="'赠送'+currencyAlias.silver_beans_alias"
                                                 inactive-text="不赠送"
                                                 active-value="1"
                                                 inactive-value="0">
@@ -1293,20 +1290,20 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
                             </div>
                     </el-tab-pane>
 
-                    <el-tab-pane label="红包兑换价设置" name="shopping_exchange" v-if="goods_id > 0">
+                    <el-tab-pane :label="currencyAlias.silver_beans_alias+'兑换价设置'" name="shopping_exchange" v-if="goods_id > 0">
                         <el-form ref="shoppingExchangeFormData"
                                  :rules="shoppingExchangeFormRule"
                                  label-width="30%"
                                  :model="shoppingExchangeFormData"
                                  size="small">
-                            红包兑换价设置
+                            {{currencyAlias.silver_beans_alias}}兑换价设置
                             <el-switch
                                     v-model="shoppingExchangeSwitchOpen"
                                     active-text="开启"
                                     inactive-text="关闭">
                             </el-switch>
                             <div v-if="shoppingExchangeSwitchOpen">
-                                <el-form-item label="红包价" prop="exchange_rate">
+                                <el-form-item :label="currencyAlias.silver_beans_alias+'价'" prop="exchange_rate">
                                     <el-input type="number" placeholder="请输入内容" v-model="shoppingExchangeFormData.exchange_rate" style="width:260px;">
                                         <template slot="append">券</template>
                                     </el-input>
@@ -1650,6 +1647,7 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
                 }, ],
             };
             return {
+                userRoleTypes: USER_ROLE_TYPES,
                 forLiancDlgSelect:{
                     visible: false,
                     multiple: false,
@@ -1812,10 +1810,16 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
                 },
                 shoppingExchangeFormRule:{
                     exchange_rate: [
-                        {required: true, message: '红包价不能为空', trigger: 'change'},
+                        {required: true, message: '不能为空', trigger: 'change'},
                     ],
                 },
                 shoppingExchangeSwitchOpen:false,
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         created() {
@@ -1828,6 +1832,8 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
             } else {
                 this.is_show_distribution = 0
             }
+            this.getCurrencyAliasData();
+
             //this.getSvip();
             this.getLabels();
         },
@@ -2837,7 +2843,23 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
             },
             change(e) {
                 this.$forceUpdate();
-            }
+            },
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
         }
     });
 </script>

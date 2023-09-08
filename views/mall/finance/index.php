@@ -43,18 +43,18 @@
                         <div>{{scope.row.nickname}}</div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="scope" label="余额" width="300">
+                <el-table-column prop="scope" :label="currencyAlias.balance_alias" width="300">
                     <template slot-scope="scope">
-                        <div>当前余额：{{scope.row.balance}}</div>
+                        <div>当前{{currencyAlias.balance_alias}}：{{scope.row.balance}}</div>
                         <br>
-                        <div>累计余额：{{scope.row.total_balance}}</div>
+                        <div>累计{{currencyAlias.balance_alias}}：{{scope.row.total_balance}}</div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="scope" label="积分" width="300">
+                <el-table-column prop="scope" :label="currencyAlias.integral_alias" width="300">
                     <template slot-scope="scope">
-                        <div>当前积分：{{scope.row.score}}</div>
+                        <div>当前{{currencyAlias.integral_alias}}：{{scope.row.score}}</div>
                         <br>
-                        <div>累计积分：{{scope.row.total_score}}</div>
+                        <div>累计{{currencyAlias.integral_alias}}：{{scope.row.total_score}}</div>
                     </template>
                 </el-table-column>
                 <el-table-column prop="scope" label="收益" width="300">
@@ -120,6 +120,12 @@
                         label: '昵称'
                     },
                 ],
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         methods: {
@@ -177,8 +183,25 @@
                 });
                 this.listLoading = true;
             },
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
         },
         mounted: function () {
+            this.getCurrencyAliasData();
             this.getList();
         }
     });

@@ -3,6 +3,7 @@
 namespace app\commands\shopping_voucher_send_task;
 
 use app\commands\BaseAction;
+use app\models\MallSetting;
 use app\models\User;
 use app\plugins\mch\models\Mch;
 use app\plugins\mch\models\MchCheckoutOrder;
@@ -42,15 +43,16 @@ class MchCheckoutOrderSendAction extends BaseAction {
                 if(!$user || $user->is_delete){
                     throw new \Exception("用户不存在");
                 }
+                $silver_beans_alias = MallSetting::getValueByKey('silver_beans_alias',$user->mall_id);
                 $modifyForm = new ShoppingVoucherLogModifiyForm([
                     "money"       => $sendLog['money'],
-                    "desc"        => "门店消费获得赠送红包",
+                    "desc"        => "门店消费获得赠送".$silver_beans_alias,
                     "source_id"   => $sendLog['source_id'],
                     "source_type" => $sendLog['source_type']
                 ]);
                 $modifyForm->add($user, true);
                 $sendLogIds[] = $sendLog['id'];
-                $this->controller->commandOut("红包发放记录ID:" . $sendLog['id'] . "处理完成");
+                $this->controller->commandOut($silver_beans_alias."发放记录ID:" . $sendLog['id'] . "处理完成");
             }catch (\Exception $e){
                 $remark = implode("\n", [$e->getMessage(), "line:" . $e->getLine(), "file:".$e->getFile()]);
                 ShoppingVoucherSendLog::updateAll([
@@ -125,7 +127,8 @@ class MchCheckoutOrderSendAction extends BaseAction {
             ]);
 
             if($sendLog->save()){
-                $this->controller->commandOut("红包发放记录创建成功，ID:" . $sendLog->id);
+                $silver_beans_alias = MallSetting::getValueByKey('silver_beans_alias',$checkOrder['mall_id']);
+                $this->controller->commandOut($silver_beans_alias."发放记录创建成功，ID:" . $sendLog->id);
             }else{
                 $this->controller->commandOut(json_encode($sendLog->getErrors()));
             }

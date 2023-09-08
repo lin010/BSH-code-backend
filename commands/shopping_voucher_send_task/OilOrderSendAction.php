@@ -2,6 +2,7 @@
 
 namespace app\commands\shopping_voucher_send_task;
 
+use app\models\MallSetting;
 use app\models\User;
 use app\plugins\oil\models\OilOrders;
 use app\plugins\oil\models\OilPlateforms;
@@ -44,9 +45,10 @@ class OilOrderSendAction extends Action{
                 if(!$user || $user->is_delete){
                     throw new \Exception("用户不存在");
                 }
+                $silver_beans_alias = MallSetting::getValueByKey('silver_beans_alias',$user->mall_id);
                 $modifyForm = new ShoppingVoucherLogModifiyForm([
                     "money"       => $sendLog['money'],
-                    "desc"        => "支付加油券获得赠送红包",
+                    "desc"        => "支付加油券获得赠送".$silver_beans_alias,
                     "source_id"   => $sendLog['source_id'],
                     "source_type" => $sendLog['source_type']
                 ]);
@@ -157,7 +159,8 @@ class OilOrderSendAction extends Action{
             ]);
 
             if($sendLog->save()){
-                $this->controller->commandOut("红包发放记录创建成功，ID:" . $sendLog->id);
+                $silver_beans_alias = MallSetting::getValueByKey('silver_beans_alias',$oilOrder['mall_id']);
+                $this->controller->commandOut($silver_beans_alias."发放记录创建成功，ID:" . $sendLog->id);
             }else{
                 $this->controller->commandOut(json_encode($sendLog->getErrors()));
             }

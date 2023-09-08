@@ -50,6 +50,7 @@
     </div>
 </template>
 <script>
+
     Vue.component('com-dialog-select', {
         template: '#com-dialog-select',
         props: {

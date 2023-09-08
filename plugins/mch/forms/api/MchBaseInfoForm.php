@@ -13,7 +13,7 @@ use app\plugins\mch\models\Mch;
 use app\plugins\mch\models\MchApply;
 use app\plugins\mch\models\MchGroup;
 use app\plugins\mch\models\MchPriceLog;
-
+use app\models\User;
 /**
  * @author mr.lin
  * @deprecated 即将弃用
@@ -105,15 +105,28 @@ class MchBaseInfoForm extends BaseModel{
 
             $baseData['mch_mobile'] = $mchInfo['mobile'];
 
+            $user = User::findOne(\Yii::$app->user->identity->id);
             //获取结算信息
             $efpsReviewInfo = EfpsMchReviewInfo::find()->where([
                 "mch_id" => $mchInfo['id']
             ])->select([
                 "paper_settleAccountType", "paper_settleAccountNo",
-                "paper_settleAccount", "paper_settleTarget", "paper_openBank"
+                "paper_settleAccount", "paper_settleTarget", "paper_openBank","bankcity","bankcityid","bankprovince","bankprovinceid"
             ])->one();
             if($efpsReviewInfo){
                 $baseData['settle'] = $efpsReviewInfo;
+            }elseif(!empty($user->huifu_bank_token_no)){
+                $baseData['settle'] = array(
+                    "paper_settleAccountType"=>2,
+                    "paper_settleTarget"=>2,
+                    "paper_settleAccountNo"=>$user->bank_account,
+                    "paper_settleAccount"=>$user->realname,
+                    "paper_openBank"=>$user->bank_name,
+                    "bankcity"=>$user->bankcity,
+                    "bankcityid"=>$user->bankcityid,
+                    "bankprovince"=>$user->bankprovince,
+                    "bankprovinceid"=>$user->bankprovinceid                    
+                );
             }
 
             //获取商户待结算金额
@@ -145,7 +158,8 @@ class MchBaseInfoForm extends BaseModel{
             } else {
                 $baseData['store']['business_hours'] = ['08:00', '22:00'];
             }
-
+            
+            $baseData['user'] = ['huifu_id'=>$user->huifu_id];
             return [
                 'code' => ApiCode::CODE_SUCCESS,
                 'data' => [

@@ -17,6 +17,7 @@ use app\helpers\APICacheHelper;
 use app\logic\AppConfigLogic;
 use app\logic\OptionLogic;
 use app\models\Mall;
+use app\models\MallSetting;
 use app\models\Option;
 use app\models\Wechat;
 use app\plugins\mpwx\models\MpwxConfig;
@@ -49,13 +50,30 @@ class MallController extends ApiController
             $top_pic_url = $userCenter["top_pic_url"];
         }
 
+        $defaultCurrencyAlias = [
+            'balance_alias' => '余额',
+            'red_envelope_alias' => '红包',
+            'integral_alias' => '积分',
+            'silver_beans_alias' => '银豆',
+        ];
+        $currencyAlias = MallSetting::getValueByKeys([
+            'balance_alias',
+            'red_envelope_alias',
+            'integral_alias',
+            'silver_beans_alias',
+        ], $this->mall_id);
+        if(!empty($currencyAlias) ){
+            $defaultCurrencyAlias = $currencyAlias;
+        }
+        self::$commonData['currency_alias'] = $defaultCurrencyAlias;
+
         $res = APICacheHelper::get($form);
         if($res['code'] == ApiCode::CODE_SUCCESS){
             $res['data'] = array_merge($res['data'], [
                 "page_title"  => AppConfigLogic::getPageTitleConfig(),
                 "navbar"      => AppConfigLogic::getNavbar(),
                 'top_pic_url' => $top_pic_url
-            ]);
+            ],$defaultCurrencyAlias);
         }
 
         return $this->asJson($res);

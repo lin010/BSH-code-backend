@@ -248,7 +248,8 @@ $baseUrl = Yii::$app->request->baseUrl;
         </div>
     </div>
 </template>
-<script src="//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.18.1/vuedraggable.umd.min.js"></script>
+<!--<script src="//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.18.1/vuedraggable.umd.min.js"></script>-->
+<script src="<?= Yii::$app->request->baseUrl ?>/statics/unpkg/vuedraggable@2.18.1/dist/vuedraggable.umd.js"></script>
 <script>
     Vue.component('com-topic-detail', {
         template: '#com-topic-detail',

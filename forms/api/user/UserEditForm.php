@@ -27,12 +27,19 @@ class UserEditForm extends BaseModel
     public $birthday;
     public $mobile;
     public $captcha;
+    public $realname;
+    public $cert_validity_type;
+    public $cert_no;
+    public $cert_begin_date;
+    public $cert_end_date;
 
     public function rules()
     {
         return [
-            [['nickname','avatar','captcha'],'string'],
+            [['nickname','avatar','captcha','realname','cert_no','cert_begin_date','cert_end_date'],'string'],
             [['birthday'], 'safe'],
+            [['cert_validity_type'], 'number'],
+
             [['mobile'], PhoneNumberValidator::className()],
         ];
     }
@@ -73,6 +80,34 @@ class UserEditForm extends BaseModel
                 $isUpdate = true;
                 $user->avatar_url = $this->avatar;
             }
+            if(!empty($this->realname)){
+                if(!empty($user['huifu_id']) && $this->realname != $user['realname']){
+                    return $this->returnApiResultData(ApiCode::CODE_FAIL,'本账号已实名认证,真实姓名不能修改');
+                }
+                $isUpdate = true;
+                $user->realname = $this->realname;
+            }
+            if(is_numeric($this->cert_validity_type)){
+                $isUpdate = true;
+                $user->cert_validity_type = $this->cert_validity_type;
+                if($this->cert_validity_type == 0 && empty($this->cert_end_date)){
+                    return $this->returnApiResultData(ApiCode::CODE_FAIL,'非长期身份证需要填写身份证有效期截止日期');
+                }
+            }
+
+            if(!empty($this->cert_no)){
+                $isUpdate = true;
+                $user->cert_no = $this->cert_no;
+            }
+            if(!empty($this->cert_begin_date)){
+                $isUpdate = true;
+                $user->cert_begin_date = $this->cert_begin_date;
+            }
+            if(!empty($this->cert_end_date)){
+                $isUpdate = true;
+                $user->cert_end_date = $this->cert_end_date;
+            }
+
             if(!empty($this->mobile)){
                 $smsForm = new SmsForm();
                 $smsForm->captcha = $this->captcha;
@@ -90,11 +125,37 @@ class UserEditForm extends BaseModel
                 $isUpdate = true;
                 $user->mobile = $this->mobile;
             }
+
             $code = ApiCode::CODE_SUCCESS;
             if($isUpdate){
                 if($user->save() === false){
                     $code = ApiCode::CODE_FAIL;
                 }
+            }
+            $user = User::getOneData([
+                'id' => $user_id,
+                'mall_id' => \Yii::$app->mall->id
+            ]);
+            $hasMustHuiFuInfo = ( !empty($user['realname']) && !empty($user['mobile']) && !empty($user['cert_no']) && !empty($user['cert_begin_date']) && ($user['cert_validity_type']==1 || !empty($user['cert_end_date']) )  );
+            if($hasMustHuiFuInfo){
+                if(empty($user['huifu_id'])){
+                    $res = \Yii::$app->bs->basic_data_indv($user);
+                    if($res['code']==-1){
+                        return $this->returnApiResultData(ApiCode::CODE_FAIL,$res['message']);
+                    }
+                    $user->huifu_id = $res['data']['huifu_id'];
+                    $user->huifu_login_name = $res['data']['login_name'];
+                    $user->huifu_login_password = $res['data']['login_password'];
+                    $user->huifu_create_time=date('Y-m-d H:i:s');
+                }else{
+                    // 修改
+                    $res = \Yii::$app->bs->basic_data_indv_modify($user);
+                    if($res['code']==-1){
+                        return $this->returnApiResultData(ApiCode::CODE_FAIL,$res['message']);
+                    }
+                    $user->huifu_update_time = date('Y-m-d H:i:s');
+                }
+                $user->save();
             }
             return $this->returnApiResultData($code,"");
         } catch (\Exception $e) {

@@ -16,6 +16,7 @@ use app\services\MallSetting\MallSettingService;
 class MallSettingForm extends BaseModel
 {
     public $key;
+    public $keys;
     public $value;
     public $name = null;
     public $setting_desc = null;
@@ -25,7 +26,7 @@ class MallSettingForm extends BaseModel
         return [
             [['key'], 'required'],
             [['value'], 'required', 'on' => 'store'],
-            [['key'], 'string'],
+            [['key','keys'], 'string'],
             [['value', 'name', 'setting_desc'], 'safe'],
         ];
     }
@@ -58,5 +59,18 @@ class MallSettingForm extends BaseModel
 
         $MallSettingService = new MallSettingService(\Yii::$app->mall->id);
         return $MallSettingService->store($this->key, $this->value, $this->name, $this->setting_desc);
+    }
+
+    /**
+     * 获取商城多个设置
+     * @return array
+     */
+    public function getValueByKeysApiData()
+    {
+        if (!$this->validate()) {
+            return $this->returnApiResultData(99, $this->responseErrorMsg($this));
+        }
+        $MallSettingService = new MallSettingService(\Yii::$app->mall->id);
+        return $MallSettingService->getValueByKeysApiData(explode(',', $this->keys));
     }
 }

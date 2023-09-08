@@ -70,10 +70,7 @@
                                    :src="scope.row.avatar_url">
                         </com-image>
                         <div>昵称：{{scope.row.nickname}}(ID:{{scope.row.user_id}})</div>
-                        <div v-if="scope.row.role_type=='store'">身份：VIP代理商</div>
-                        <div v-if="scope.row.role_type=='partner'">身份：区域服务商</div>
-                        <div v-if="scope.row.role_type=='branch_office'">身份：城市服务商</div>
-                        <div v-if="scope.row.role_type=='user'">身份：VIP会员</div>
+                        <div v-for="(typeName,typeKey) in userRoleTypes" v-if="scope.row.role_type==typeKey">身份：{{typeName}}</div>
                         <div>手机号：{{scope.row.mobile}}</div>
                     </template>
                 </el-table-column>
@@ -109,6 +106,7 @@
         el: '#app',
         data() {
             return {
+                userRoleTypes: USER_ROLE_TYPES,
                 searchData: {
                     keyword: '',
                     keyword_1: '',

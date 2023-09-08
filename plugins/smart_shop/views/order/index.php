@@ -211,12 +211,7 @@
         },
         methods: {
             roleText(type){
-                let values = {
-                    store: 'VIP代理商',
-                    partner: '区域服务商',
-                    branch_office: '城市服务商',
-                    user: 'VIP会员'
-                };
+                let values = USER_ROLE_TYPES;
                 return values[type] ? values[type] : '';
             },
             unfreeze(item){

@@ -10,6 +10,7 @@
 
 namespace app\forms\admin;
 
+use app\models\MallSetting;
 use phpDocumentor\Reflection\Types\Self_;
 
 class Menus
@@ -53,6 +54,13 @@ class Menus
      */
     public static function getMallMenus($isPluginMenus = false)
     {
+        //币种别名
+        $getCurrencyAlias = MallSetting::getValueByKeys([
+            'balance_alias',
+            'red_envelope_alias',
+            'integral_alias',
+            'silver_beans_alias',
+        ],\Yii::$app->mall->id);
         $menu_item = [
             'name' => '',
             'key' => '',
@@ -820,28 +828,32 @@ class Menus
                         'route' => 'plugin/finance_analysis/mall/finance/analysis',
                     ],
                     [
-                        'name' => '余额记录',
+                        'name' => $getCurrencyAlias['balance_alias'].'记录',
                         'route' => 'mall/finance/balance-log',
                     ],
                     [
-                        'name' => '余额收支',
+                        'name' => $getCurrencyAlias['balance_alias'].'收支',
                         'route' => 'mall/user/balance-log',
                     ],
                     [
-                        'name' => '积分记录',
+                        'name' => $getCurrencyAlias['integral_alias'].'记录',
                         'route' => 'mall/finance/score-log',
                     ],
                     [
-                        'name' => '金豆记录',
+                        'name' => $getCurrencyAlias['red_envelope_alias'].'记录',
                         'route' => 'mall/finance/integral-log',
                     ],
                     [
-                        'name' => '红包记录',
+                        'name' => $getCurrencyAlias['silver_beans_alias'].'记录',
                         'route' => 'plugin/shopping_voucher/mall/shopping-voucher-log/list',
                     ],
                     [
                         'name' => '用户提现',
                         'route' => 'mall/finance/cash',
+                    ],
+                    [
+                        'name' => '金豆提现',
+                        'route' => 'mall/finance/integral-cash',
                     ],
                     [
                         'name' => '商户提现',

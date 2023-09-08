@@ -16,6 +16,7 @@ use Alipay\AopClient;
 use app\core\ApiCode;
 use app\forms\api\user\UserRechargeForm;
 use app\forms\efps\EfpsRefund;
+use app\forms\bs\BsRefund;
 use app\helpers\ArrayHelper;
 use app\helpers\WechatHelper;
 use app\logic\AppConfigLogic;
@@ -471,7 +472,10 @@ class Payment extends Component
                 $class = $this->refundClass($paymentOrderUnion->pay_type);
             }else{
                 //全部通过易票联退款
-                $class = new EfpsRefund();
+                // $class = new EfpsRefund();
+                // 通过汇付天下退款
+                $class = new BsRefund();
+
             }
 
             $result = $class->refund($paymentRefund, $paymentOrderUnion);

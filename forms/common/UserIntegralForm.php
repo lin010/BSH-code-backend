@@ -6,6 +6,7 @@ use app\models\BaseModel;
 use app\models\IntegralLog;
 use app\models\IntegralRecord;
 use app\models\User;
+use app\models\IntegralCash;
 use app\plugins\addcredit\models\AddcreditOrder;
 use app\plugins\giftpacks\models\GiftpacksGroupPayOrder;
 use app\plugins\giftpacks\models\GiftpacksOrder;
@@ -296,7 +297,65 @@ class UserIntegralForm extends BaseModel{
             ];
         }
     }
+    /**
+     * 拒绝提现加收入
+     * @param User $user
+     * @param $price
+     * @param $source_type
+     * @param $source_id
+     */
+    public static function cashReject(User $user, IntegralCash $cash){
 
+        $t = \Yii::$app->db->beginTransaction();
+        try {
+            $desc = "金豆提现审核驳回";
+            static::change($user, $cash->price, self::TYPE_ADD, "cash", $cash->id,$desc);
+
+            $t->commit();
+
+            return [
+                'code' => ApiCode::CODE_SUCCESS,
+                'msg'  => '操作成功'
+            ];
+        }catch (\Exception $e){
+            $t->rollBack();
+            return [
+                'code' => ApiCode::CODE_FAIL,
+                'msg'  => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * 申请提现减收入
+     * @param User $user
+     * @param $price
+     * @param $source_type
+     * @param $source_id
+     */
+    public static function cashSub(User $user, $price, $source_id){
+
+        $t = \Yii::$app->db->beginTransaction();
+        try {
+            $desc = "金豆提现";
+
+            static::change($user, $price, self::TYPE_SUB, "cash", $source_id,$desc);
+
+            $t->commit();
+
+            return [
+                'code' => ApiCode::CODE_SUCCESS,
+                'msg'  => '操作成功'
+            ];
+        }catch (\Exception $e){
+            $t->rollBack();
+            return [
+                'code' => ApiCode::CODE_FAIL,
+                'msg'  => $e->getMessage()
+            ];
+        }
+
+    }    
     protected static function change(User $user, $price, $type, $source_type, $source_id, $desc = null){
 
         $staticIntegral = floatval($user->static_integral);

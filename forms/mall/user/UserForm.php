@@ -323,10 +323,10 @@ class UserForm extends BaseModel
             ->asArray()
             ->all();
         $roleTypes = [
-            'store' => 'VIP代理商',
-            'partner' => '区域服务商',
-            'branch_office' => '城市服务商',
-            'user' => '用户'
+            'store' => '店主',
+            'partner' => '经销商',
+            'branch_office' => '区域经销商',
+            'user' => '游客'
         ];
         foreach ($list as &$v) {
 

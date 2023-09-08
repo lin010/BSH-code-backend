@@ -41,14 +41,14 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="scope" width="100" label="积分赠送">
+                    <el-table-column prop="scope" width="100" :label="`${currencyAlias.integral_alias}赠送`">
                         <template slot-scope="scope">
                             <el-popover placement="right" trigger="click" width="300">
                                 <el-form size="mini" :label-position="label_position_top" :model="scope.row.editable_score" label-width="80px">
                                     <el-form-item label="类型">
                                         <el-radio-group v-model="scope.row.editable_score.enable_score">
-                                            <el-radio label="1">积分券</el-radio>
-                                            <el-radio label="0">积分</el-radio>
+                                            <el-radio label="1">{{currencyAlias.integral_alias}}券</el-radio>
+                                            <el-radio label="0">{{currencyAlias.integral_alias}}</el-radio>
                                         </el-radio-group>
                                     </el-form-item>
                                     <template v-if="scope.row.editable_score.enable_score == 1">
@@ -60,7 +60,7 @@
                                         </el-form-item>
                                         <el-form-item label="赠送">
                                             <el-input type="number" :min="0" placeholder="" v-model="scope.row.editable_score.integral_num">
-                                                <template slot="append">积分券</template>
+                                                <template slot="append">{{currencyAlias.integral_alias}}券</template>
                                             </el-input>
                                         </el-form-item>
                                         <el-form-item label="按月">
@@ -82,7 +82,7 @@
                                             </el-radio-group>
                                         </el-form-item>
                                         <el-form-item label="赠送">
-                                            <el-input type="number" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');" placeholder="请输入赠送积分数量" v-model="scope.row.editable_score.give_score">
+                                            <el-input type="number" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');" :placeholder="`请输入赠送${currencyAlias.integral_alias}`数量" v-model="scope.row.editable_score.give_score">
                                                 <template slot="append"><span v-if="scope.row.editable_score.give_score_type == 1">分</span><span v-else>%</span></template>
                                             </el-input>
                                         </el-form-item>
@@ -93,11 +93,11 @@
                             </el-popover>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="scope" width="100" label="金豆赠送">
+                    <el-table-column prop="scope" width="100" :label="`${currencyAlias.red_envelope_alias}赠送`">
                         <template slot-scope="scope">
                             <el-popover placement="right" trigger="click" width="300">
                                 <el-form size="mini" :label-position="label_position_top" :model="scope.row.editable_integral" label-width="80px">
-                                    <el-form-item label="赠送金豆">
+                                    <el-form-item :label="`赠送${currencyAlias.red_envelope_alias}`">
                                         <el-switch v-model="scope.row.editable_integral.enable_integral" :active-value="1" :inactive-value="0" active-text="开启" inactive-text="关闭"></el-switch>
                                     </el-form-item>
                                     <template v-if="scope.row.editable_integral.enable_integral == 1">
@@ -108,7 +108,7 @@
                                         </el-form-item>
                                         <el-form-item label="赠送">
                                             <el-input type="number" :min="0" placeholder="" v-model="scope.row.editable_integral.integral_num">
-                                                <template slot="append">金豆券</template>
+                                                <template slot="append">{{currencyAlias.red_envelope_alias}}券</template>
                                             </el-input>
                                         </el-form-item>
                                         <el-form-item label="按月">
@@ -248,13 +248,35 @@
             goods_list: [],
             goods_pagination: null,
             goods_selections: [],
-            selections: []
+            selections: [],
+            currencyAlias:{
+                balance_alias: '',
+                red_envelope_alias: '',
+                integral_alias: '',
+                silver_beans_alias: '',
+            },
         },
         mounted() {
+            this.getCurrencyAliasData();
             this.loadData();
         },
         methods: {
-
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
             sortReload(column){
                 this.search.sort_prop = column.prop;
                 this.search.sort_type = column.order == "descending" ? 0 : 1;

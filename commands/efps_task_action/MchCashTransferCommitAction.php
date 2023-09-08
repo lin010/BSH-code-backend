@@ -4,6 +4,7 @@ namespace app\commands\efps_task_action;
 use app\core\ApiCode;
 use app\forms\efps\EfpsMchCashTransfer;
 use app\models\EfpsTransferOrder;
+use app\forms\bs\BsMchCashTransfer;
 use app\plugins\mch\models\MchCash;
 use yii\base\Action;
 
@@ -42,12 +43,22 @@ class MchCashTransferCommitAction extends Action{
                 if(!$mchCash->save()){
                     throw new \Exception(json_encode($mchCash->getErrors()));
                 }
+                $mode = 'bs';
+                if($mode == 'bs'){
 
-                //提交易票联进行打款处理
-                $res = EfpsMchCashTransfer::commit($mchCash);
-                if($res['code'] != ApiCode::CODE_SUCCESS) {
-                    throw new \Exception($res['msg']);
-                }
+                    //提交汇付打款
+                    $res = BsMchCashTransfer::transfer($mchCash);
+                    if($res['code'] != ApiCode::CODE_SUCCESS){
+                        throw new \Exception($res['msg']);
+                    }
+                }else{
+                    //提交易票联进行打款处理
+                    $res = EfpsMchCashTransfer::commit($mchCash);
+                    if($res['code'] != ApiCode::CODE_SUCCESS) {
+                        throw new \Exception($res['msg']);
+                    }
+
+                }                
 
                 echo ("Mch ".$mchCash->mch_id." withdraw commit process success[ID:".$mchCash->id."]\n");
             }catch (\Exception $e){

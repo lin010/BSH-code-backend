@@ -186,7 +186,7 @@
         </div>
     </el-card>
 </div>
-<script src="//cdn.jsdelivr.net/npm/sortablejs@1.8.3/Sortable.min.js"></script>
+<script src="<?= Yii::$app->request->baseUrl ?>/statics/js/Sortable.min.js"></script>
 <!-- CDNJS :: Vue.Draggable (https://cdnjs.com/) -->
 <script src="<?= Yii::$app->request->baseUrl ?>/statics/unpkg/vuedraggable@2.18.1/dist/vuedraggable.umd.min.js"></script>
 <script>

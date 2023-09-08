@@ -117,7 +117,9 @@ Yii::$app->loadComponentView('com-rich-text');
     </el-card>
 
 </div>
-<script src="//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.18.1/vuedraggable.umd.min.js"></script>
+<!--<script src="//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.18.1/vuedraggable.umd.min.js"></script>-->
+<script src="<?= Yii::$app->request->baseUrl ?>/statics/unpkg/vuedraggable@2.18.1/dist/vuedraggable.umd.js"></script>
+
 <script>
     new Vue({
         el: '#app',

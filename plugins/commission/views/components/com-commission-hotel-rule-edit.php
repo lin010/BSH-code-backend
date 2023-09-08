@@ -39,24 +39,25 @@
         },
         data() {
             return {
+                userRoleTypes: USER_ROLE_TYPES,
                 commission_type: 1,
                 commission_hotel_value: '',
-                level_list:[
+                level_list: [
                     {
-                        name:'VIP会员',
-                        commisson_value:''
+                        name: USER_ROLE_TYPES.user,
+                        commisson_value: ''
                     },
                     {
-                        name:'城市服务商',
-                        commisson_value:''
+                        name: USER_ROLE_TYPES.branch_office,
+                        commisson_value: ''
                     },
                     {
-                        name:'VIP代理商',
-                        commisson_value:''
+                        name: USER_ROLE_TYPES.store,
+                        commisson_value: ''
                     },
                     {
-                        name:'区域服务商',
-                        commisson_value:''
+                        name: USER_ROLE_TYPES.partner,
+                        commisson_value: ''
                     }
                 ]
             };
@@ -65,16 +66,16 @@
             console.log(this.chains)
             for (let i = 0; i < this.chains.length; i++) {
                 if (this.chains[i].role_type == 'user') {
-                    this.level_list[i].name = 'VIP会员';
+                    this.level_list[i].name = USER_ROLE_TYPES.user;
                     this.level_list[i].commisson_value = this.chains[i].commisson_value;
                 } else if (this.chains[i].role_type == 'branch_office') {
-                    this.level_list[i].name = '城市服务商';
+                    this.level_list[i].name = USER_ROLE_TYPES.branch_office;
                     this.level_list[i].commisson_value = this.chains[i].commisson_value;
                 } else if (this.chains[i].role_type == 'store') {
-                    this.level_list[i].name = 'VIP代理商';
+                    this.level_list[i].name = USER_ROLE_TYPES.store;
                     this.level_list[i].commisson_value = this.chains[i].commisson_value;
                 } else if (this.chains[i].role_type == 'partner') {
-                    this.level_list[i].name = '区域服务商';
+                    this.level_list[i].name = USER_ROLE_TYPES.partner;
                     this.level_list[i].commisson_value = this.chains[i].commisson_value;
                 }
             }

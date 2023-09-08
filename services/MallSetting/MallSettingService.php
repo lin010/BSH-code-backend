@@ -98,6 +98,27 @@ class MallSettingService
 
         return $this->returnApiResultData(0, $msg, $one);
     }
+
+    /**
+     * 获取多个设置数据
+     * @param array $key
+     * @param false $json 是否返回json格式数据
+     * @return array
+     */
+    public function getValueByKeysApiData(array $keys)
+    {
+        $MallSetting = new MallSetting();
+        $data = $MallSetting->getValueByKeys($keys, $this->mall_id);
+
+        if (false === $data) {
+            return [];
+        }
+        if (JsonService::is_json($data)) {
+            return json_decode($data, true);
+        }
+        return $this->returnApiResultData(0, "成功", $data);
+    }
+
 //    测试数据
 //        $MallSettingService = new MallSettingService(5);
 //        $value              = [

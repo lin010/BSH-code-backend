@@ -78,12 +78,7 @@ class MchReviewListExportForm extends BaseModel{
                 'verifying' => '审核中',
                 'applying'  => '资料填写中'
             ];
-            $roleTypeText = [
-                'store'         => 'VIP代理商',
-                'partner'       => '区域服务商',
-                'branch_office' => '城市服务商',
-                'user'          => 'VIP会员'
-            ];
+            $roleTypeText =User::USER_ROLE_TYPES;
             foreach($list as &$row){
                 $applyData = !empty($row['json_apply_data']) ? json_decode($row['json_apply_data'], true) : [];
                 $row = array_merge($row, $applyData);

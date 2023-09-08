@@ -15,6 +15,7 @@ use app\core\ApiCode;
 use app\core\currency\BalanceModel;
 use app\forms\common\UserIncomeForm;
 use app\forms\efps\EfpsCashTransfer;
+use app\forms\bs\BsCashTransfer;
 use app\helpers\SerializeHelper;
 use app\logic\OptionLogic;
 use app\models\BaseModel;
@@ -209,7 +210,12 @@ class CashForm extends BaseModel
             $balanceModel->add((float)$cash->fact_price, '用户收益提现', '', 'user_cash', $cash->id);
 
         }elseif($cash->type == "bank"){
-            $res = EfpsCashTransfer::transfer($cash);
+            $mode = 'bs';
+            if($mode == 'bs'){
+                $res = BsCashTransfer::transfer($cash,'用户收益提现');
+            }else{
+                $res = EfpsCashTransfer::transfer($cash);
+            }
             if($res['code'] != ApiCode::CODE_SUCCESS) { //打款失败
                 throw new \Exception($res['msg']);
             }

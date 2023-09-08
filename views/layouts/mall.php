@@ -63,6 +63,7 @@ $currentRoute = Yii::$app->controller->route;
         <script type="text/javascript" src="<?= Yii::$app->request->baseUrl ?>/statics/js/china.js"></script>
         <script type="text/javascript" src="<?= Yii::$app->request->baseUrl ?>/statics/js/world.js"></script>
         <script type="text/javascript" src="<?= Yii::$app->request->baseUrl ?>/statics/js/bmap.min.js"></script>
+        <script src="<?= Yii::$app->request->baseUrl ?>/statics/js/userRoleTypes.js"></script>
 
         <link href="//at.alicdn.com/t/font_1925214_nxjrzvwjd09.css" rel="stylesheet">
         <style>

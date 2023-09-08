@@ -8,6 +8,7 @@
 namespace app\forms\api\user;
 
 use app\core\payment\PaymentNotify;
+use app\models\MallSetting;
 use app\models\RechargeOrders;
 use app\models\User;
 
@@ -39,15 +40,17 @@ class UserRechargePayNotify extends PaymentNotify
             if (!$user) {
                 throw new \Exception('用户不存在');
             }
+            $integral_alias = MallSetting::getValueByKey('integral_alias', $user->mall_id);
+            $balance_alias = MallSetting::getValueByKey('balance_alias', $user->mall_id);
 
             $price = (float)($order->pay_price + $order->give_money);
-            $desc = '充值余额：' . $order->pay_price . '元,赠送：' . $order->give_money . '元';
+            $desc = '充值'.$balance_alias.'：' . $order->pay_price . '元,赠送：' . $order->give_money . '元';
             $customDesc = \Yii::$app->serializer->encode($order->attributes);
             \Yii::$app->currency->setUser($user)->balance->add($price, $desc, $customDesc);
             if($order->give_score > 0){
                 \Yii::$app->currency->setUser($user)->score->add(
                     $order->give_score,
-                    "余额充值,赠送积分{$order->give_score}",
+                    $balance_alias."充值,赠送{$integral_alias}{$order->give_score}",
                     $customDesc
                 );
             }

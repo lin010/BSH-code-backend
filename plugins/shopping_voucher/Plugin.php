@@ -3,6 +3,7 @@
 namespace app\plugins\shopping_voucher;
 
 use app\handlers\BaseHandler;
+use app\models\MallSetting;
 use app\plugins\agent\handlers\HandlerRegister;
 
 class Plugin extends \app\plugins\Plugin
@@ -17,9 +18,10 @@ class Plugin extends \app\plugins\Plugin
     //为主菜单提供的菜单
     public function getMenuForMainMenu()
     {
+        $silver_beans_alias = MallSetting::getValueByKey('silver_beans_alias',  5);
         return [
             'key' => $this->getName(),
-            'name' => '红包',
+            'name' => $silver_beans_alias,
             'route' => $this->getIndexRoute(),
             'children' => $this->getMenus(),
             'icon' => 'statics/img/mall/nav/finance.png',
@@ -29,6 +31,8 @@ class Plugin extends \app\plugins\Plugin
 
     public function getMenus()
     {
+        $silver_beans_alias = MallSetting::getValueByKey('silver_beans_alias', 5);
+
         return [
             [
                 'name' => '数据概况',
@@ -37,7 +41,7 @@ class Plugin extends \app\plugins\Plugin
                 'action' => []
             ],
             [
-                'name' => '红包记录',
+                'name' => $silver_beans_alias.'记录',
                 'route' => 'plugin/shopping_voucher/mall/shopping-voucher-log/list',
                 'icon' => 'el-icon-setting',
                 'action' => []
@@ -80,7 +84,8 @@ class Plugin extends \app\plugins\Plugin
      */
     public function getDisplayName()
     {
-        return '红包';
+        $silver_beans_alias = MallSetting::getValueByKey('silver_beans_alias', 5);
+        return $silver_beans_alias;  //红包
     }
 
 

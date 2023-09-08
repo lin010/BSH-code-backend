@@ -51,14 +51,14 @@ Yii::$app->loadComponentView('statistics/com-search');
             </div>
             <div class="num-info">
                 <div class="num-info-item">
-                    <div class="info-item-name">余额</div>
+                    <div class="info-item-name">{{currencyAlias.balance_alias}}</div>
                     <div style="display: flex;justify-content: space-evenly">
                         <div>
-                            <div>累计余额</div>
+                            <div>累计{{currencyAlias.balance_alias}}</div>
                             <div id="assets">{{countUser.total_balance}}元</div>
                         </div>
                         <div>
-                            <div>当前余额</div>
+                            <div>当前{{currencyAlias.balance_alias}}</div>
                             <div id="assets">{{countUser.balance}}元</div>
                         </div>
                     </div>
@@ -77,24 +77,24 @@ Yii::$app->loadComponentView('statistics/com-search');
                     </div>
                 </div>
                 <div class="num-info-item">
-                    <div class="info-item-name">金豆</div>
+                    <div class="info-item-name">{{currencyAlias.red_envelope_alias}}</div>
                     <div id="assets" style="margin-top: 17px">{{countUser.static_integral}}</div>
                 </div>
                 <div class="num-info-item">
-                    <div class="info-item-name">总积分（<span style="color: #1ed0ff;font-size: 18px">{{countUser.total_score}}</span>）</div>
+                    <div class="info-item-name">总{{currencyAlias.integral_alias}}（<span style="color: #1ed0ff;font-size: 18px">{{countUser.total_score}}</span>）</div>
                     <div style="display: flex;justify-content: space-evenly">
                         <div>
-                            <div>永久积分</div>
+                            <div>永久{{currencyAlias.integral_alias}}</div>
                             <div id="assets">{{countUser.static_score}}</div>
                         </div>
                         <div>
-                            <div>有效积分</div>
+                            <div>有效{{currencyAlias.integral_alias}}</div>
                             <div id="assets">{{countUser.score}}</div>
                         </div>
                     </div>
                 </div>
                 <div class="num-info-item">
-                    <div class="info-item-name">红包</div>
+                    <div class="info-item-name">{{currencyAlias.silver_beans_alias}}</div>
                     <div id="assets" style="margin-top: 17px">{{countUser.money ?? 0}}</div>
                 </div>
             </div>
@@ -121,7 +121,7 @@ Yii::$app->loadComponentView('statistics/com-search');
                 </div>
                 <div class="num-info">
                     <div class="num-info-item">
-                        <div class="info-item-name">余额</div>
+                        <div class="info-item-name">{{currencyAlias.balance_alias}}</div>
                         <div style="display: flex;justify-content: space-evenly">
                             <div>
                                 <div>收入</div>
@@ -155,7 +155,7 @@ Yii::$app->loadComponentView('statistics/com-search');
                         </div>
                     </div>
                     <div class="num-info-item">
-                        <div class="info-item-name">金豆</div>
+                        <div class="info-item-name">{{currencyAlias.red_envelope_alias}}</div>
                         <div style="display: flex;justify-content: space-evenly">
                             <div>
                                 <div>收入</div>
@@ -170,7 +170,7 @@ Yii::$app->loadComponentView('statistics/com-search');
                     <div class="num-info-item">
                         <div style="display: flex;justify-content: space-evenly">
                             <div style="width: 50%">
-                                <div style="color: #92959B">永久积分</div>
+                                <div style="color: #92959B">永久{{currencyAlias.integral_alias}}</div>
                                 <div style="display: flex;justify-content: space-between">
                                     <div style="width: 50%">
                                         <div>收入</div>
@@ -183,7 +183,7 @@ Yii::$app->loadComponentView('statistics/com-search');
                                 </div>
                             </div>
                             <div style="width: 50%">
-                                <div style="color: #92959B">限时积分</div>
+                                <div style="color: #92959B">限时{{currencyAlias.integral_alias}}</div>
                                 <div style="display: flex;justify-content: space-between">
                                     <div style="width: 50%">
                                         <div>收入</div>
@@ -198,7 +198,7 @@ Yii::$app->loadComponentView('statistics/com-search');
                         </div>
                     </div>
                     <div class="num-info-item">
-                        <div class="info-item-name">红包</div>
+                        <div class="info-item-name">{{currencyAlias.silver_beans_alias}}</div>
                         <div style="display: flex;justify-content: space-evenly">
                             <div>
                                 <div>收入</div>
@@ -216,10 +216,10 @@ Yii::$app->loadComponentView('statistics/com-search');
 
             <el-tabs v-model="search.type" @tab-click="tab_assets">
                 <el-tab-pane label="收益" name="income"></el-tab-pane>
-                <el-tab-pane label="金豆" name="RedPacket"></el-tab-pane>
-                <el-tab-pane label="积分" name="Integral"></el-tab-pane>
-                <el-tab-pane label="红包" name="ShoppingVoucher"></el-tab-pane>
-                <el-tab-pane label="余额" name="balance"></el-tab-pane>
+                <el-tab-pane :label="currencyAlias.red_envelope_alias" name="RedPacket"></el-tab-pane>
+                <el-tab-pane :label="currencyAlias.integral_alias" name="Integral"></el-tab-pane>
+                <el-tab-pane :label="currencyAlias.silver_beans_alias" name="ShoppingVoucher"></el-tab-pane>
+                <el-tab-pane :label="currencyAlias.balance_alias" name="balance"></el-tab-pane>
             </el-tabs>
 
             <div v-if="tab_index == 0" style="display: flex;justify-content: space-evenly">
@@ -656,9 +656,31 @@ Yii::$app->loadComponentView('statistics/com-search');
                 ShoppingVoucher: "",
                 tab_index:0,
                 user_id:0,
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         methods: {
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
             // 获取数据
             getList() {
                 this.loading = true;
@@ -859,6 +881,7 @@ Yii::$app->loadComponentView('statistics/com-search');
             },
         },
         created() {
+            this.getCurrencyAliasData();
             this.getTime();
             if (this.user_id || getQuery('user_id')) {
                 this.getList();

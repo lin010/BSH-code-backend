@@ -37,6 +37,10 @@ class CashForm extends BaseModel
     public $status;
     public $wechat_qrcode;
     public $transaction_password;
+    public $bankprovinceid;
+    public $bankprovince;
+    public $bankcityid;
+    public $bankcity;
 
     /**
      * {@inheritdoc}
@@ -44,9 +48,9 @@ class CashForm extends BaseModel
     public function rules()
     {
         return [
-            [['page', 'limit', 'status'], 'integer'],
+            [['page', 'limit', 'status','bankprovinceid','bankcityid'], 'integer'],
             [['price'], 'number'],
-            [['content', 'mobile','transaction_password', 'bank_name', 'name', 'bank_account', 'wechat_qrcode'], 'string'],
+            [['content', 'mobile','transaction_password', 'bank_name', 'name', 'bank_account', 'wechat_qrcode','bankprovince','bankcity'], 'string'],
             [['type'], 'string', 'max' => 45],
         ];
     }
@@ -113,13 +117,7 @@ class CashForm extends BaseModel
                 return $this->returnApiResultData(ApiCode::CODE_FAIL, '提现金额大于今日剩余可提现额度！');
             }
         }
-        $extra = SerializeHelper::encode([
-            'name' => $this->name,
-            'mobile' => $this->mobile,
-            'bank_name' => $this->bank_name,
-            'bank_account' => $this->bank_account,
-            'wechat_qrcode' => $this->wechat_qrcode
-        ]);
+        
 
 
         if (!$this->type) {
@@ -139,12 +137,79 @@ class CashForm extends BaseModel
                 return $this->returnApiResultData(ApiCode::CODE_FAIL, '请填写支付宝户名！');
             }
         }
-
+        $huifu_bank_token_no = $user->huifu_bank_token_no;
+        if($this->type == 'bank'){
+            if(!$this->bankcityid || !$this->bankprovinceid){
+                return $this->returnApiResultData(ApiCode::CODE_FAIL, '请选择开户行所在省市！');
+            }
+            if(empty($user->huifu_id)){
+                return $this->returnApiResultData(ApiCode::CODE_FAIL, '请先完成实名认证！');
+            }
+            if($user->realname != $this->name){
+                return $this->returnApiResultData(ApiCode::CODE_FAIL, '银行卡户名和实名认证名字不一致,请使用实名认证名字开户的银行卡');
+            }
+            $huifu = [];
+            $huifu['card_name'] = $this->name;
+            $huifu['card_no'] =  $this->bank_account;
+            $huifu['prov_id'] = $this->bankprovinceid;
+            $huifu['area_id'] = $this->bankcityid;
+            $huifu['huifu_id'] = $user->huifu_id;
+            $huifu['cert_validity_type'] = $user->cert_validity_type;
+            $huifu['cert_begin_date'] = $user->cert_begin_date;
+            $huifu['cert_end_date'] = $user->cert_end_date;
+            $huifu['cert_type'] = '00';
+            $huifu['cert_no'] = $user->cert_no;
+            $huifu['huifu_cash_type'] = 'DM';
+            $hasEdit = false;
+            if(empty($user->huifu_bank_token_no)){
+                $res = \Yii::$app->bs->user_busi_open($huifu);
+                if($res['code']==-1){
+                    return $this->returnApiResultData(ApiCode::CODE_FAIL,$res['message']);
+                }
+                $hasEdit = true;
+            }else{
+                if($user->bank_account != $huifu['card_no']){
+                    $res = \Yii::$app->bs->user_busi_modify($huifu);
+                    $hasEdit = true;
+                    if($res['code']==-1){
+                        return $this->returnApiResultData(ApiCode::CODE_FAIL,$res['message']);
+                    }
+                }
+            }
+            if($hasEdit){
+                $user->bank_name = $this->bank_name;
+                $user->bank_account = $huifu['card_no'];
+                $user->bankprovinceid = $huifu['prov_id'];
+                $user->bankcityid = $huifu['area_id'];
+                $user->bankprovince = $this->bankprovince;
+                $user->bankcity = $this->bankcity;
+                $user->huifu_bank_token_no = $res['data']['token_no'];
+                $user->huifu_cash_type = $huifu['huifu_cash_type'];
+                if($user->save() === false){
+                    return $this->returnApiResultData(ApiCode::CODE_FAIL,'保存银行卡信息失败');
+                }
+                $huifu_bank_token_no = $res['data']['token_no'];
+                
+            }
+        }
+        $extra = SerializeHelper::encode([
+            'name' => $this->name,
+            'mobile' => $this->mobile,
+            'bank_name' => $this->bank_name,
+            'bank_account' => $this->bank_account,
+            'bankcity' => $this->bankcity,
+            'bankcityid' => $this->bankcityid,
+            'bankprovince' => $this->bankprovince,
+            'bankprovinceid' => $this->bankprovinceid,
+            'wechat_qrcode' => $this->wechat_qrcode,
+            'huifu_bank_token_no' =>$huifu_bank_token_no
+        ]);        
         $content = SerializeHelper::encode(['user_content' => $this->content]);
 
+          
         $t = \Yii::$app->db->beginTransaction();
         try {
-
+            
             $cash = new Cash();
             $cash->mall_id    = \Yii::$app->mall->id;
             $cash->user_id    = $user->id;
@@ -260,7 +325,21 @@ class CashForm extends BaseModel
             $extra = !empty($lastBankCash['extra']) ? @json_decode($lastBankCash['extra'], true) : [];
             $defaultBank = array_merge($defaultBank, $extra);
         }
-
+        $user = User::getOneData([
+            'id' => \Yii::$app->user->id,
+            'mall_id' => \Yii::$app->mall->id
+        ]);
+        if(!empty($user) && !empty($user['huifu_bank_token_no'])){
+            $defaultBank = [
+                "name"         => $user['realname'],
+                "bank_name"    => $user['bank_name'],
+                "bank_account" => $user['bank_account'],
+                "bankprovince"=> $user['bankprovince'],
+                "bankcity"=> $user['bankcity'],
+                "bankprovinceid"=> $user['bankprovinceid'],
+                "bankcityid"=> $user['bankcityid'],
+            ];
+        }
         return $this->returnApiResultData(
             ApiCode::CODE_SUCCESS,
             '',
@@ -274,6 +353,8 @@ class CashForm extends BaseModel
                 ],
                 'user_info' => [
                     'income' => \Yii::$app->user->identity->income,
+                    'huifu_id' => $user['huifu_id'],
+                    'huifu_bank_token_no' => $user['huifu_bank_token_no'],
                     'is_transaction_password' => $isTransactionPassword
                 ],
                 'default_bank' => $defaultBank

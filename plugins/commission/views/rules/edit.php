@@ -699,16 +699,16 @@ echo $this->render('../components/com-commission-hotel_3r-rule-edit');
                     } else if (self.ruleForm.item_type == 'hotel' || self.ruleForm.item_type == 'addcredit') {
                         for (let i=0;i<this.commissionHotelValue.length;i++) {
                             this.commissionHotelValue[i].level = 1;
-                            if (this.commissionHotelValue[i].name == 'VIP会员') {
+                            if (this.commissionHotelValue[i].name == USER_ROLE_TYPES.user) {
                                 this.commissionHotelValue[i].role_type = 'user';
                                 this.commissionHotelValue[i].unique_key = "user#all";
-                            } else if (this.commissionHotelValue[i].name == '城市服务商') {
+                            } else if (this.commissionHotelValue[i].name == USER_ROLE_TYPES.branch_office) {
                                 this.commissionHotelValue[i].role_type = 'branch_office';
                                 this.commissionHotelValue[i].unique_key = "branch_office#all";
-                            } else if (this.commissionHotelValue[i].name == 'VIP代理商') {
+                            } else if (this.commissionHotelValue[i].name == USER_ROLE_TYPES.store) {
                                 this.commissionHotelValue[i].role_type = 'store';
                                 this.commissionHotelValue[i].unique_key = "store#all";
-                            } else if (this.commissionHotelValue[i].name == '区域服务商') {
+                            } else if (this.commissionHotelValue[i].name == USER_ROLE_TYPES.partner) {
                                 this.commissionHotelValue[i].role_type = 'partner';
                                 this.commissionHotelValue[i].unique_key = "partner#all";
                             }

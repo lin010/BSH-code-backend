@@ -13,7 +13,7 @@ use Yii;
  * @property string $order_no
  * @property string $amount
  * @property int $is_pay 支付状态：0=未支付，1=已支付
- * @property int $pay_type 支付方式：1=微信支付，2=货到付款，3=余额支付，4=支付宝支付，5=百度支付，6=头条支付
+ * @property int $pay_type 支付方式：1=微信支付，2=货到付款，3=余额支付，4=支付宝支付，5=百度支付，6=头条支付，10=汇付天下微信支付
  * @property string $title
  * @property string $support_pay_types 支持的支付方式（JSON）
  * @property int $created_at
@@ -58,7 +58,7 @@ class PaymentOrderUnion extends BaseActiveRecord
             'order_no' => 'Order No',
             'amount' => 'Amount',
             'is_pay' => '支付状态：0=未支付，1=已支付',
-            'pay_type' => '支付方式：1=微信支付，2=货到付款，3=余额支付，4=支付宝支付',
+            'pay_type' => '支付方式：1=微信支付，2=货到付款，3=余额支付，4=支付宝支付，10=微信在线支付',
             'title' => 'Title',
             'support_pay_types' => '支持的支付方式（JSON）',
             'created_at' => 'Created At',

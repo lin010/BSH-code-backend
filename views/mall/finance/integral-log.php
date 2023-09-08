@@ -6,12 +6,12 @@ Yii::$app->loadComponentView('com-user-finance-stat');
     <el-card shadow="never" style="border:0" body-style="background-color: #f3f3f3;padding: 10px 0 0;">
         <div slot="header">
             <div>
-                <span>金豆记录</span>
+                <span>{{currencyAlias.red_envelope_alias}}记录</span>
                 <div style="float: right;">
                     <com-export-dialog :field_list='export_list' :params="searchData" @selected="exportConfirm"></com-export-dialog>
                 </div>
                 <div style="float: right;margin-right: 20px" >
-                    <el-button @click="handleIntegral" type="primary" size="small">金豆充值</el-button>
+                    <el-button @click="handleIntegral" type="primary" size="small">{{currencyAlias.red_envelope_alias}}充值</el-button>
                 </div>
                 <div style="margin-top: 15px">
                     <div style="display: flex;justify-content: space-evenly">
@@ -80,13 +80,13 @@ Yii::$app->loadComponentView('com-user-finance-stat');
                         </com-user-finance-stat>
                     </template>
                 </el-table-column>
-                <el-table-column label="变动金豆">
+                <el-table-column :label="'变动'+currencyAlias.red_envelope_alias">
                     <template slot-scope="scope">
                         <div style="font-size: 18px;color: #68CF3D" v-if="scope.row.type == 1">+{{scope.row.integral}}</div>
                         <div style="font-size: 18px;color: #F6AA5A" v-if="scope.row.type == 2">-{{scope.row.integral}}</div>
                     </template>
                 </el-table-column>
-                <el-table-column label="当前金豆数"  prop="current_integral"></el-table-column>
+                <el-table-column :label="'当前'+currencyAlias.red_envelope_alias+'数'"  prop="current_integral"></el-table-column>
                 <el-table-column prop="desc" label="说明" width="450"></el-table-column>
                 <el-table-column prop="scope" width="180" label="充值时间">
                        <template slot-scope="scope">
@@ -107,7 +107,7 @@ Yii::$app->loadComponentView('com-user-finance-stat');
         </div>
 
         <!-- 充值收益 -->
-        <el-dialog title="充值金豆" :visible.sync="dialogIntegral" width="30%">
+        <el-dialog :title="'充值'+currencyAlias.red_envelope_alias" :visible.sync="dialogIntegral" width="30%">
             <el-form :model="integralForm" label-width="80px" :rules="integralFormRules" ref="integralForm">
                 <el-form-item label="操作" prop="type">
                     <el-radio v-model="integralForm.type" label="1">充值</el-radio>
@@ -167,7 +167,7 @@ Yii::$app->loadComponentView('com-user-finance-stat');
                     title: "选择用户",
                     params: {},
                     columns: [
-                        {label:"金豆", key:"static_integral"},
+                        {label:"数量", key:"static_integral"},
                         {label:"手机号", key:"mobile"},
                         {label:"等级", key:"role_type_text"}
                     ],
@@ -262,6 +262,12 @@ Yii::$app->loadComponentView('com-user-finance-stat');
                     },
 
                 ],
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         methods: {
@@ -380,8 +386,25 @@ Yii::$app->loadComponentView('com-user-finance-stat');
                 });
                 this.listLoading = true;
             },
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
         },
     mounted: function() {
+        this.getCurrencyAliasData();
         this.getList();
     }
 });

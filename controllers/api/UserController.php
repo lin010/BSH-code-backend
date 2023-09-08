@@ -182,6 +182,15 @@ class UserController extends ApiController
         $form = new UserAddressForm();
         return $this->asJson($form->autoAddressInfo());
     }
+    /**
+     * 获取标准省市区数据
+     * @return \yii\web\Response
+     */
+    public function actionFullAddressInfo()
+    {
+        $form = new UserAddressForm();
+        return $this->asJson($form->autoFullAddressInfo());
+    }
 
     //根据微信地址获取数据库省市区数据
     public function actionWechatDistrict()

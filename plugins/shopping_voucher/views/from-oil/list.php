@@ -8,7 +8,7 @@ echo $this->render("../com/com-tab-from");
         <com-tab-from :current="activeName"></com-tab-from>
 
         <div class="table-body">
-            <el-alert title="说明：用户通过现金支付加油券订单，成功后可获得赠送红包" type="info" :closable="false" style="margin-bottom: 20px;"></el-alert>
+            <el-alert :title="`说明：用户通过现金支付加油券订单，成功后可获得赠送${currencyAlias.silver_beans_alias}`" type="info" :closable="false" style="margin-bottom: 20px;"></el-alert>
 
             <el-tabs v-model="activeName2" type="border-card">
                 <el-tab-pane label="通用配置" name="first">
@@ -210,9 +210,32 @@ echo $this->render("../com/com-tab-from");
                     product_id: 0,
                     start_at: ''
                 },
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         methods: {
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
+
             editIt(row){
                 this.dialogContent = true;
                 this.aloneSet.first_give_type   = row.first_give_type;
@@ -372,6 +395,7 @@ echo $this->render("../com/com-tab-from");
             }
         },
         mounted: function() {
+            this.getCurrencyAliasData();
             this.getList();
         }
     });

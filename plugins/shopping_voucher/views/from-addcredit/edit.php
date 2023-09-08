@@ -7,7 +7,7 @@ echo $this->render("../com/com-tab-from");
         <com-tab-from :current="activeName"></com-tab-from>
 
         <div class="table-body">
-            <el-alert title="说明：话费充值，成功后可获得赠送红包" type="info" :closable="false" style="margin-bottom: 20px;"></el-alert>
+            <el-alert :title="`说明：话费充值，成功后可获得赠送${currencyAlias.silver_beans_alias}`" type="info" :closable="false" style="margin-bottom: 20px;"></el-alert>
 
             <el-tabs v-model="search.type" @tab-click="tab_assets">
                 <el-tab-pane label="快充呗" name="kcb"></el-tab-pane>
@@ -73,9 +73,31 @@ echo $this->render("../com/com-tab-from");
                 search: {
                     type: 'kcb',
                 },
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         methods: {
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
             // 切换
             tab_assets(e) {
                 this.tab_index = e.index;
@@ -132,6 +154,7 @@ echo $this->render("../com/com-tab-from");
             },
         },
         mounted: function() {
+            this.getCurrencyAliasData();
             this.getDetail();
         }
     });

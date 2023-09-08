@@ -42,10 +42,7 @@
                             </div>
                             <div v-if="scope.row.recommender != ''"><b>推荐人：</b>
                                 <div v-for="recommender in scope.row.recommender">
-                                    <span v-if="recommender.type == 'branch_office'">城市服务商</span>
-                                    <span v-if="recommender.type == 'partner'">区域服务商</span>
-                                    <span v-if="recommender.type == 'store'">VIP代理商</span>
-                                    <span v-if="recommender.type == 'user'">VIP会员</span>
+                                    <span v-for="(typeName,typeKey) in userRoleTypes" v-if="recommender.type == typeKey">{{typeName}}</span>
                                     <span v-if="recommender.give_type == 1">按比例{{recommender.give_value}}%赠送</span>
                                     <span v-if="recommender.give_type == 2">按固定值{{recommender.give_value}}赠送</span>
                                 </div>
@@ -74,7 +71,7 @@
 
         </el-dialog>
 
-        <el-dialog width="30%" title="设置红包赠送" :visible.sync="formDialogVisible" :close-on-click-modal="false">
+        <el-dialog width="30%" :title="`设置${currencyAlias.silver_beans_alias}赠送`" :visible.sync="formDialogVisible" :close-on-click-modal="false">
             <el-form ref="formData" :rules="formRule" label-width="15%" :model="formData" size="small">
                 <el-form-item :label="!formData.is_all ? '记录数' : '总页数'">
                     <span>{{formProgressData.total_num}}</span>
@@ -95,10 +92,7 @@
                     <el-table :data="formData.recommender" border style="margin-top:10px;width:100%">
                         <el-table-column label="级别" width="110" align="center">
                             <template slot-scope="scope">
-                                <span v-if="scope.row.type == 'branch_office'">城市服务商</span>
-                                <span v-if="scope.row.type == 'partner'">区域服务商</span>
-                                <span v-if="scope.row.type == 'store'">VIP代理商</span>
-                                <span v-if="scope.row.type == 'user'">VIP会员</span>
+                                <span v-for="(typeName,typeKey) in userRoleTypes" v-if="scope.row.type == typeKey">{{typeName}}</span>
                             </template>
                         </el-table-column>
                         <el-table-column label="比例">
@@ -136,6 +130,7 @@
         },
         data() {
             return {
+                userRoleTypes: USER_ROLE_TYPES,
                 dialogTitle: "设置大礼包",
                 activeName: "first",
                 dialogVisible: false,
@@ -178,7 +173,13 @@
                     loading: false,
                     total_num:0,
                     finished_num:0
-                }
+                },
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         watch: {
@@ -187,9 +188,25 @@
             }
         },
         mounted: function () {
-
+            this.getCurrencyAliasData()
         },
         methods: {
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
             //选择待设置大礼包
             handleSelectionChange(selection) {
                 this.formData.list = selection;

@@ -13,7 +13,7 @@ class OilSubmitPreviewForm extends OilBaseSubmitForm {
         }
 
         try {
-
+	    throw new \Exception("系统维护中");
             $data = $this->buildOrderData();
 
             return [

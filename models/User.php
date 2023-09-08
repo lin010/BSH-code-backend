@@ -53,6 +53,9 @@ use Yii;
  * @property int $source 用户来源
  * @property int $is_examine 是否有审核资格
  * @property int $lock_parent 锁住上级
+ * @property string $realname
+ * @property int $vcshop_member_id
+ * @property int $vcshop_member_agentid
  * @property User $parent
  * @property User $secondParent
  * @property User $thirdParent
@@ -109,6 +112,18 @@ class User extends BaseActiveRecord implements \yii\web\IdentityInterface
         self::SOURCE_SHARE_NEWS => "分享资讯",
         self::SOURCE_SHARE_CARD => "分享名片",
     ];
+    //会员等级
+    const USER_TYPE_1 = 'user';
+    const USER_TYPE_2 = 'store';
+    const USER_TYPE_3 = 'partner';
+    const USER_TYPE_4 = 'branch_office';
+    //会员等级对应类型
+    const USER_ROLE_TYPES = [
+        self::USER_TYPE_1 => '游客',
+        self::USER_TYPE_2 => '店主',
+        self::USER_TYPE_3 => '经销商',
+        self::USER_TYPE_4 => '区域经销商',
+    ];
 
     /**
      * {@inheritdoc}
@@ -127,8 +142,8 @@ class User extends BaseActiveRecord implements \yii\web\IdentityInterface
         return [
             [['username', 'password'], 'required'],
             [['mall_id', 'mch_id', 'parent_id', 'second_parent_id', 'third_parent_id', 'is_delete', 'is_blacklist',
-                 'created_at', 'last_login_at', 'junior_at', 'level', 'birthday', 'is_inviter', 'inviter_at','source','upgrade_status', 'is_examine'], 'integer'],
-            [['password', 'auth_key', 'access_token', 'avatar_url', 'platform', 'login_ip', 'transaction_password', 'role_type', 'role_type_label'], 'string'],
+                 'created_at', 'last_login_at', 'junior_at', 'level', 'birthday', 'is_inviter', 'inviter_at','source','upgrade_status', 'is_examine','vcshop_member_id','vcshop_member_agentid'], 'integer'],
+            [['password', 'auth_key', 'access_token', 'avatar_url', 'platform', 'login_ip', 'transaction_password', 'role_type', 'role_type_label','realname'], 'string'],
             [['balance', 'total_balance', 'total_income', 'income','income_frozen','total_score','score'], 'number'],
             [['username'], 'string', 'max' => 64],
             [['mobile', 'auth_expire_dt', 'is_lianc', 'lock_parent'], 'safe']
@@ -633,19 +648,19 @@ class User extends BaseActiveRecord implements \yii\web\IdentityInterface
     public function getUserLevel(){
         $levelList = [
             'branch_office' => [
-                "name" => "城市服务商",
+                "name" => "区域经销商",
                 "icon" => \Yii::$app->getRequest()->getHostInfo() . "/web/static/branch_office.png"
             ],
             'partner' => [
-                "name" => "区域服务商",
+                "name" => "经销商",
                 "icon" => \Yii::$app->getRequest()->getHostInfo() . "/web/static/partner.png"
             ],
             'store' => [
-                "name" => "VIP代理商",
+                "name" => "店主",
                 "icon" => \Yii::$app->getRequest()->getHostInfo() . "/web/static/store.png"
             ],
             'user' => [
-                "name" => "VIP会员",
+                "name" => "游客",
                 "icon" => \Yii::$app->getRequest()->getHostInfo() . "/web/static/user.png"
             ],
         ];
@@ -679,16 +694,16 @@ class User extends BaseActiveRecord implements \yii\web\IdentityInterface
     {
         switch ($type) {
             case 'branch_office':
-                $text = '城市服务商';
+                $text = '区域经销商';
                 break;
             case 'partner':
-                $text = '区域服务商';
+                $text = '经销商';
                 break;
             case 'store':
-                $text = 'VIP代理商';
+                $text = '店主';
                 break;
             case 'user':
-                $text = 'VIP会员';
+                $text = '游客';
                 break;
             default:
         }

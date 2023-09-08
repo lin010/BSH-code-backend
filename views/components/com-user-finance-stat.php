@@ -17,10 +17,7 @@
                 <el-row class="user-finance-stat-row">
                     <el-col :span="12" class="l-label">用户等级</el-col>
                     <el-col :span="12">
-                        <span v-if="role_type == 'branch_office'">城市服务商</span>
-                        <span v-if="role_type == 'partner'">区域服务商</span>
-                        <span v-if="role_type == 'store'">VIP代理商</span>
-                        <span v-if="role_type == 'user'">VIP会员</span>
+                        <span v-for="(typeName,typeKey) in userRoleTypes"  v-if="role_type == typeKey">{{typeName}}</span>
                     </el-col>
                 </el-row>
                 <el-row class="user-finance-stat-row">
@@ -28,7 +25,7 @@
                     <el-col :span="12"><span style="color:green">{{stat_info.total_goods_paid}}元</span></el-col>
                 </el-row>
                 <el-row class="user-finance-stat-row">
-                    <el-col :span="12" class="l-label">商品金豆抵扣总额</el-col>
+                    <el-col :span="12" class="l-label">商品{{currencyAlias.silver_beans_alias}}抵扣总额</el-col>
                     <el-col :span="12"><span style="color:#cc3311">{{stat_info.total_goods_integral_paid}}元</span></el-col>
                 </el-row>
                 <el-row class="user-finance-stat-row">
@@ -36,7 +33,7 @@
                     <el-col :span="12"><span style="color:green">{{stat_info.total_checkout_paid}}元</span></el-col>
                 </el-row>
                 <el-row class="user-finance-stat-row">
-                    <el-col :span="12" class="l-label">店铺金豆抵扣总额</el-col>
+                    <el-col :span="12" class="l-label">店铺{{currencyAlias.silver_beans_alias}}抵扣总额</el-col>
                     <el-col :span="12"><span style="color:#cc3311">{{stat_info.total_checkout_integral_paid}}元</span></el-col>
                 </el-row>
                 <el-row class="user-finance-stat-row">
@@ -44,11 +41,11 @@
                     <el-col :span="12"><b style="color:green">{{stat_info.total_paid}}元</b></el-col>
                 </el-row>
                 <el-row class="user-finance-stat-row">
-                    <el-col :span="12" class="l-label">金豆抵扣总额</el-col>
+                    <el-col :span="12" class="l-label">{{currencyAlias.silver_beans_alias}}抵扣总额</el-col>
                     <el-col :span="12"><b style="color:#cc3311">{{stat_info.total_integral_paid}}元</b></el-col>
                 </el-row>
                 <el-row class="user-finance-stat-row">
-                    <el-col :span="12" class="l-label">获得金豆总数</el-col>
+                    <el-col :span="12" class="l-label">获得{{currencyAlias.silver_beans_alias}}总数</el-col>
                     <el-col :span="12"><b style="color:#cc3311">{{stat_info.total_integral_got}}元</b></el-col>
                 </el-row>
                 <el-row class="user-finance-stat-row">
@@ -78,6 +75,7 @@
         },
         data() {
             return {
+                userRoleTypes: USER_ROLE_TYPES,
                 is_loaded: false,
                 loading: false,
                 nickname: 'XXX',
@@ -93,7 +91,14 @@
                     total_income: 0.00, //总收益
                     total_cash_count: 0, //提现总笔数
                     total_cash: 0.00 //提现总额
-                }
+                },
+
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             }
         },
         methods: {
@@ -119,6 +124,25 @@
                 }).catch(e => {
 
                 });
+            },
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
+            mounted(){
+                this.getCurrencyAliasData();
             }
         }
     });

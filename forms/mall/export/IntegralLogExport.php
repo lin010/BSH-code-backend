@@ -3,11 +3,19 @@
 namespace app\forms\mall\export;
 
 use app\core\CsvExport;
+use app\models\MallSetting;
 
 class IntegralLogExport extends BaseExport
 {
     public function fieldsList()
     {
+        //币种别名
+        $getCurrencyAlias = MallSetting::getValueByKeys([
+            'balance_alias',
+            'red_envelope_alias',
+            'integral_alias',
+            'silver_beans_alias',
+        ],\Yii::$app->mall->id);
         return [
             [
                 'key' => 'user_id',
@@ -23,11 +31,11 @@ class IntegralLogExport extends BaseExport
             ],
             [
                 'key' => 'change_integral',
-                'value' => '变动金豆',
+                'value' => '变动'.$getCurrencyAlias['silver_beans_alias'],
             ],
             [
                 'key' => 'current_integral',
-                'value' => '当前金豆',
+                'value' => '当前'.$getCurrencyAlias['silver_beans_alias'],
             ],
             [
                 'key' => 'desc',
@@ -47,8 +55,14 @@ class IntegralLogExport extends BaseExport
         $this->transform($list);
         $this->getFields();
         $dataList = $this->getDataList();
-
-        $fileName = '用户金豆记录' . date('YmdHis');
+        //币种别名
+        $getCurrencyAlias = MallSetting::getValueByKeys([
+            'balance_alias',
+            'red_envelope_alias',
+            'integral_alias',
+            'silver_beans_alias',
+        ],\Yii::$app->mall->id);
+        $fileName = '用户'.$getCurrencyAlias['silver_beans_alias'].'记录' . date('YmdHis');
         (new CsvExport())->export($dataList, $this->fieldsNameList, $fileName);
     }
 

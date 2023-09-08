@@ -3,6 +3,7 @@
 namespace app\forms\api\order;
 
 use app\component\efps\Efps;
+use app\component\bspay\Bs;
 use app\core\ApiCode;
 use app\core\payment\PaymentOrder;
 use app\logic\AppConfigLogic;
@@ -184,6 +185,7 @@ class EfpsPayForm extends BaseModel{
         return $this->callPay("IF-WeChat-01");
     }
 
+
     /**
      * 支付宝支付
      * @return array
@@ -191,7 +193,13 @@ class EfpsPayForm extends BaseModel{
     public function aliPay(){
         return $this->callPay("IF-QRcode-01");
     }
-
+    /**
+     * 微信支付
+     * @return array
+     */
+    public function bswechatPay(){
+        return $this->callPay("IF-BsWeChat-01");
+    }    
 
     public function callPay($payAPI){
         if (!$this->validate()) {
@@ -335,6 +343,46 @@ class EfpsPayForm extends BaseModel{
                     $efpsPaymentOrder->appId = \Yii::$app->params['wechatConfig']['app_id'];
                 }
                 $efpsPaymentOrder->openId = $userInfo->openid;
+            }elseif($payAPI == "IF-BsWeChat-01"){
+                if ($this->wx_type == 'wechat') { //公众号
+                    $platform = User::PLATFORM_WECHAT;
+                    $where = [
+                        "user_id"  => \Yii::$app->user->id,
+                        "platform" => $platform,
+                    ];
+                } elseif ($this->wx_type == 'mp-wx')  {  //小程序
+                    if(!$this->stands_mall_id){
+                        throw new \Exception("商城ID不存在");
+                    }
+                    $platform = User::PLATFORM_MP_WX;
+                    $where = [
+                        "user_id"  => \Yii::$app->user->id,
+                        "platform" => $platform,
+                        "mall_id" => $this->stands_mall_id,
+                    ];
+                } else {  //默认 公众号
+                    $platform = User::PLATFORM_WECHAT;
+                    $where = [
+                        "user_id"  => \Yii::$app->user->id,
+                        "platform" => $platform,
+                    ];
+                }
+
+                $userInfo = UserInfo::findOne($where);
+                if(!$userInfo || empty($userInfo->openid)){
+                    throw new \Exception("用户需要授权获取openid");
+                }
+
+                if(\Yii::$app->appPlatform == User::PLATFORM_MP_WX){ //小程序
+                    $efpsPaymentOrder->payMethod = "51";
+                    $efpsPaymentOrder->appId = "wx3ab6add3406998a1";
+                }else{ //公众号
+                    $efpsPaymentOrder->payMethod = "52";
+                    $efpsPaymentOrder->appId = \Yii::$app->params['wechatConfig']['app_id'];
+                }
+                $efpsPaymentOrder->openId = $userInfo->openid;                
+                $efpsPaymentOrder->customerCode = \Yii::$app->efps->getCustomerCode();
+                $efpsPaymentOrder->notifyUrl = \Yii::$app->getRequest()->getHostInfo() . "/web/pay-notify/bs.php";
             }else{ //支付宝主扫支付
                 $efpsPaymentOrder->payMethod = "7";
             }
@@ -356,6 +404,12 @@ class EfpsPayForm extends BaseModel{
                     "appId"  => $efpsPaymentOrder->appId,
                     "openId" => $efpsPaymentOrder->openId
                 ]));
+            }elseif($payAPI == "IF-BsWeChat-01"){
+                $res = \Yii::$app->bs->wechat_build(array_merge($data, [
+                    "appId"  => $efpsPaymentOrder->appId,
+                    "openId" => $efpsPaymentOrder->openId,
+                    "mall_id" => $this->stands_mall_id
+                ]));                
             }else{ //支付宝主扫支付
                 $res = \Yii::$app->efps->payAliJSAPIPayment($data);
             }

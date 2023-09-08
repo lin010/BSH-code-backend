@@ -37,15 +37,16 @@ class MchAccountWithdraw extends BaseModel{
                 throw new \Exception("商户不存在");
             }
 
-            $factPrice = $this->money;
-            $this->money += 0.5;
+            // $factPrice = $this->money;
+            // $this->money += 0.5;
+            $factPrice = $this->money - 0.5;
 
             if($mch->account_money < $this->money){
                 throw new \Exception("商户帐户余额不足");
             }
 
             if($factPrice <= 0){
-                throw new \Exception("提现金额必须大于0");
+                throw new \Exception("提现金额必须大于0.5");
             }
 
             $res = MchAccountModifyForm::modify($mch, $this->money, $this->content, false);
@@ -69,9 +70,9 @@ class MchAccountWithdraw extends BaseModel{
             ]);
 
             $typeData = [];
-
+            $mchCash->type = 'bs_bank';
             //通过易票联提现打款到银行卡
-            if($mchCash->type == "efps_bank"){
+            if($mchCash->type == "efps_bank" || $mchCash->type == "bs_bank"){
 
                 //提现额如果小于5000，自动打款
                 if($mchCash->money < 5000){
@@ -88,10 +89,16 @@ class MchAccountWithdraw extends BaseModel{
                      empty($reviewInfo->paper_openBank)){
                     throw new \Exception("未设置结算信息");
                 }
-                $typeData['bankUserName']    = $reviewInfo->paper_settleAccount;
-                $typeData['bankCardNo']      = $reviewInfo->paper_settleAccountNo;
-                $typeData['bankName']        = $reviewInfo->paper_openBank;
+                $typeData['bankUserName']    = $reviewInfo->paper_settleAccount;//户名
+                $typeData['bankCardNo']      = $reviewInfo->paper_settleAccountNo;//卡号
+                $typeData['bankName']        = $reviewInfo->paper_openBank;//开户行
+                $typeData['bankprovinceid']        = $reviewInfo->bankprovinceid;
+                $typeData['bankprovince']        = $reviewInfo->bankprovince;
+                $typeData['bankcityid']        = $reviewInfo->bankcityid;
+                $typeData['bankcity']        = $reviewInfo->bankcity;
+                $typeData['huifu_bank_token_no']        = $reviewInfo->huifu_bank_token_no;
                 $typeData['bankAccountType'] = "2";
+                $typeData['user_id'] = \Yii::$app->user->id;
             }
 
             $mchCash->type_data = json_encode($typeData);

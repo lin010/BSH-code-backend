@@ -5,7 +5,7 @@ Yii::$app->loadComponentView('com-user-finance-stat');
     <el-card shadow="never" style="border:0" body-style="background-color: #f3f3f3;padding: 10px 0 0;">
         <div slot="header">
             <div>
-                <span>余额收支（<span style="color: #1ed0ff">类型筛选和省市区筛选只支持查询09/22日后的数据</span>）</span>
+                <span>{{currencyAlias.balance_alias}}收支（<span style="color: #1ed0ff">类型筛选和省市区筛选只支持查询09/22日后的数据</span>）</span>
                 <div style="float: right;margin: -5px 0">
                     <com-export-dialog :field_list='export_list' :params="searchData" @selected="exportConfirm"></com-export-dialog>
                 </div>
@@ -213,7 +213,7 @@ Yii::$app->loadComponentView('com-user-finance-stat');
                         value : 'order_refund'
                     },
                     {
-                        label : '用户提现余额',
+                        label : '用户提现',
                         value : 'user_cash'
                     },
                     {
@@ -235,6 +235,12 @@ Yii::$app->loadComponentView('com-user-finance-stat');
                         value:'nickname',
                     }
                 ],
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         methods: {
@@ -346,8 +352,25 @@ Yii::$app->loadComponentView('com-user-finance-stat');
                 this.page = 1;
                 this.getList();
             },
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
         },
         mounted: function () {
+            this.getCurrencyAliasData();
             this.getList();
         }
     });

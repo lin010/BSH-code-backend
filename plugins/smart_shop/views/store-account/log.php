@@ -102,11 +102,11 @@
                         for(i=0; i < commission_3r.length; i++){
                             role_type = commission_3r[i].role_type;
                             if(role_type == "branch_office"){
-                                role_type = "城市服务商";
+                                role_type = USER_ROLE_TYPES.branch_office;
                             }else if(role_type == "partner"){
-                                role_type = "区域服务商";
+                                role_type = USER_ROLE_TYPES.partner;
                             }else if(role_type == "store"){
-                                role_type = "VIP代理商";
+                                role_type = USER_ROLE_TYPES.store;
                             }
                             list.push({name: role_type, value: commission_3r[i].price});
                         }

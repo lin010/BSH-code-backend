@@ -2,6 +2,7 @@
 
 namespace app\commands\shopping_voucher_send_task;
 
+use app\models\MallSetting;
 use app\models\User;
 use app\plugins\hotel\models\HotelOrder;
 use app\plugins\shopping_voucher\forms\common\ShoppingVoucherLogModifiyForm;
@@ -64,9 +65,10 @@ class HotelOrderSendAction extends Action{
                 if(!$user || $user->is_delete){
                     throw new \Exception("用户不存在");
                 }
+                $silver_beans_alias = MallSetting::getValueByKey('silver_beans_alias',$user->mall_id);
                 $modifyForm = new ShoppingVoucherLogModifiyForm([
                     "money"       => $sendLog['money'],
-                    "desc"        => "酒店预订消费获得赠送红包",
+                    "desc"        => "酒店预订消费获得赠送".$silver_beans_alias,
                     "source_id"   => $sendLog['source_id'],
                     "source_type" => $sendLog['source_type']
                 ]);
@@ -134,7 +136,8 @@ class HotelOrderSendAction extends Action{
             ]);
 
             if($sendLog->save()){
-                $this->controller->commandOut("红包发放记录创建成功，ID:" . $sendLog->id);
+                $silver_beans_alias = MallSetting::getValueByKey('silver_beans_alias',$hotelOrder['mall_id']);
+                $this->controller->commandOut($silver_beans_alias."发放记录创建成功，ID:" . $sendLog->id);
             }else{
                 $this->controller->commandOut(json_encode($sendLog->getErrors()));
             }

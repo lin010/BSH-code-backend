@@ -81,6 +81,10 @@ class SettingForm extends BaseModel
     public $app_share_pic; //分享图片
     public $app_share_desc; //分享描述
     public $close_auth_bind; //分享描述
+    public $balance_alias;          //余额的别名
+    public $red_envelope_alias;     //红包别名
+    public $integral_alias;         //积分别名
+    public $silver_beans_alias;     //银豆别名
 
     public $is_town;
 
@@ -89,12 +93,12 @@ class SettingForm extends BaseModel
     public function rules()
     {
         return [
-            [['name'], 'trim',],
+            [['name','balance_alias','red_envelope_alias','integral_alias','silver_beans_alias'], 'trim',],
             [['contact_tel', 'kdniao_mch_id', 'kdniao_api_key', 'score_rule',
                 'customer_services_pic',
                   'web_service_url','web_url','web_service_pic', 'quick_navigation_closed_pic',
                 'quick_navigation_opened_pic', 'quick_map_pic', 'quick_map_address', 'longitude', 'latitude',
-                'quick_home_pic', 'logo',
+                'quick_home_pic', 'logo','balance_alias','red_envelope_alias','integral_alias','silver_beans_alias',
                 'sale_out_pic', 'sale_out_other_pic','app_share_title','app_share_pic','app_share_desc','express_aliapy_code'], 'string'],
 
             [['delivery_time', 'after_sale_time', 'score',
@@ -110,6 +114,10 @@ class SettingForm extends BaseModel
             [['sale_out_pic', 'sale_out_other_pic','express_aliapy_code'], 'default', 'value' => ''],
             [[ 'send_type', 'business_time_type_day', 'business_time_type_week',
                 'auto_business_time'], 'safe'],
+            [['balance_alias'], 'default', 'value' => '余额'],
+            [['red_envelope_alias'], 'default', 'value' => '红包'],
+            [['integral_alias'], 'default', 'value' => '积分'],
+            [['silver_beans_alias'], 'default', 'value' => '银豆'],
         ];
     }
 

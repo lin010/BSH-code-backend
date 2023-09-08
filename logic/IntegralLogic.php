@@ -7,6 +7,7 @@ use app\models\Goods;
 use app\models\Integral;
 use app\models\IntegralDeduct;
 use app\models\IntegralRecord;
+use app\models\MallSetting;
 use app\models\Order;
 use app\models\User;
 use app\models\OrderDetail;
@@ -174,6 +175,7 @@ class IntegralLogic
         try {
             if (!empty($order)) {
                 $user_id = $order->user_id;
+                $red_envelope_alias = MallSetting::getValueByKey('red_envelope_alias',$order->mall_id);
                 foreach ($order->detail as $order_detail) {
                     $is_order_paid = $order_detail->goods->is_order_paid || 0;//商品订单设置支付状态
                     $order_paid = $order_detail->goods->order_paid ? SerializeHelper::decode($order_detail->goods->order_paid) : [];//商品订单设置支付参数
@@ -230,8 +232,7 @@ class IntegralLogic
 
                     $integral_setting['source_type'] = "goods_order";
                     $integral_setting['source_id'] = $order_detail->id;
-
-                    $desc = '购买商品[ID:' . $goods_id . ']赠送金豆券，支付金额：' . $order_detail->total_original_price;
+                    $desc = '购买商品[ID:' . $goods_id . ']赠送'.$red_envelope_alias.'券，支付金额：' . $order_detail->total_original_price;
                     if ($type == 'paid' && $is_order_paid && $order_paid['is_integral_card']) {  //商品订单设置支付状态下执行
                         Integral::addIntegralPlan($user_id, $integral_setting, $desc, '1');
                     } elseif (!$is_order_paid) { //商品订单不设置支付状态下执行
@@ -243,7 +244,8 @@ class IntegralLogic
             return true;
         } catch (Exception $e) {
             $trans->rollBack();
-            Yii::error('用户购物发放金豆券失败' . PHP_EOL . $e->getFile() . '(' . $e->getLine() . ')' . PHP_EOL . "message:" . $e->getMessage());
+            $red_envelope_alias = MallSetting::getValueByKey('red_envelope_alias',$order->mall_id);
+            Yii::error('用户购物发放'.$red_envelope_alias.'券失败' . PHP_EOL . $e->getFile() . '(' . $e->getLine() . ')' . PHP_EOL . "message:" . $e->getMessage());
             return false;
         }
     }
@@ -254,6 +256,7 @@ class IntegralLogic
         try {
             if (!empty($order)) {
                 $user_id = $order->user_id;
+                $red_envelope_alias = MallSetting::getValueByKey('red_envelope_alias',$order->mall_id);
                 foreach ($order->detail as $order_detail) {
                     $is_order_paid = $order_detail->goods->is_order_paid || 0;//商品订单设置支付状态
                     $order_paid = $order_detail->goods->order_paid ? SerializeHelper::decode($order_detail->goods->order_paid) : [];//商品订单设置支付参数
@@ -276,7 +279,7 @@ class IntegralLogic
                     $integral_setting['source_type'] = "goods_order";
                     $integral_setting['source_id'] = $order_detail->id;
 
-                    $desc = '购买商品[ID:' . $goods_id . ']赠送金豆券，支付金额：' . $order_detail->total_original_price;
+                    $desc = '购买商品[ID:' . $goods_id . ']赠送'.$red_envelope_alias.'券，支付金额：' . $order_detail->total_original_price;
                     if ($type == 'paid' && $is_order_paid && $order_paid['is_integral_card']) {  //商品订单设置支付状态下执行
                         Integral::addIntegralPlan($user_id, $integral_setting, $desc, '1');
                     } elseif (!$is_order_paid) { //商品订单不设置支付状态下执行
@@ -288,7 +291,8 @@ class IntegralLogic
             return true;
         } catch (Exception $e) {
             $trans->rollBack();
-            Yii::error('用户购物发放金豆券失败' . PHP_EOL . $e->getFile() . '(' . $e->getLine() . ')' . PHP_EOL . "message:" . $e->getMessage());
+            $red_envelope_alias = MallSetting::getValueByKey('red_envelope_alias',$order->mall_id);
+            Yii::error('用户购物发放'.$red_envelope_alias.'券失败' . PHP_EOL . $e->getFile() . '(' . $e->getLine() . ')' . PHP_EOL . "message:" . $e->getMessage());
             return false;
         }
     }
@@ -306,6 +310,7 @@ class IntegralLogic
         try {
             if (!empty($order)) {
                 $user_id = $order->user_id;
+                $integral_alias = MallSetting::getValueByKey('integral_alias',$order->mall_id);
                 foreach ($order->detail as $order_detail) {
                     $is_order_paid = $order_detail->goods->is_order_paid || 0;//商品订单设置支付状态
                     $order_paid = $order_detail->goods->order_paid ? SerializeHelper::decode($order_detail->goods->order_paid) : [];//商品订单设置支付参数
@@ -319,7 +324,7 @@ class IntegralLogic
                             return false;
                         }
                         for ($i = 0; $i < $order_detail['num']; $i++) { //根据该商品购买数量循环发送
-                            $res = Integral::addIntegralPlan($user_id, $score_setting, '购买商品赠送积分券', '0');
+                            $res = Integral::addIntegralPlan($user_id, $score_setting, '购买商品赠送'.$integral_alias.'券', '0');
                             (new OrderCommon())->actionOrderSales($user_id, $score_setting);
                         }
                         if ($res === false) throw new Exception(Integral::getError());
@@ -332,7 +337,7 @@ class IntegralLogic
                             return false;
                         }
                         for ($i = 0; $i < $order_detail['num']; $i++) { //根据该商品购买数量循环发送
-                            $res = Integral::addIntegralPlan($user_id, $score_setting, '购买商品赠送积分券', '0');
+                            $res = Integral::addIntegralPlan($user_id, $score_setting, '购买商品赠送'.$integral_alias.'券', '0');
                         }
                         if ($res === false) throw new Exception(Integral::getError());
                     }
@@ -342,7 +347,8 @@ class IntegralLogic
             return true;
         } catch (Exception $e) {
             $trans->rollBack();
-            Yii::error('用户购物发放积分券失败' . PHP_EOL . $e->getFile() . '(' . $e->getLine() . ')' . PHP_EOL . "message:" . $e->getMessage());
+            $integral_alias = MallSetting::getValueByKey('integral_alias',$order->mall_id);
+            Yii::error('用户购物发放'.$integral_alias.'券失败' . PHP_EOL . $e->getFile() . '(' . $e->getLine() . ')' . PHP_EOL . "message:" . $e->getMessage());
             return false;
         }
     }
@@ -357,9 +363,14 @@ class IntegralLogic
      */
     public static function rechargeIntegral($integral_setting, $user_id, $ctype = 0, $parentid = 0)
     {
-        $title = '积分券';
+
+
+        $user = User::findIdentity($user_id);
+        $currencyAlias = MallSetting::getValueByKeys(['integral_alias','red_envelope_alias'],$user->mall_id);
+
+        $title = $currencyAlias['integral_alias'].'券';//'积分券';
         if ($ctype == 1) {
-            $title = '金豆券';
+            $title = $currencyAlias['red_envelope_alias'].'券';//金豆券
         }
         try {
             $setting = json_decode($integral_setting, true);
@@ -392,7 +403,12 @@ class IntegralLogic
                 }
             }
             if ($integral > 0) {
-                \Yii::$app->currency->setUser($user)->score->add($integral, '订单购买赠送积分');
+                $integral_alias = '积分';
+                if(isset($user->mall_id)){
+                    $integral_alias = MallSetting::getValueByKey('integral_alias',$user->mall_id);
+                }
+
+                \Yii::$app->currency->setUser($user)->score->add($integral, '订单购买赠送'.$integral_alias);
             }
             return true;
         } catch (Exception $e) {
@@ -416,6 +432,8 @@ class IntegralLogic
             }
             $orderDetails = $order->detail;
             $integral = 0;
+            $integral_alias = MallSetting::getValueByKey('integral_alias',$order->mall_id);
+
             foreach ($orderDetails as $orderDetail) {
 
                 $isScoreSend = $orderDetail->is_score_send;
@@ -436,7 +454,7 @@ class IntegralLogic
                     }
 
                     for ($i = 0; $i < $orderDetail['num']; $i++) { //根据该商品购买数量循环发送
-                        $res = Integral::addIntegralPlan($order->user_id, $scoreSetting, '购买商品赠送积分券', '0');
+                        $res = Integral::addIntegralPlan($order->user_id, $scoreSetting, '购买商品赠送'.$integral_alias.'券', '0');
                         if (!$res) {
                             throw new \Exception(Integral::getError());
                         }
@@ -464,7 +482,7 @@ class IntegralLogic
             }
 
             if ($integral > 0) {
-                \Yii::$app->currency->setUser($order->user)->score->add($integral, '订单购买赠送积分');
+                \Yii::$app->currency->setUser($order->user)->score->add($integral, '订单购买赠送'.$integral_alias);
             }
 
 
@@ -472,7 +490,7 @@ class IntegralLogic
             return true;
         } catch (Exception $e) {
             $trans->rollBack();
-            Yii::error('用户购物发放积分失败' . PHP_EOL . $e->getFile() . '(' . $e->getLine() . ')' . PHP_EOL . "message:" . $e->getMessage());
+            Yii::error('用户购物发放'.$integral_alias.'失败' . PHP_EOL . $e->getFile() . '(' . $e->getLine() . ')' . PHP_EOL . "message:" . $e->getMessage());
             return false;
         }
     }

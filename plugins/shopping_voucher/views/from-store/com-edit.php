@@ -135,7 +135,7 @@
 
         </el-dialog>
 
-        <el-dialog width="30%" title="设置红包赠送" :visible.sync="formDialogVisible" :close-on-click-modal="false">
+        <el-dialog width="30%" :title="`设置${currencyAlias.silver_beans_alias}赠送`" :visible.sync="formDialogVisible" :close-on-click-modal="false">
             <el-form ref="formData" :rules="formRule" label-width="15%" :model="formData" size="small">
                 <el-form-item :label="!formData.is_all ? '商户数' : '总页数'">
                     <span>{{formProgressData.total_num}}</span>
@@ -223,7 +223,13 @@
                     children: 'list',
                     checkStrictly: true
                 },
-                district: []
+                district: [],
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         watch: {
@@ -232,6 +238,7 @@
             }
         },
         mounted: function () {
+            this.getCurrencyAliasData();
             this.getDistrict();
         },
         methods: {
@@ -338,7 +345,23 @@
                 }).catch(e => {
 
                 });
-            }
+            },
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
         }
     });
 </script>

@@ -388,9 +388,9 @@ Yii::$app->loadComponentView('order/com-city');
                 <el-table-column prop="TotalAmount" label="总金额"></el-table-column>
                 <el-table-column prop="ActualPayment" label="实际支付金额"></el-table-column>
                 <el-table-column prop="TotalItem" label="总件数"></el-table-column>
-                <el-table-column prop="RedAmount" label="金豆抵扣金额"></el-table-column>
-                <el-table-column prop="integral" label="积分抵扣金额"></el-table-column>
-                <el-table-column prop="ShoppingVoucher" label="红包抵扣金额"></el-table-column>
+                <el-table-column prop="RedAmount" :label="currencyAlias.red_envelope_alias+'抵扣金额'"></el-table-column>
+                <el-table-column prop="integral" :label="currencyAlias.integral_alias+'抵扣金额'"></el-table-column>
+                <el-table-column prop="ShoppingVoucher" :label="currencyAlias.silver_beans_alias+'抵扣金额'"></el-table-column>
             </el-table>
         </el-card>
         <div class="table-body">
@@ -678,7 +678,7 @@ Yii::$app->loadComponentView('order/com-city');
                                             +{{ -item.member_discount_price }}元
                                         </span>
                                             </el-form-item>
-                                            <el-form-item label="积分抵扣" v-if="item.score_deduction_price != 0.00">
+                                            <el-form-item :label="currencyAlias.integral_alias+'抵扣'" v-if="item.score_deduction_price != 0.00">
                                                 <span class="important">-{{ item.score_deduction_price }}元</span>
                                             </el-form-item>
                                             <el-form-item label="优惠券抵扣" v-if="item.coupon_discount_price != 0.00">
@@ -708,13 +708,13 @@ Yii::$app->loadComponentView('order/com-city');
                                     <slot name="other" :item="item"></slot>
                                 </div>
                                 <div>
-                                    (<span style="color: green">积分抵扣</span><span style="color: #909399">￥{{item.score_deduction_price}})</span>
+                                    (<span style="color: green">{{currencyAlias.integral_alias}}抵扣</span><span style="color: #909399">￥{{item.score_deduction_price}})</span>
                                 </div>
                                 <div>
-                                    (<span style="color: red">金豆抵扣</span><span style="color: #909399">￥{{item.integral_deduction_price}})</span>
+                                    (<span style="color: red">{{currencyAlias.red_envelope_alias}}抵扣</span><span style="color: #909399">￥{{item.integral_deduction_price}})</span>
                                 </div>
                                 <div>
-                                    (<span style="color: red">红包抵扣</span><span style="color: #909399">￥{{item.shopping_voucher_decode_price}})</span>
+                                    (<span style="color: red">{{currencyAlias.silver_beans_alias}}抵扣</span><span style="color: #909399">￥{{item.shopping_voucher_decode_price}})</span>
                                 </div>
                                 <div class="express-price">
                                     <span>
@@ -748,13 +748,13 @@ Yii::$app->loadComponentView('order/com-city');
                                     <span>总分佣：{{item.gift_statistics.total_commission > 0 ? item.gift_statistics.total_commission : 0}}</span>
                                 </div>
                                 <!--<div class="gift-statistics">
-                                    <span>总金豆：00000</span>
+                                    <span>总{{currencyAlias.red_envelope_alias}}：00000</span>
                                 </div>
                                 <div class="gift-statistics">
-                                    <span>总积分：00000</span>
+                                    <span>总{{currencyAlias.integral_alias}}：00000</span>
                                 </div>-->
                                 <div class="gift-statistics">
-                                    <span>总红包：{{item.gift_statistics.total_shopping_voucher > 0 ? item.gift_statistics.total_shopping_voucher : 0}}</span>
+                                    <span>总{{currencyAlias.silver_beans_alias}}：{{item.gift_statistics.total_shopping_voucher > 0 ? item.gift_statistics.total_shopping_voucher : 0}}</span>
                                 </div>
                             </div>
                             <div style="width: 30%;float: right;height: 100%;line-height: 100%;display: flex;justify-content:center;align-items:Center;">
@@ -1001,7 +1001,7 @@ Yii::$app->loadComponentView('order/com-city');
                                 </td>
                             </tr>
                             <tr class="c4">
-                                <td class="label">赠送红包：</td>
+                                <td class="label">赠送{{currencyAlias.silver_beans_alias}}：</td>
                                 <td>
                                     {{ item.shoppingVoucher.money }}
                                     <span v-if="item.shoppingVoucher.status == 'invalid'" style="color: red">(无效)</span>
@@ -1009,7 +1009,7 @@ Yii::$app->loadComponentView('order/com-city');
                                     <span v-else-if="item.shoppingVoucher.status == 'waiting'" style="color: red">(待发送)</span>
                                     <span v-else style="color: red" >不赠送</span>
                                 </td>
-                                <td class="label">赠送金豆：</td>
+                                <td class="label">赠送{{currencyAlias.red_envelope_alias}}：</td>
                                 <td>
                                     开发中...
                                     <!--<span v-if="infoDialog.score_status == 'invalid' || infoDialog.score_status == ''"
@@ -1019,15 +1019,15 @@ Yii::$app->loadComponentView('order/com-city');
                                 </td>
                             </tr>
                             <tr class="c2" >
-                                <td class="label">赠送积分：</td>
+                                <td class="label">赠送{{currencyAlias.integral_alias}}：</td>
                                 <td colspan="3">
                                     开发中...
                                     <!--<div v-if="details.score_enable > 0">
                                         <span v-if="details.score_give_settings.is_permanent>0" class="spacing">
-                                            永久积分
+                                            永久{{currencyAlias.integral_alias}}
                                         </span>
                                                     <span v-else class="spacing">
-                                            限时积分
+                                            限时{{currencyAlias.integral_alias}}
                                         </span>
                                                     <span class="spacing">数量：{{ details.score_give_settings.integral_num }}</span>
                                                     <span class="spacing">
@@ -1313,10 +1313,17 @@ Yii::$app->loadComponentView('order/com-city');
                 statisticsLoading: false,
                 orderInfoDialogVisible: false,
                 giveInfo : {},
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
 
             };
         },
         mounted() {
+            this.getCurrencyAliasData();
             this.search = this.newSearch;
             // 用户列表 用户订单数
             if (getQuery('user_id') > 0) {
@@ -1773,6 +1780,22 @@ Yii::$app->loadComponentView('order/com-city');
                     }
                 }).catch(e => {
                 });
+            },
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
             },
         },
     });

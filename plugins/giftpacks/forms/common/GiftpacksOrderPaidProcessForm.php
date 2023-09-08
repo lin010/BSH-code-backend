@@ -8,6 +8,7 @@ use app\forms\common\UserIntegralModifyForm;
 use app\forms\common\UserScoreModifyForm;
 use app\models\BaseModel;
 use app\models\Integral;
+use app\models\MallSetting;
 use app\models\User;
 use app\plugins\giftpacks\forms\api\GiftpacksDetailForm;
 use app\plugins\giftpacks\forms\api\GiftpacksOrderSubmitForm;
@@ -134,11 +135,12 @@ class GiftpacksOrderPaidProcessForm extends BaseModel{
      */
     public static function giveIntegral(Giftpacks $giftpacks, GiftpacksOrder $order){
         if($giftpacks->integral_enable && $giftpacks->integral_give_num > 0){
+            $red_envelope_alias = MallSetting::getValueByKey('red_envelope_alias',$order->mall_id);
             $modifyForm = new UserIntegralModifyForm([
                 "type"        => 1,
                 "integral"    => min($order->order_price, $giftpacks->integral_give_num),
                 "is_manual"   => 0,
-                "desc"        => "购买大礼包“".$giftpacks->title."”赠送金豆",
+                "desc"        => "购买大礼包“".$giftpacks->title."”赠送".$red_envelope_alias,
                 "source_id"   => $order->id,
                 "source_type" => "giftpacks_order"
             ]);
@@ -158,10 +160,13 @@ class GiftpacksOrderPaidProcessForm extends BaseModel{
     public static function giveScore(Giftpacks $giftpacks, GiftpacksOrder $order){
         if($giftpacks->score_enable ){
             $scoreGiveSettings = !empty($giftpacks->score_give_settings) ? (array)@json_decode($giftpacks->score_give_settings) : [];
+
+            $integral_alias = MallSetting::getValueByKey('integral_alias',$order->mall_id);
+
             if(isset($scoreGiveSettings['is_permanent']) && $scoreGiveSettings['is_permanent'] == 1){ //赠送永久积分
                 $integralNum = isset($scoreGiveSettings['integral_num']) ? $scoreGiveSettings['integral_num'] : 0;
                 if($integralNum > 0){
-                    $desc = "购买大礼包“".$giftpacks->title."”赠送积分";
+                    $desc = "购买大礼包“".$giftpacks->title."”赠送".$integral_alias;
                     $modifyForm = new UserScoreModifyForm([
                         "type"        => 1,
                         "score"       => $integralNum,
@@ -183,7 +188,7 @@ class GiftpacksOrderPaidProcessForm extends BaseModel{
                     "source_type"  => "giftpacks_order",
                     "source_id"    => $order->id
                 ];
-                Integral::addIntegralPlan($order->user_id, $scoreSetting, '购买大礼包赠送积分券', '0');
+                Integral::addIntegralPlan($order->user_id, $scoreSetting, '购买大礼包赠送'.$integral_alias.'券', '0');
             }
         }
     }

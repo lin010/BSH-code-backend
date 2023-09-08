@@ -8,7 +8,7 @@ echo $this->render("../com/com-tab-from");
         <com-tab-from :current="activeName"></com-tab-from>
 
         <div class="table-body">
-            <el-alert title="说明：用户通过扫商户二维码进行付款，成功后可获得赠送红包" type="info" :closable="false" style="margin-bottom: 20px;"></el-alert>
+            <el-alert :title="`说明：用户通过扫商户二维码进行付款，成功后可获得赠送${currencyAlias.silver_beans_alias}`" type="info" :closable="false" style="margin-bottom: 20px;"></el-alert>
 
             <div style="">
                 <el-button size="big" type="primary" @click="newStore">添加商户</el-button>
@@ -65,7 +65,7 @@ echo $this->render("../com/com-tab-from");
                                 start-placeholder="开始日期"
                                 end-placeholder="结束日期">
                    </el-form-item>
-                    <el-form-item label="赠送红包统计">
+                    <el-form-item :label="`赠送${currencyAlias.silver_beans_alias}统计`">
                         <el-date-picker
                                 v-model="searchData.send_stat_date"
                                 type="datetimerange"
@@ -229,6 +229,12 @@ echo $this->render("../com/com-tab-from");
                 dialogContent: false,
                 ratioForm:'',
                 ratioLoading: false,
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         methods: {
@@ -348,9 +354,26 @@ echo $this->render("../com/com-tab-from");
                 }).catch(e => {
 
                 });
-            }
+            },
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
         },
         mounted: function() {
+            this.getCurrencyAliasData();
             this.getList();
             this.getDistrict();
         }

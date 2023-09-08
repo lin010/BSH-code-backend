@@ -41,8 +41,8 @@
                     </el-table-column>
                     <el-table-column label="运费（运营费）">
                         <template slot-scope="scope">
-                            <span v-if="scope.row.enable_express == 1" style="color:darkgreen">送红包</span>
-                            <span v-if="scope.row.enable_express == 0" style="color:gray;">不送红包</span>
+                            <span v-if="scope.row.enable_express == 1" style="color:darkgreen">送{{currencyAlias.silver_beans_alias}}</span>
+                            <span v-if="scope.row.enable_express == 0" style="color:gray;">不送{{currencyAlias.silver_beans_alias}}</span>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -67,7 +67,7 @@
 
         </el-dialog>
 
-        <el-dialog width="30%" title="设置红包赠送" :visible.sync="formDialogVisible" :close-on-click-modal="false">
+        <el-dialog width="30%" :title="`设置${currencyAlias.silver_beans_alias}赠送`" :visible.sync="formDialogVisible" :close-on-click-modal="false">
             <el-form ref="formData" :rules="formRule" label-width="30%" :model="formData" size="small">
                 <el-form-item :label="!formData.is_all ? '商品数' : '总页数'">
                     <span>{{formProgressData.total_num}}</span>
@@ -86,7 +86,7 @@
                 <el-form-item label="运费（运营费）" prop="enable_express">
                     <el-switch
                             v-model="formData.enable_express"
-                            active-text="赠送红包"
+                            :active-text="`赠送${currencyAlias.silver_beans_alias}`"
                             inactive-text="不赠送"
                             active-value="1"
                             inactive-value="0">
@@ -148,7 +148,13 @@
                     loading: false,
                     total_num:0,
                     finished_num:0
-                }
+                },
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         watch: {
@@ -157,9 +163,26 @@
             }
         },
         mounted: function () {
-
+            this.getCurrencyAliasData();
         },
         methods: {
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
+
             //选择待设置商品
             handleSelectionChange(selection) {
                 this.formData.list = selection;

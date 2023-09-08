@@ -185,6 +185,23 @@
                     <el-row>
                         <el-col :span="24">
                             <div class="title">
+                                <span>币种文字设置</span>
+                            </div>
+                            <div class="form-body">
+                                <el-form-item label="余额" prop="name">
+                                    <el-input v-model="ruleForm.setting.balance_alias" placeholder="留空默认显示“余额”"></el-input>
+                                </el-form-item>
+                                <el-form-item label="红包" prop="name">
+                                    <el-input v-model="ruleForm.setting.red_envelope_alias" placeholder="留空默认显示“红包”"></el-input>
+                                </el-form-item>
+                                <el-form-item label="积分" prop="name">
+                                    <el-input v-model="ruleForm.setting.integral_alias" placeholder="留空默认显示“积分”"></el-input>
+                                </el-form-item>
+                                <el-form-item label="银豆" prop="name">
+                                    <el-input v-model="ruleForm.setting.silver_beans_alias" placeholder="留空默认显示“银豆”"></el-input>
+                                </el-form-item>
+                            </div>
+                            <div class="title">
                                 <span>基本设置</span>
                             </div>
                             <div class="form-body">
@@ -904,6 +921,10 @@
                         app_share_pic: '', //自定义分享图片
                         close_auth_bind:0,
                         logo:'',
+                        balance_alias: '',
+                        red_envelope_alias: '',
+                        integral_alias: '',
+                        silver_beans_alias: '',
                     },
                 },
                 rules: {

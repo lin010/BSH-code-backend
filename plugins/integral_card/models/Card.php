@@ -146,7 +146,7 @@ class Card extends BaseActiveRecord{
             $now = time();
 
             for($i = 1; $i <= $card_info['generate_num']; $i++){
-                $serialize_no = self::_getSerializeNo($id+$i,6,);
+                $serialize_no = self::_getSerializeNo($id+$i,6);
                 // echo $serialize_no.PHP_EOL;
                 $use_code = rand(100000, 999999);//self::_getUseCode($serialize_no);
                 // echo $use_code.PHP_EOL;

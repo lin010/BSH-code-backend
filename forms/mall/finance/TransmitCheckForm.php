@@ -38,14 +38,14 @@ class TransmitCheckForm extends BaseModel{
             }
 
             if($cash->type == "bank"){
-                $res = EfpsTransfer::query($cash->order_no);
-                if($res['code'] != ApiCode::CODE_SUCCESS){
-                    $cash->status = 0;
-                    $res['code'] = ApiCode::CODE_FAIL;
-                    $res['msg']  = $res['msg'];
-                }else{
-                    $cash->is_transmitting = 0;
-                }
+                // $res = EfpsTransfer::query($cash->order_no);
+                // if($res['code'] != ApiCode::CODE_SUCCESS){
+                //     $cash->status = 0;
+                //     $res['code'] = ApiCode::CODE_FAIL;
+                //     $res['msg']  = $res['msg'];
+                // }else{
+                //     $cash->is_transmitting = 0;
+                // }
             }
         }catch (\Exception $e){
             $res['code'] = ApiCode::CODE_FAIL;

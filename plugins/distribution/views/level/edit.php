@@ -9,7 +9,7 @@
  */
 
 
-Yii::$app->loadComponentView('com-dialog-select');
+Yii::$app->loadComponentView('com-dialog-select-level');
 Yii::$app->loadComponentView('com-select-cat');
 ?>
 

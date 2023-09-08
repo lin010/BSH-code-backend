@@ -5,6 +5,7 @@ namespace app\forms\mall\finance;
 use app\component\efps\Efps;
 use app\core\ApiCode;
 use app\forms\efps\EfpsMchCashTransfer;
+use app\forms\bs\BsMchCashTransfer;
 use app\mch\forms\mch\MchAccountModifyForm;
 use app\models\BaseModel;
 use app\plugins\mch\models\MchCash;
@@ -94,10 +95,21 @@ class MchCashApplyForm  extends BaseModel{
                     throw new \Exception("无法打款操作");
                 }
 
-                //提交易票联打款
-                $res = EfpsMchCashTransfer::commit($mchCash);
-                if($res['code'] != ApiCode::CODE_SUCCESS){
-                    throw new \Exception($res['msg']);
+                $mode = 'bs';
+                if($mode == 'bs'){
+
+                    //提交汇付打款
+                    $res = BsMchCashTransfer::transfer($mchCash);
+                    if($res['code'] != ApiCode::CODE_SUCCESS){
+                        throw new \Exception($res['msg']);
+                    }
+                }else{
+                    //提交易票联打款
+                    $res = EfpsMchCashTransfer::commit($mchCash);
+                    if($res['code'] != ApiCode::CODE_SUCCESS){
+                        throw new \Exception($res['msg']);
+                    }
+
                 }
             }
 

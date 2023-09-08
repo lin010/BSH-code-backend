@@ -29,6 +29,7 @@ use app\models\GoodsCats;
 use app\models\HomePage;
 use app\models\ImgMagic;
 use app\models\Mall;
+use app\models\MallSetting;
 use app\models\MemberLevel;
 use app\models\Option;
 use app\models\User;
@@ -228,6 +229,7 @@ class AppConfigLogic
         }
         //剔除无权限入口
         $menu = [];
+        $silver_beans_alias = MallSetting::getValueByKey('silver_beans_alias',\Yii::$app->mall->id);
         foreach ($option['menus'] as $i => $v) {
             if ($v['open_type'] == 'app_admin' && !$app_admin) {
                 continue;
@@ -247,7 +249,7 @@ class AppConfigLogic
                     $v['scene'] = $aliappConfig->cs_scene;
                 }
             }
-            if ($v['open_type'] == 'navigate' && $v['name'] == '红包订单') {
+            if ($v['open_type'] == 'navigate' && $v['name'] == $silver_beans_alias.'订单') {
                 $v['link_url'] = "/ali/alibaba/orderList/orderList";
             }
             $menu[] = $v;

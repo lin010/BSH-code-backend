@@ -99,4 +99,36 @@ class MallSetting extends BaseActiveRecord
         return MallSetting::find()->where(['mall_id' => $mall_id, 'key' => $key, 'is_delete' => 0])->one();
     }
 
+
+    /**
+     * 返回多个设置
+     * @param array $keys
+     * @param $mall_id
+     * @return MallSetting[]|false
+     */
+    public static function getValueByKeys(array $keys, $mall_id)
+    {
+        if (empty($keys)) {
+            return false;
+        }
+        if (!$mall_id) {
+            $mall_id = Yii::$app->mall->id;
+        }
+
+        if (!$mall_id) {
+            return false;
+        }
+        $actives = self::find()
+            ->select(['value'])
+            ->where([
+                'mall_id' => $mall_id,
+                'is_delete' => 0,
+            ])->andWhere(['in', 'key', $keys])->indexBy('key')->column();
+        if ($actives) {
+            return $actives;
+        }
+
+        return false;
+    }
+
 }

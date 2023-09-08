@@ -11,11 +11,19 @@
 namespace app\forms\mall\export;
 
 use app\core\CsvExport;
+use app\models\MallSetting;
 
 class BalanceLogExport extends BaseExport
 {
     public function fieldsList()
     {
+        //币种别名
+        $getCurrencyAlias = MallSetting::getValueByKeys([
+            'balance_alias',
+            'red_envelope_alias',
+            'integral_alias',
+            'silver_beans_alias',
+        ],\Yii::$app->mall->id);
         return [
             [
                 'key' => 'platform',
@@ -35,11 +43,11 @@ class BalanceLogExport extends BaseExport
             ],
             [
                 'key' => 'type',
-                'value' => '金额类型',
+                'value' => $getCurrencyAlias['balance_alias'].'类型',
             ],
             [
                 'key' => 'money',
-                'value' => '金额',
+                'value' => $getCurrencyAlias['balance_alias'],
             ],
             [
                 'key' => 'created_at',
@@ -59,8 +67,14 @@ class BalanceLogExport extends BaseExport
         $this->transform($list);
         $this->getFields();
         $dataList = $this->getDataList();
-
-        $fileName = '余额记录' . date('YmdHis');
+        //币种别名
+        $getCurrencyAlias = MallSetting::getValueByKeys([
+            'balance_alias',
+            'red_envelope_alias',
+            'integral_alias',
+            'silver_beans_alias',
+        ],\Yii::$app->mall->id);
+        $fileName = $getCurrencyAlias['balance_alias'].'记录' . date('YmdHis');
         (new CsvExport())->export($dataList, $this->fieldsNameList, $fileName);
     }
 

@@ -14,6 +14,8 @@ namespace app\controllers\mall;
 use app\forms\mall\finance\BalanceLogListForm;
 use app\forms\mall\finance\CashForm;
 use app\forms\mall\finance\CashListForm;
+use app\forms\mall\finance\IntegralCashForm;
+use app\forms\mall\finance\IntegralCashListForm;
 use app\forms\mall\finance\FinanceStatInfoForm;
 use app\forms\mall\finance\IncomeLogListForm;
 use app\forms\mall\finance\IncomeModifiedForm;
@@ -86,6 +88,32 @@ class FinanceController extends MallController
             }
         }
     }
+    /**
+     * @Author: han
+     * @Date: 2023-08-20
+     * @Time: 9:58
+     * @Note:用户金豆提现记录
+     * @return string|\yii\web\Response
+     */
+    public function actionIntegralCash()
+    {
+        if (\Yii::$app->request->isAjax) {
+            $form = new IntegralCashListForm();
+            $form->attributes = \Yii::$app->request->get();
+            return $this->asJson($form->search());
+        } else {
+            if (\Yii::$app->request->post('flag') === 'EXPORT') {
+                $fields = explode(',', \Yii::$app->request->post('fields'));
+                $form = new IntegralCashListForm();
+                $form->attributes = \Yii::$app->request->post();
+                $form->fields = $fields;
+                $form->search();
+                return false;
+            } else {
+                return $this->render('integral-cash');
+            }
+        }
+    }
 
 
     /**
@@ -97,6 +125,18 @@ class FinanceController extends MallController
     public function actionCashApply()
     {
         $form = new CashForm();
+        $form->attributes = \Yii::$app->request->post();
+        return $this->asJson($form->save());
+    }
+    /**
+     * @Author: han
+     * @Date: 2023-08-20
+     * @Time: 10:15
+     * @Note:金豆提现处理
+     */
+    public function actionIntegralCashApply()
+    {
+        $form = new IntegralCashForm();
         $form->attributes = \Yii::$app->request->post();
         return $this->asJson($form->save());
     }

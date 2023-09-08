@@ -99,11 +99,13 @@ class UserBindForm extends BaseModel
                     "mall_id"  => $stands_mall_id,
                     "platform" => \Yii::$app->appPlatform
                 ];
-                if(!empty($userInfo['openid'])){
-                    $uniqueData['openid'] = $userInfo['openid'];
-                }else{
-                    $uniqueData['user_id'] = $userResult->id;
-                }
+                // if(!empty($userInfo['openid'])){
+                //     $uniqueData['openid'] = $userInfo['openid'];
+                // }else{
+                //     $uniqueData['user_id'] = $userResult->id;
+                // }
+                //更新原来的记录
+                $uniqueData['user_id'] = $userResult->id;
                 $userInfoModel = UserInfo::findOne($uniqueData);
                 if(!$userInfoModel){ //没有授权信息就生成一条
                     $userInfoModel = new UserInfo($uniqueData);

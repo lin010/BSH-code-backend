@@ -15,7 +15,7 @@
         <el-tabs type="border-card">
 
             <!-- 城市服务商 -->
-            <el-tab-pane label="城市服务商">
+            <el-tab-pane :label="userRoleTypes.branch_office">
 
                 <table cellspacing="0" cellpadding="0" width="100%">
                     <tr>
@@ -28,9 +28,9 @@
                             <table class="commission-rule"  cellspacing="0" cellpadding="0" width="100%">
                                 <tr v-for="chain in row.chain">
                                     <td v-for="role_type in chain.relationship">
-                                        <span v-if="role_type == 'branch_office'">城市服务商</span>
-                                        <span v-if="role_type == 'partner'">区域服务商</span>
-                                        <span v-if="role_type == 'store'">VIP代理商</span>
+                                        <span v-if="role_type == 'branch_office'">{{userRoleTypes.branch_office}}</span>
+                                        <span v-if="role_type == 'partner'">{{userRoleTypes.partner}}</span>
+                                        <span v-if="role_type == 'store'">{{userRoleTypes.store}}</span>
                                         <span v-if="role_type == 'all'">消费者</span>
                                     </td>
                                     <td>
@@ -48,7 +48,7 @@
             </el-tab-pane>
 
             <!-- 区域服务商 -->
-            <el-tab-pane label="区域服务商">
+            <el-tab-pane :label="userRoleTypes.partner">
 
                 <table cellspacing="0" cellpadding="0" width="100%">
                     <tr>
@@ -61,9 +61,9 @@
                             <table  class="commission-rule"  cellspacing="0" cellpadding="0" width="100%">
                                 <tr v-for="chain in row.chain">
                                     <td v-for="role_type in chain.relationship">
-                                        <span v-if="role_type == 'branch_office'">城市服务商</span>
-                                        <span v-if="role_type == 'partner'">区域服务商</span>
-                                        <span v-if="role_type == 'store'">VIP代理商</span>
+                                        <span v-if="role_type == 'branch_office'">{{userRoleTypes.branch_office}}</span>
+                                        <span v-if="role_type == 'partner'">{{userRoleTypes.partner}}</span>
+                                        <span v-if="role_type == 'store'">{{userRoleTypes.store}}</span>
                                         <span v-if="role_type == 'all'">消费者</span>
                                     </td>
                                     <td>
@@ -81,7 +81,7 @@
             </el-tab-pane>
 
             <!-- VIP代理商 -->
-            <el-tab-pane label="VIP代理商">
+            <el-tab-pane :label="userRoleTypes.store">
                 <table cellspacing="0" cellpadding="0" width="100%">
                     <tr>
                         <th>关系</th>
@@ -93,9 +93,9 @@
                             <table  class="commission-rule"  cellspacing="0" cellpadding="0" width="100%">
                                 <tr v-for="chain in row.chain">
                                     <td v-for="role_type in chain.relationship">
-                                        <span v-if="role_type == 'branch_office'">城市服务商</span>
-                                        <span v-if="role_type == 'partner'">区域服务商</span>
-                                        <span v-if="role_type == 'store'">VIP代理商</span>
+                                        <span v-if="role_type == 'branch_office'">{{userRoleTypes.branch_office}}</span>
+                                        <span v-if="role_type == 'partner'">{{userRoleTypes.partner}}</span>
+                                        <span v-if="role_type == 'store'">{{userRoleTypes.store}}</span>
                                         <span v-if="role_type == 'all'">消费者</span>
                                     </td>
                                     <td>
@@ -164,6 +164,7 @@
                 {commisson_value:0, relationship:['partner', 'all'], unique_key:'partner#all'},
             ];
             return {
+                userRoleTypes: USER_ROLE_TYPES,
                 commission_type: 1,
                 groupData: {
                     branch_office:[

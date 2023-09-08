@@ -212,10 +212,7 @@ Yii::$app->loadComponentView('com-rich-text');
                             <el-table :data="shoppingFormData.recommender" border style="margin-top:10px;width:100%">
                                 <el-table-column label="级别" width="110" align="center">
                                     <template slot-scope="scope">
-                                        <span v-if="scope.row.type == 'branch_office'">城市服务商</span>
-                                        <span v-if="scope.row.type == 'partner'">区域服务商</span>
-                                        <span v-if="scope.row.type == 'store'">VIP代理商</span>
-                                        <span v-if="scope.row.type == 'user'">VIP会员</span>
+                                        <span v-for="(typeName,typeKey) in userRoleTypes"  v-if="scope.row.type == typeKey">{{typeName}}</span>
                                     </template>
                                 </el-table-column>
                                 <el-table-column label="比例">
@@ -283,6 +280,7 @@ Yii::$app->loadComponentView('com-rich-text');
     const editApp = new Vue({
         el: '#edit_app',
         data: {
+            userRoleTypes: USER_ROLE_TYPES,
             dailogTitle: '',
             dialogFormVisible: false,
             btnLoading: false,

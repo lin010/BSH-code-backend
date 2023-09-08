@@ -192,6 +192,11 @@ class UserForm extends BaseModel
             'income' => $user->income,
             'income_frozen' => $user->income_frozen,
             'total_income' => $user->total_income,
+            'cert_validity_type' => $user->cert_validity_type,
+            'cert_no' => $user->cert_no,
+            'cert_begin_date' => $user->cert_begin_date,
+            'cert_end_date' => $user->cert_end_date,
+            'realname' => $user->realname,
             'static_integral' => $user->static_integral ?? 0,
             'dynamic_integral' => $user->dynamic_integral ?? 0,
             'shopping_voucher' => (float)$user->shoppingVoucherUser->money,
@@ -205,7 +210,7 @@ class UserForm extends BaseModel
             ],
             'parent_id' => $user->parent_id,
             'coupon' => $couponCount,
-          /*  'card' => $cardCount,*/
+            /*  'card' => $cardCount,*/
             'is_vip_card_user' => 0,
             'is_mch' => $mchInfo['is_mch'],
             'mch_info' => $mchInfo,
@@ -283,7 +288,7 @@ class UserForm extends BaseModel
         }
 
         $userCenter['order_bar2'][0]['num'] = $userCenter['order_bar2'][0]['text'];
-//        $userCenter['order_bar'][] = $userCenter['order_bar2'][0];
+        //        $userCenter['order_bar'][] = $userCenter['order_bar2'][0];
 
         unset($userCenter['order_bar2']);
 
@@ -333,7 +338,7 @@ class UserForm extends BaseModel
             $userCenter['menus'][] = [
                 "icon_url"  => "https://www.mingyuanriji.cn/web/static/shopSettle.png",
                 "name"      => "商家入驻",
-                "link_url"  => "/pages/enter/enter",
+                "link_url"  => "/mch/enter/enter",
                 "open_type" => "navigate"
             ];
         }
@@ -372,12 +377,12 @@ class UserForm extends BaseModel
 
         $res = [
             'config' => [
-                    'title_bar' => [
-                        'background' => '#ff4544',
-                        'color' => '#ffffff',
-                    ],
-                    'user_center' => $userCenter,
-                    'copyright' => AppConfigLogic::getCoryRight(),
+                'title_bar' => [
+                    'background' => '#ff4544',
+                    'color' => '#ffffff',
+                ],
+                'user_center' => $userCenter,
+                'copyright' => AppConfigLogic::getCoryRight(),
             ],
 
         ];

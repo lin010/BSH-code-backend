@@ -16,10 +16,10 @@ Yii::$app->loadComponentView('goods/com-dialog-select');
                         </div>
                     </div>
                     <com-dialog-select :multiple="false" @selected="goodsSelect" title="商品选择">
-                        <el-button type="primary" size="small">指定商品</el-button>
+                        <el-button type="primary" size="small">指定商品{{currencyAlias.silver_beans_alias}}</el-button>
                     </com-dialog-select>
                 </el-form-item>
-                <el-form-item label="红包价" prop="voucher_price">
+                <el-form-item :label="`${currencyAlias.silver_beans_alias}价`" prop="voucher_price">
                     <el-input v-model="formData.voucher_price" style="width:35%;">
                         <template slot="append">元</template>
                     </el-input>
@@ -69,7 +69,14 @@ Yii::$app->loadComponentView('goods/com-dialog-select');
                         {required: true, message: '请设置红包价格', trigger: 'change'},
                     ]
                 },
-                btnLoading: false
+                btnLoading: false,
+
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         watch: {
@@ -81,6 +88,22 @@ Yii::$app->loadComponentView('goods/com-dialog-select');
             }
         },
         methods: {
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
             goodsSelect(goods){
                 this.formData.goods_id = goods.id;
                 this.formData.name = goods.name;
@@ -115,7 +138,10 @@ Yii::$app->loadComponentView('goods/com-dialog-select');
             },
             close(){
                 this.$emit('close');
-            }
+            },
+        },
+        mounted: function() {
+            this.getCurrencyAliasData();
         }
     });
 </script>

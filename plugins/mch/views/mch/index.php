@@ -300,7 +300,7 @@
         </el-dialog>
     </el-card>
 </div>
-<script src="https://cdn.jsdelivr.net/clipboard.js/1.5.12/clipboard.min.js"></script>
+<script src="<?= Yii::$app->request->baseUrl ?>/statics/js/clipboard.min.js"></script>
 <script>
     const app = new Vue({
         el: '#app',

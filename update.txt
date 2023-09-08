@@ -1,0 +1,102 @@
+修改日志  6228480099357649674
+6666000137896685 我的汇付id
+D:\phpstudy_pro\WWW\bushanghui\views\mall\finance\setting.php  t
+D:\phpstudy_pro\WWW\bushanghui\forms\mall\finance\SettingForm.php  t
+
+准备修改:
+D:\phpstudy_pro\WWW\bushanghui\logic\OrderLogic.php :26  获取支付配置  t
+D:\phpstudy_pro\WWW\bushanghui\forms\api\order\OrderPayFormBase.php loadOrderPayData()  t
+D:\phpstudy_pro\WWW\bushanghui\models\PaymentOrderUnion.php :  设置汇付微信支付为10 t
+D:\phpstudy_pro\WWW\bushanghui\forms\api\order\EfpsPayForm.php  t
+D:\phpstudy_pro\WWW\bushanghui\web\pay-notify\bs.php  t
+D:\phpstudy_pro\WWW\bushanghui\controllers\api\EfpsPayController.php  t
+D:\phpstudy_pro\WWW\bushanghui\controllers\api\OrderController.php  ?
+
+D:\phpstudy_pro\WWW\bushanghui\config\common.php
+
+商家支付
+D:\phpstudy_pro\WWW\bushanghui\mch\forms\api\CheckoutOrderPayForm.php
+
+提现修改
+D:\phpstudy_pro\WWW\bushanghui\controllers\api\UserController.php
+D:\phpstudy_pro\WWW\bushanghui\forms\api\user\UserEditForm.php
+D:\phpstudy_pro\WWW\bushanghui\forms\api\user\UserAddressForm.php
+D:\phpstudy_pro\WWW\bushanghui\forms\api\cash\CashForm.php  
+
+D:\phpstudy_pro\WWW\bushanghui\forms\mall\finance\CashForm.php
+D:\phpstudy_pro\WWW\bushanghui\forms\bs\
+D:\phpstudy_pro\WWW\bushanghui\web\withdraw-notify\
+D:\phpstudy_pro\WWW\bushanghui\models\BsTransferOrder.php
+D:\phpstudy_pro\WWW\bushanghui\web\withdraw-notify\bs.php
+D:\phpstudy_pro\WWW\bushanghui\component\bspay\Bs.php
+D:\phpstudy_pro\WWW\bushanghui\controllers\api\BsPayNotifyController.php
+D:\phpstudy_pro\WWW\bushanghui\forms\mall\finance\TransmitCheckForm.php
+D:\phpstudy_pro\WWW\bushanghui\component\jobs\BsWithdrawQueryJob.php
+
+金豆提现
+D:\phpstudy_pro\WWW\bushanghui\forms\admin\Menus.php
+D:\phpstudy_pro\WWW\bushanghui\controllers\mall\FinanceController.php
+D:\phpstudy_pro\WWW\bushanghui\forms\mall\finance\IntegralCashForm.php
+D:\phpstudy_pro\WWW\bushanghui\forms\mall\finance\IntegralCashListForm.php
+D:\phpstudy_pro\WWW\bushanghui\models\IntegralCash.php
+D:\phpstudy_pro\WWW\bushanghui\forms\mall\export\IntegralCashExport.php
+D:\phpstudy_pro\WWW\bushanghui\forms\common\UserIntegralForm.php
+D:\phpstudy_pro\WWW\bushanghui\controllers\api\IntegralCashController.php
+D:\phpstudy_pro\WWW\bushanghui\forms\api\integral\IntegralCashForm.php
+D:\phpstudy_pro\WWW\bushanghui\component\jobs\BsIntegralWithdrawQueryJob.php
+D:\phpstudy_pro\WWW\bushanghui\forms\bs\BsIntegralCashTransfer.php
+商户提现
+D:\phpstudy_pro\WWW\bushanghui\component\jobs\BsMchWithdrawQueryJob.php
+D:\phpstudy_pro\WWW\bushanghui\forms\bs\BsMchCashTransfer.php
+前端:
+D:/phpstudy_pro/WWW/wwwfrontend-master(1)/common/api.js
+D:/phpstudy_pro/WWW/wwwfrontend-master(1)/pages/order/pay.vue
+提现
+D:/phpstudy_pro/WWW/wwwfrontend-master(1)/pages/user/info.vue
+D:/phpstudy_pro/WWW/wwwfrontend-master(1)/plugins/extensions/cash/edit.
+金豆提现
+D:/phpstudy_pro/WWW/wwwfrontend-master(1)/mch/redBag/redBag.vue
+D:/phpstudy_pro/WWW/wwwfrontend-master(1)/mch/redBag/cash.vue
+
+商家
+D:/phpstudy_pro/WWW/wwwfrontend-master(1)/mch/enter/enter.vue
+
+测试暂时注释
+D:\phpstudy_pro\WWW\bushanghui\forms\api\order\OrderPayFormBase.php   78行(已经去除注释)
+D:\phpstudy_pro\WWW\bushanghui\mch\forms\api\CheckoutOrderPayForm.php  162行(已经去除注释)
+
+
+退款
+D:\phpstudy_pro\WWW\bushanghui\forms\bs\BsRefund.php
+
+mysql
+ALTER TABLE `jxmall_efps_payment_order` 
+MODIFY COLUMN `payMethod` smallint(4) NOT NULL DEFAULT 0 COMMENT '支付方式 \r\n===============\r\nIF-QRcode-01\r\n---------------------------\r\n6：微信主扫支付\r\n7：支付宝主扫支付\r\n24：银联二维码主扫支付\r\n49：银联 JS 支付\r\n==============\r\nIF-WeChat-01\r\n--------------------------\r\n1：公众号支付\r\n35：小程序支付\r\n-------------------------\r\nIF-BsWeChat01\r\n\r\n51：公众号支付\r\n52：小程序支付\r\n-------------------------' AFTER `payAPI`;
+
+ALTER TABLE `jxmall_efps_payment_order` 
+MODIFY COLUMN `payAPI` enum('IF-WeChat-01','IF-QRcode-01','IF-BsWeChat-01') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'IF-QRcode-01主扫支付' AFTER `orderInfo`;
+
+
+ALTER TABLE `jxmall_user` 
+ADD COLUMN `cert_no` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '个人证件号码' AFTER `vcshop_member_agentid`,
+ADD COLUMN `cert_validity_type` tinyint(3) DEFAULT 0 COMMENT '个人证件有效期类型 1:长期有效 0:非长期有效；示例值：0' AFTER `cert_no`,
+ADD COLUMN `cert_begin_date` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '个人证件有效期开始日期 日期格式：yyyyMMdd' AFTER `cert_validity_type`,
+ADD COLUMN `cert_end_date` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '个人证件有效期截止日期 日期格式：yyyyMMdd' AFTER `cert_begin_date`,
+ADD COLUMN `huifu_id` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `cert_end_date`,
+ADD COLUMN `huifu_login_name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `huifu_id`,
+ADD COLUMN `huifu_login_password` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `huifu_login_name`,
+ADD COLUMN `huifu_create_time` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `huifu_login_password`,
+ADD COLUMN `huifu_update_time` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL AFTER `huifu_create_time`,
+ADD COLUMN `bank_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' AFTER `huifu_update_time`,
+ADD COLUMN `bank_account` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' AFTER `bank_name`,
+ADD COLUMN `bankbranch` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' AFTER `bank_account`,
+ADD COLUMN `bankprovinceid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' AFTER `bankbranch`,
+ADD COLUMN `bankprovince` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' AFTER `bankprovinceid`,
+ADD COLUMN `bankcityid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' AFTER `bankprovince`,
+ADD COLUMN `bankcity` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' AFTER `bankcityid`,
+ADD COLUMN `huifu_bank_token_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '	取现卡序列号' AFTER `bankcity`,
+ADD COLUMN `huifu_cash_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '取现业务类型' AFTER `huifu_bank_token_no`;
+
+
+jxmall_bs_transfer_order表
+jxmall_integral_cash

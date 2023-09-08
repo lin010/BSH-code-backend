@@ -22,8 +22,8 @@ class MchApplyEasyForm extends BaseModel{
 
     public function rules(){
         return [
-            [['name', 'realname', 'mobile'], 'required'],
-            [['name', 'realname', 'mobile', 'district', 'address'], 'trim'],
+            [['name', 'realname', 'mobile', 'address'], 'required', 'message' => '{attribute}不能为空.'],
+            [['name', 'realname', 'mobile', 'district'], 'trim'],
             [['district_id', 'zk', 'province', 'city', 'province_id', 'city_id'], 'safe'],
         ];
     }
@@ -34,6 +34,7 @@ class MchApplyEasyForm extends BaseModel{
             'realname' => '负责人',
             'province' => '省份',
             'city'     => '城市',
+            'address'     => '详细地址',
 
         ];
     }

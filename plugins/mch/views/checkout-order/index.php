@@ -182,7 +182,7 @@
                 <el-table-column label="资金明细" width="160">
                     <template slot-scope="scope">
                         <div>支付现金：{{scope.row.pay_price}}</div>
-                        <div>支付金豆：{{scope.row.integral_deduction_price}}</div>
+                        <div>支付{{currencyAlias.red_envelope_alias}}：{{scope.row.integral_deduction_price}}</div>
                         <div>总支付：{{scope.row.order_price}}</div>
                     </template>
                 </el-table-column>
@@ -190,14 +190,14 @@
                 <el-table-column label="赠送明细" width="180">
                     <template slot-scope="scope">
                         <div>
-                            赠送红包：{{scope.row.send_money}}
+                            赠送{{currencyAlias.silver_beans_alias}}：{{scope.row.send_money}}
                             <span v-if="scope.row.send_status == 'invalid' || scope.row.send_status == ''"
                                   style="color: red">(无效)</span>
                             <span v-if="scope.row.send_status == 'success'" style="color: green">(已发送)</span>
                             <span v-if="scope.row.send_status == 'waiting'" style="color: red">(待发送)</span>
                         </div>
                         <div>
-                            赠送积分：{{scope.row.score_money}}
+                            赠送{{currencyAlias.integral_alias}}：{{scope.row.score_money}}
                             <span v-if="scope.row.score_status == 'invalid' || scope.row.score_status == ''"
                                   style="color: red">(无效)</span>
                             <span v-if="scope.row.score_status == 'success'" style="color: green">(已发送)</span>
@@ -340,7 +340,7 @@
                     <tr class="c4">
                         <td class="label">支付现金：</td>
                         <td>{{ infoDialog.pay_price }}</td>
-                        <td class="label">支付金豆：</td>
+                        <td class="label">支付{{currencyAlias.red_envelope_alias}}：</td>
                         <td>{{ infoDialog.integral_deduction_price }}</td>
                     </tr>
                     <tr class="c4">
@@ -361,7 +361,7 @@
                 </div>
                 <table class="grid-i" style="width:100%;">
                     <tr class="c4">
-                        <td class="label">赠送红包：</td>
+                        <td class="label">赠送{{currencyAlias.silver_beans_alias}}：</td>
                         <td>
                             {{ infoDialog.send_money }}
                             <span v-if="infoDialog.send_status == 'invalid' || infoDialog.send_status == ''"
@@ -369,7 +369,7 @@
                             <span v-if="infoDialog.send_status == 'success'" style="color: green">(已发送)</span>
                             <span v-if="infoDialog.send_status == 'waiting'" style="color: red">(待发送)</span>
                         </td>
-                        <td class="label">赠送积分：</td>
+                        <td class="label">赠送{{currencyAlias.integral_alias}}：</td>
                         <td>
                             {{ infoDialog.score_money }}
                             <span v-if="infoDialog.score_status == 'invalid' || infoDialog.score_status == ''"
@@ -546,6 +546,12 @@
                 ],
                 dialogVisible: false,
                 infoDialog: {},
+                currencyAlias:{
+                    balance_alias: '',
+                    red_envelope_alias: '',
+                    integral_alias: '',
+                    silver_beans_alias: '',
+                },
             };
         },
         methods: {
@@ -696,8 +702,30 @@
                 this.page = 1;
                 this.getList();
             },
+            //获取币种别名函数
+            getCurrencyAliasData(){
+                request({
+                    params: {
+                        r: 'mall/setting/mall-more',
+                        key:'t',
+                        keys:'balance_alias,red_envelope_alias,integral_alias,silver_beans_alias',
+                    },
+                }).then(e => {
+                    if (e.data.code === 0) {
+                        this.currencyAlias = e.data.data;
+                        this.pay_mode = [
+                            {label: "全部", value: ""},
+                            {label: this.currencyAlias.red_envelope_alias, value: "red_packet"},
+                            {label: this.currencyAlias.balance_alias, value: "balance"}
+                        ];
+                    } else {
+                        this.$message.error(e.data.msg);
+                    }
+                })
+            },
         },
         mounted: function () {
+            this.getCurrencyAliasData();
             this.getList();
         }
     });
