@@ -144,10 +144,10 @@ class UserRelationshipLinkController extends BaseCommandController {
                         $left  = $parentLink->right;
                         $right = $left + 1;
 
-                        UserRelationshipLink::updateAllCounters(["left" => 2, "right" => 2],
+                        UserRelationshipLink::updateAllCounters(["left" => 2, "right" => 2, "created_at" => time()],
                             "`left` > '".$parentLink->right."'");
 
-                        UserRelationshipLink::updateAllCounters(["right" => 2],
+                        UserRelationshipLink::updateAllCounters(["right" => 2, "created_at" => time()],
                             "`left` <= '".$parentLink->left."' AND `right` >= '".$parentLink->right."'");
 
                     }else{
@@ -157,10 +157,11 @@ class UserRelationshipLinkController extends BaseCommandController {
                     }
 
                     $link = new UserRelationshipLink([
-                        "user_id"   => $user->id,
-                        "parent_id" => $user->parent_id,
-                        "left"      => $left,
-                        "right"     => $right
+                        "user_id"    => $user->id,
+                        "parent_id"  => $user->parent_id,
+                        "left"       => $left,
+                        "right"      => $right,
+                        "created_at" => time()
                     ]);
                     if(!$link->save()){
                         throw new \Exception(json_encode($link->getErrors()));
@@ -220,14 +221,15 @@ class UserRelationshipLinkController extends BaseCommandController {
             //进行收缩处理
             UserRelationshipLink::updateAll([
                 "is_delete"     => 1,
-                "delete_reason" => "parent changed"
+                "delete_reason" => "parent changed",
+                "created_at"    => time()
             ], "`left` >= '".$editLink->left."' AND `right` <= '".$editLink->right."'");
 
             $gap  = $editLink->right - $editLink->left + 1;
-            UserRelationshipLink::updateAllCounters(["left" => -1 * $gap, "right" => -1 * $gap],
+            UserRelationshipLink::updateAllCounters(["left" => -1 * $gap, "right" => -1 * $gap, "created_at" => time()],
                 "`left` > '".$editLink->right."'");
             if($editLink->parent_id){
-                UserRelationshipLink::updateAllCounters(["right" => -1 * $gap],
+                UserRelationshipLink::updateAllCounters(["right" => -1 * $gap, "created_at" => time()],
                     "`left` < '".$editLink->left."' AND `right` > '".$editLink->right."'");
             }
 
@@ -260,12 +262,12 @@ class UserRelationshipLinkController extends BaseCommandController {
             $diff = $maxRight - $editLink->left;
 
             //对新的父级关系进行扩展
-            UserRelationshipLink::updateAllCounters(["left" => $gap, "right" => $gap],
+            UserRelationshipLink::updateAllCounters(["left" => $gap, "right" => $gap, "created_at" => time()],
                 "`left` >= '".$maxRight."' AND is_delete=0");
-            UserRelationshipLink::updateAllCounters(["right" => $gap],
+            UserRelationshipLink::updateAllCounters(["right" => $gap, "created_at" => time()],
                 "`left` < '".$maxRight."' AND `right` >= '".$maxRight."' AND is_delete=0");
 
-            UserRelationshipLink::updateAllCounters(["left" => $diff, "right" => $diff],
+            UserRelationshipLink::updateAllCounters(["left" => $diff, "right" => $diff, "created_at" => time()],
                 "`left` >= '".$editLink->left."' AND `right` <= '".$editLink->right."' AND is_delete='1'");
 
             $editLink = UserRelationshipLink::findOne($editLink->user_id);
@@ -276,7 +278,8 @@ class UserRelationshipLinkController extends BaseCommandController {
 
             UserRelationshipLink::updateAll([
                 "is_delete"     => 0,
-                "delete_reason" => ""
+                "delete_reason" => "",
+                "created_at"    => time()
             ], "`left` >= '".$editLink->left."' AND `right` <= '".$editLink->right."'");
 
             $trans->commit();
