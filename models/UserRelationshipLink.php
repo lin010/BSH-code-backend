@@ -19,7 +19,7 @@ class UserRelationshipLink extends BaseActiveRecord
     {
         return [
             [['user_id', 'parent_id', 'left', 'right'], 'required'],
-            [['is_delete', 'delete_reason'], 'safe']
+            [['is_delete', 'delete_reason', 'created_at'], 'safe']
         ];
     }
 
