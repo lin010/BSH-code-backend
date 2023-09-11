@@ -292,9 +292,10 @@ class GoodsAction extends Action{
 
     //商品订单已确认收货，分佣到账
     private function doStatusSuccess(ActiveQuery $query){
+        //2023/09/11 修改支付成功分佣立马到账
         $priceLogs = $query->andWhere([
             "AND",
-            ["IN", "o.status", [3, 6, 7, 8]],
+            ["IN", "o.status", [1, 2, 3, 6, 7, 8]],
             "(od.is_refund='0' OR (od.is_refund='1' AND od.refund_status='21'))"
         ])->limit(10)->all();
         if($priceLogs){
