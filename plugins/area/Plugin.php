@@ -141,7 +141,7 @@ class Plugin extends \app\plugins\Plugin
                 'total_price' => $areas["total_price"] ?? '0.00',
                 'frozen_price' => $areas["frozen_price"] ?? '0.00',
                 'yesterday_price' => $areas["yesterday_price"] ?? '0.00',
-                'level_name' => $areas["level_name"],
+                'level_name' => $areas["level_name"] ?? "",
                 'sign' => $this->getName(),
                 'plugin_name' => $this->getDisplayName(),
                 'logo' => $this->getLogo()

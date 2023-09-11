@@ -2807,7 +2807,7 @@ class OrderSubmitForm extends BaseModel
         foreach ($mchItem['goods_list'] as $item) {
             $goods = $item['goods_attr']['goods'];
             if ($goods['is_area_limit'] === 1) {
-                $area_limit = \yii\helpers\BaseJson::decode($goods{'area_limit'});
+                $area_limit = \yii\helpers\BaseJson::decode($goods['area_limit']);
                 if (!isset($area_limit) || !is_array($area_limit)) {
                     return false;
                 }

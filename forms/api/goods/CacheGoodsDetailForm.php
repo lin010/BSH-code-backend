@@ -371,7 +371,7 @@ class CacheGoodsDetailForm extends BaseModel implements ICacheForm{
         //起送
         $pickup = '';
         $offer = $options[Option::NAME_OFFER_PRICE];
-        if ($offer{'is_enable'} == 1) {
+        if ($offer['is_enable'] == 1) {
             if (is_array($offer['detail'])) {
                 foreach ($offer['detail'] as $i) {
                     $pickup .= sprintf('满%s元起送', $i['total_price']);

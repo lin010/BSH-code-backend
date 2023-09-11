@@ -30,7 +30,7 @@ use Yii;
  * @property int $temp_parent_id 临时父级id
  * @property int $parent_id 第一父级ID（直推人id）
  * @property int $second_parent_id 第二推荐人id
- * @property int $third_parent_id 第三推荐人id
+ * @property int $third_parent_id 第三推荐人id235632
  * @property float $score 当前积分
  * @property string $avatar_url 头像
  * @property int $total_score 总积分
@@ -665,7 +665,7 @@ class User extends BaseActiveRecord implements \yii\web\IdentityInterface
             ],
         ];
 
-        $roleTypeLabel = trim(\Yii::$app->user->getIdentity()->role_type_label);
+        $roleTypeLabel = $this->role_type_label;
 
         $userLevel = isset($levelList[$this->role_type]) ? $levelList[$this->role_type] : null;
 
