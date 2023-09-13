@@ -112,9 +112,9 @@ class MchForm extends BaseModel
             }
             $detail['cat_name'] = $detail['category']['name'];
             $detail['form_data'] = $detail['form_data'] ? \Yii::$app->serializer->decode($detail['form_data']) : [];
-            $detail['username'] = $detail['mchAdmin']['username'];
-            $detail['password'] = $detail['mchAdmin']['password'];
-            $detail['admin_id'] = $detail['mchAdmin']['id'];
+            $detail['username'] = $detail['mchAdmin']['username'] ?? '';
+            $detail['password'] = $detail['mchAdmin']['password'] ?? '';
+            $detail['admin_id'] = $detail['mchAdmin']['id'] ?? '';
 
             //编辑红包赠送所需参数
             $detail['give_shopping_params'][0]['id'] = $this->id;
@@ -341,8 +341,8 @@ class MchForm extends BaseModel
             ['LIKE', 'u.nickname', $keyword],
             ['u.id' => $keyword]
         ]);
-        
-        $list = $query->InnerJoinwith('userInfo')->orderBy('nickname')->limit(10)->asArray()->all();
+
+        $list = $query->InnerJoinwith('userInfo')->orderBy('nickname')->limit(100)->asArray()->all();
         //
         /* foreach ($list as $k => $v) {
             $list[$k]['avatar'] = $v['userInfo']['avatar'];
