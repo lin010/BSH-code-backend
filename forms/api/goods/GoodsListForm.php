@@ -129,6 +129,27 @@ class GoodsListForm extends BaseModel implements ICacheForm
                 if ($item->use_virtual_sales) {
                     $detail['sales'] = sprintf("已售%s%s", $item->sales + $item->virtual_sales, $item->unit);
                 }
+
+                //设置独立分销价
+                if($detail['enable_commisson_price'] && !\Yii::$app->user->isGuest){
+                    $identity = \Yii::$app->user->getIdentity();
+                    if($identity->role_type == "branch_office"){ //城市服务商
+                        $detail['price'] = $detail['branch_office_price'];
+                    }elseif($identity->role_type == "partner"){
+                        $detail['price'] = $detail['partner_price'];
+                    }elseif($identity->role_type == "store"){
+                        $detail['price'] = $detail['store_price'];
+                    }
+                    foreach($detail['attr'] as $aKey => $attr){
+                        if($identity->role_type == "branch_office"){ //城市服务商
+                            $detail['attr'][$aKey]['price'] = $attr['branch_office_price'];
+                        }elseif($identity->role_type == "partner"){
+                            $detail['attr'][$aKey]['price'] = $attr['partner_price'];
+                        }elseif($identity->role_type == "store"){
+                            $detail['attr'][$aKey]['price'] = $attr['store_price'];
+                        }
+                    }
+                }
                 $newList[] = $detail;
             }
 

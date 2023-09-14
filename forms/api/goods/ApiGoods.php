@@ -65,6 +65,7 @@ class ApiGoods extends BaseModel
             'price_content' => '售价文字版',
             'is_sales' => '是否显示销量',
             'sales' => '销量',
+            'enable_commisson_price' => '独立分销价'
         ];
     }
 
@@ -114,7 +115,11 @@ class ApiGoods extends BaseModel
             'goods_stock' => $goodsStock,
             'goods_num' => $goodsStock,
             'max_deduct_integral'=>$this->goods->max_deduct_integral,
-            'price_display' => $price_display
+            'price_display' => $price_display,
+            'enable_commisson_price' => $this->goods->enable_commisson_price,
+            'branch_office_price' => $this->goods->branch_office_price,
+            'partner_price' => $this->goods->partner_price,
+            'store_price' => $this->goods->store_price,
         ];
         $data = array_merge($data, $this->getPlugin());
         return $data;
