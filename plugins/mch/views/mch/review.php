@@ -30,6 +30,9 @@
                         <div style="font-size:12px;">
                             <div>申请人姓名：{{scope.row.realname}}</DIV>
                             <div>申请人电话：{{scope.row.mobile}}</DIV>
+                            <div>申请人身份：
+                                <span v-for="(typeName,typeKey) in userRoleTypes"  v-if="scope.row.role_type == typeKey">{{typeName}}</span>
+                            </DIV>
                             <div>推荐人：{{scope.row.parent_nickname}}</div>
                             <div>推荐人手机：{{scope.row.parent_mobile}}</DIV>
                             <div>推荐人等级：

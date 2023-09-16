@@ -49,7 +49,7 @@ class MchReviewForm extends BaseModel{
 
             $selects = ["ma.*", "p.role_type as parent_role_type", "p.nickname as parent_nickname"];
             $selects[] = "p.mobile as parent_mobile";
-            $selects[] = "u.nickname";
+            $selects = array_merge($selects, ["u.nickname", "u.role_type", "u.role_type_label"]);
             $query->select($selects);
             $query->orderBy("ma.id DESC");
 
