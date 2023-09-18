@@ -278,18 +278,23 @@ class MchApplyPassForm extends BaseModel{
             ]);
         }
 
-        $store->name        = $applyData['store_name'];
-        $store->description = "";
-        $store->mobile      = (isset($applyData['bind_mobile']) && $applyData['bind_mobile']) ? $applyData['bind_mobile'] : $applyModel->mobile;
-        $store->address     = $applyData['store_address'];
-        $store->province_id = $applyData['store_province_id'];
-        $store->city_id     = $applyData['store_city_id'];
-        $store->district_id = $applyData['store_district_id'];
-        $store->longitude   = $applyData['store_longitude'];
-        $store->latitude    = $applyData['store_latitude'];
-        $store->is_default  = 1;
-        $store->updated_at  = time();
-        $store->is_delete   = 0;
+        $store->name           = $applyData['store_name'];
+        $store->description    = "";
+        $store->mobile         = (isset($applyData['bind_mobile']) && $applyData['bind_mobile']) ? $applyData['bind_mobile'] : $applyModel->mobile;
+        $store->address        = $applyData['store_address'];
+        $store->province_id    = $applyData['store_province_id'];
+        $store->city_id        = $applyData['store_city_id'];
+        $store->district_id    = $applyData['store_district_id'];
+        $store->longitude      = $applyData['store_longitude'];
+        $store->latitude       = $applyData['store_latitude'];
+        $store->is_default     = 1;
+        $store->updated_at     = time();
+        $store->is_delete      = 0;
+
+        if(!empty($applyData['start_business_time']) && !empty($applyData['end_business_time'])){
+            $store->business_hours = $applyData['start_business_time'] . "-" . $applyData['end_business_time'];
+        }
+
 
         if(!$store->save()){
             throw new \Exception($this->responseErrorMsg($store));

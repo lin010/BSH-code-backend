@@ -146,6 +146,11 @@
                                 <template slot="append">折</template>
                             </el-input>
                         </el-form-item>
+                        <el-form-item label="营业时间：" >
+                            <el-input v-model="apply.data.start_business_time" placeholder="请输入内容" style="width:150px;"></el-input>
+                            <span style="margin:0 20px;color: gray;">-</span>
+                            <el-input v-model="apply.data.end_business_time" placeholder="请输入内容" style="width:150px;"></el-input>
+                        </el-form-item>
                         <template v-if="apply.data.is_special_discount == 1">
                             <el-form-item label="特殊折扣申请说明：" >
                                 <div style="color:gray">{{apply.data.settle_special_rate_remark}}</div>

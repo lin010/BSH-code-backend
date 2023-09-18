@@ -19,12 +19,17 @@ class MchApplyEasyForm extends BaseModel{
     public $district_id;
     public $zk;
     public $address;
+    public $start_business_time;
+    public $end_business_time;
+    public $store_mch_common_cat_id;
+    public $longitude;
+    public $latitude;
 
     public function rules(){
         return [
             [['name', 'realname', 'mobile', 'address'], 'required', 'message' => '{attribute}不能为空.'],
-            [['name', 'realname', 'mobile', 'district'], 'trim'],
-            [['district_id', 'zk', 'province', 'city', 'province_id', 'city_id'], 'safe'],
+            [['name', 'realname', 'mobile', 'district', 'start_business_time', 'end_business_time'], 'trim'],
+            [['district_id', 'zk', 'province', 'city', 'province_id', 'city_id', 'store_mch_common_cat_id', 'longitude', 'latitude'], 'safe'],
         ];
     }
 
@@ -71,7 +76,7 @@ class MchApplyEasyForm extends BaseModel{
             $applyModel->status     = "verifying";
             $applyModel->json_apply_data = json_encode([
                 "store_name"              => $this->name,
-                "store_mch_common_cat_id" => 0,
+                "store_mch_common_cat_id" => $this->store_mch_common_cat_id,
                 "store_province"          => $this->province,
                 "store_province_id"       => $this->province_id,
                 "store_city"              => $this->city,
@@ -80,8 +85,10 @@ class MchApplyEasyForm extends BaseModel{
                 "store_district_id"       => $this->district_id,
                 "store_address"           => $this->address,
                 "settle_discount"         => intval($this->zk),
-                "store_longitude"         => '',
-                "store_latitude"          => '',
+                "start_business_time"     => $this->start_business_time,
+                "end_business_time"       => $this->end_business_time,
+                "store_longitude"         => $this->longitude,
+                "store_latitude"          => $this->latitude,
                 "license_num"             => '',
                 "license_name"            => '',
                 "license_pic"             => '',
@@ -92,7 +99,7 @@ class MchApplyEasyForm extends BaseModel{
                 "settle_bank"             => '',
                 "settle_num"              => '',
                 "settle_realname"         => ''
-            ]);
+            ], JSON_UNESCAPED_UNICODE);
             if(!$applyModel->save()){
                 throw new \Exception($this->responseErrorMsg($applyModel));
             }

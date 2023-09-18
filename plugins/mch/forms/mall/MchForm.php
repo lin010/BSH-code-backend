@@ -110,7 +110,7 @@ class MchForm extends BaseModel
             } catch (\Exception $e) {
                 $detail['districts'] = '';
             }
-            $detail['cat_name'] = $detail['category']['name'];
+            $detail['cat_name'] = $detail['category']['name'] ?? '';
             $detail['form_data'] = $detail['form_data'] ? \Yii::$app->serializer->decode($detail['form_data']) : [];
             $detail['username'] = $detail['mchAdmin']['username'] ?? '';
             $detail['password'] = $detail['mchAdmin']['password'] ?? '';
