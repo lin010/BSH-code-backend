@@ -123,7 +123,11 @@ class MchCashApplyForm  extends BaseModel{
             $t->rollBack();
             return [
                 'code' => ApiCode::CODE_FAIL,
-                'msg'  => $e->getMessage()
+                'msg'  => $e->getMessage(),
+                'error' => [
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile()
+                ]
             ];
         }
     }

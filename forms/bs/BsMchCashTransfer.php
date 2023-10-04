@@ -27,10 +27,9 @@ class BsMchCashTransfer extends BaseModel{
             'bankcity' => !empty($extra['bankcity']) ? $extra['bankcity'] : "",
             'huifu_bank_token_no' => !empty($extra['huifu_bank_token_no']) ? $extra['huifu_bank_token_no'] : "",
             'title' => $title,
-            'user_id' => !empty($extra['user_id']) ? $extra['user_id'] : "",
+            'user_id' => !empty($cash->mch->user_id) ? $cash->mch->user_id : "",
             'notifyUrl' => \Yii::$app->getRequest()->getHostInfo() . "/web/withdraw-notify/mchbs.php",
         ]);
-
         return BsTransfer::execute($transferData);
     }
 
