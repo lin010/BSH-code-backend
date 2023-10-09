@@ -59,8 +59,9 @@ class UserShoppingVoucherListForm extends BaseModel {
             if($list){
                 foreach($list as &$item){
                     $item['created_at'] = date("m月d日 H:i", $item['created_at']);
+                    $item['current_money'] =sprintf("%.2f", $item['money'] + $item['current_money']);
                     $item['money'] = sprintf("%.2f", $item['money']);
-                    $item['income'] = sprintf("%.2f", $item['income']);
+                    //$item['income'] = sprintf("%.2f", $item['income']);
                 }
             }
 
@@ -78,7 +79,11 @@ class UserShoppingVoucherListForm extends BaseModel {
         }catch (\Exception $e){
             return [
                 'code' => ApiCode::CODE_FAIL,
-                'msg'  => $e->getMessage()
+                'msg'  => $e->getMessage(),
+                'error' => [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
             ];
         }
 
