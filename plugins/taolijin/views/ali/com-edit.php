@@ -62,13 +62,13 @@
                             <el-input v-model="formData.settings_data.adzone_id" placeholder="" style="width:300px;"></el-input>
                         </el-form-item>
                         -->
-
+                        <div style="display: flex;justify-content: center;">
+                            <el-button @click="close">取 消</el-button>
+                            <el-button :loading="btnLoading" type="primary" @click="save">确 定</el-button>
+                        </div>
                     </el-form>
 
-                    <div slot="footer" class="dialog-footer">
-                        <el-button @click="close">取 消</el-button>
-                        <el-button :loading="btnLoading" type="primary" @click="save">确 定</el-button>
-                    </div>
+
                 </el-tab-pane>
                 <el-tab-pane v-if="formData.id && formData.ali_type == 'ali'" label="邀请码管理" name="ali_invitecode">
 

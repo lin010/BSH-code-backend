@@ -47,6 +47,7 @@ class TaobaoGoodsRemoteSearchForm extends BaseModel {
                 "special_id"  => $account->special_id,
                 "has_coupon"  => "true"
             ]));
+
             if(!$res || !($res instanceof TbkDgMaterialOptionalResponse)){
                 throw new \Exception("淘宝联盟接口请求失败");
             }
@@ -87,6 +88,8 @@ class TaobaoGoodsRemoteSearchForm extends BaseModel {
      */
     private function aliOnlySales(Ali $ali, $list){
         if(!$list) return [];
+        return $list;
+
 
         $num_iids = [];
         foreach($list as $item){

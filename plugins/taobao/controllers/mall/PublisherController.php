@@ -22,6 +22,16 @@ class PublisherController  extends Controller{
             exit;
         }
 
+        //生成渠道会员
+        /*$account = TaobaoAccount::findOne(1);
+        $ali = new Ali($account->app_key, $account->app_secret);
+        $res = $ali->publisher->save($_GET['token'], [
+            'inviter_code' => 'FVYDKI',
+            'info_type' => 1
+        ]);
+        print_r($res);
+        exit;*/
+
         if (\Yii::$app->request->isAjax) {
             $form = new TaobaoPublisherListForm();
             $form->attributes = \Yii::$app->request->get();

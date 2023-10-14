@@ -18,8 +18,8 @@ class TaolijinAli extends BaseActiveRecord
     public function rules()
     {
         return [
-            [['mall_id', 'name', 'ali_type', 'remark', 'settings_data', 'updated_at', 'created_at'], 'required'],
-            [['sort', 'is_open', 'is_delete'], 'safe']
+            [['mall_id', 'ali_type', 'remark', 'settings_data', 'updated_at', 'created_at'], 'required'],
+            [['sort', 'name', 'is_open', 'is_delete'], 'safe']
         ];
     }
 }

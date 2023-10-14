@@ -41,7 +41,8 @@ class TaoLiJinAliSearchForm extends BaseModel {
                 "page_size"   => "12",
                 "page_no"     => (string)$this->page,
                 "adzone_id"   => $acc->adzone_id,
-                "material_id" => "6268"
+                "material_id" => "6268",
+                "q"           => "酒"
             ]);
 
 
@@ -52,7 +53,7 @@ class TaoLiJinAliSearchForm extends BaseModel {
             return [
                 'code' => ApiCode::CODE_SUCCESS,
                 'data' => [
-                    'list' => $res->getMapData()
+                    'list' => $res->getData()
                 ]
             ];
         }catch (\Exception $e){

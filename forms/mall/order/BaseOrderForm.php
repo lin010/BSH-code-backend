@@ -167,7 +167,13 @@ abstract class BaseOrderForm extends BaseModel
 
         $order = new Order();
 //        $address = new UserAddress();
+        $index = 0;
         foreach ($list as &$item) {
+            $index++;
+            if(empty($item['detail'][0]['goods'])){
+                unset($list[$index - 1]);
+                continue;
+            }
             /*$user_address = $address -> getUserAddress($item['user_id'],$item['address_id']);
             $item['address'] = $user_address['province'] . ' ' . $user_address['city'] . ' ' . $user_address['district'] . ' ' . $user_address['town'] . ' ' . $user_address['detail'];*/
             $item['platform'] = $item['user']['platform'];
