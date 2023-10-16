@@ -49,6 +49,11 @@ class CacheGoodsDetailForm extends BaseModel implements ICacheForm{
         }
 
         try {
+            $user = null;
+            if($this->user_id){
+                $user = \app\models\User::findOne($this->user_id);
+            }
+
             $goods = Goods::findOne([
                 'is_delete'  => 0,
                 'is_recycle' => 0,
@@ -182,6 +187,22 @@ class CacheGoodsDetailForm extends BaseModel implements ICacheForm{
             $info['goods_activities'] = $this->getGoodsActivities($goods);
             $info['coupon_list']      = $newCouponList;
 
+            //设置商品独立分销价（城市服务商、区域服务商、VIP）
+            if($goods->enable_commisson_price && $user){
+                $user = \app\models\User::findOne($this->user_id);
+                foreach($info['attr_list'] as $attrKey => $attrItem){
+                    if($user->role_type == "branch_office"){
+                        $attrItem['price'] = $attrItem['branch_office_price'];
+                    }elseif($user->role_type == "partner"){
+                        $attrItem['price'] = $attrItem['partner_price'];
+                    }elseif($user->role_type == "store"){
+                        $attrItem['price'] = $attrItem['store_price'];
+                    }
+                    $info['attr_list'][$attrKey] = $attrItem;
+                }
+
+            }
+
             //商家
             $mchModel = $goods->mch_id ? $goods->mch : null;
             $mchInfo = [];
@@ -194,8 +215,7 @@ class CacheGoodsDetailForm extends BaseModel implements ICacheForm{
 
             //判断是否可以购买
             $is_buy_power = 0;
-            if ($this->user_id) {
-                $user = \app\models\User::findOne($this->user_id);
+            if ($user) {
                 if ($goods->purchase_permission) {
                     $purchase_permission = json_decode($goods->purchase_permission,true);
                     if($user && !$user->is_delete){
@@ -221,10 +241,7 @@ class CacheGoodsDetailForm extends BaseModel implements ICacheForm{
             if($voucherGoods){
                 $info['shopping_voucher']['is_shopping_voucher_goods'] = 1;
                 $info['shopping_voucher']['voucher_price'] = $voucherGoods->voucher_price;
-                if($this->user_id){
-                    $user = \app\models\User::findOne($this->user_id);
-                    $info['shopping_voucher']['user_shopping_voucher'] = $user ? $user->shoppingVoucherUser->money : 0;
-                }
+                $info['shopping_voucher']['user_shopping_voucher'] = $user ? $user->shoppingVoucherUser->money : 0;
             }
 
             $info['is_seckill'] = 0;// 0、否  1、积分秒杀商品
