@@ -50,7 +50,7 @@ class OrderClerkProcessForm extends CommonClerkProcessForm
      */
     public static function checkAuth($clerkUserId, Mch $mch){
         if($clerkUserId != $mch->user_id){
-            //throw new \Exception("[ID:".$clerkUserId."]无权限核销");
+            throw new \Exception("[ID:".$clerkUserId."]无权限核销");
         }
     }
 
