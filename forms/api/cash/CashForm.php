@@ -164,7 +164,7 @@ class CashForm extends BaseModel
             if(empty($user->huifu_bank_token_no)){
                 $res = \Yii::$app->bs->user_busi_open($huifu);
                 if($res['code']==-1){
-                    return $this->returnApiResultData(ApiCode::CODE_FAIL,$res['message']);
+                    return $this->returnApiResultData(ApiCode::CODE_FAIL, $res['msg']);
                 }
                 $hasEdit = true;
             }else{
