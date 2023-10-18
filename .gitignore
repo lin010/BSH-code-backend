@@ -56,3 +56,4 @@ web/uploads/images/*
 composer.lock
 /debug.php
 /clouds/statics
+/component/bspay/BsPaySdk/log

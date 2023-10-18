@@ -206,7 +206,7 @@ class OrderSendForm extends BaseModel
         } else {
             $orderDetailExpress = new OrderDetailExpress();
             $orderDetailExpress->mall_id = \Yii::$app->mall->id;
-            $orderDetailExpress->mch_id = \Yii::$app->admin->identity->mch_id;
+            $orderDetailExpress->mch_id = \Yii::$app->admin->identity ? \Yii::$app->admin->identity->mch_id : 0;
             $orderDetailExpress->order_id = $this->order_id;
         }
         if ($this->is_express == 1) {
@@ -242,7 +242,7 @@ class OrderSendForm extends BaseModel
             if (!$relation) {
                 $model = new OrderDetailExpressRelation();
                 $model->mall_id = \Yii::$app->mall->id;
-                $model->mch_id = \Yii::$app->admin->identity->mch_id;
+                $model->mch_id = \Yii::$app->admin->identity ? \Yii::$app->admin->identity->mch_id : 0;
                 $model->order_id = $this->order_id;
                 $model->order_detail_id = $detailId;
                 $model->order_detail_express_id = $orderDetailExpress->id;

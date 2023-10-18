@@ -779,7 +779,11 @@ abstract class BaseOrderForm extends BaseModel
         } catch (\Exception $exception) {
             return [
                 'code' => ApiCode::CODE_FAIL,
-                'msg' => $exception->getMessage()
+                'msg' => $exception->getMessage(),
+                'error' => [
+                    'file' => $exception->getFile(),
+                    'line' => $exception->getLine()
+                ]
             ];
         }
     }

@@ -2,13 +2,16 @@
 
 namespace app\plugins\mch\forms\common\clerk;
 
+use app\core\ApiCode;
 use app\events\OrderEvent;
 use app\forms\common\CommonClerkProcessForm;
+use app\forms\mall\order\OrderForm;
 use app\models\clerk\ClerkData;
 use app\models\Order;
 use app\models\OrderClerk;
 use app\models\Store;
 use app\plugins\mch\models\Mch;
+use app\plugins\mch\models\MchPriceLog;
 
 class OrderClerkProcessForm extends CommonClerkProcessForm
 {
@@ -47,7 +50,7 @@ class OrderClerkProcessForm extends CommonClerkProcessForm
      */
     public static function checkAuth($clerkUserId, Mch $mch){
         if($clerkUserId != $mch->user_id){
-            throw new \Exception("[ID:".$clerkUserId."]无权限核销");
+            //throw new \Exception("[ID:".$clerkUserId."]无权限核销");
         }
     }
 
@@ -59,16 +62,21 @@ class OrderClerkProcessForm extends CommonClerkProcessForm
      * @throws \Exception
      */
     public static function clerkOrder($clerkUserId, Store $store, Order $order){
+
+        $order->clerk_id    = $clerkUserId;
+        $order->store_id    = $store->id;
         $order->is_send     = 1;
         $order->send_at     = time();
         $order->is_confirm  = 1;
         $order->confirm_at  = time();
-        $order->clerk_id    = $clerkUserId;
-        $order->store_id    = $store->id;
 
         if (!$order->save()) {
             throw new \Exception(json_encode($order->getErrors()));
         }
+
+        \Yii::$app->trigger(Order::EVENT_CONFIRMED, new OrderEvent([
+            'order' => $order
+        ]));
 
         $orderClerk = OrderClerk::find()->where(['order_id' => $order->id])->one();
         if (!$orderClerk) {
@@ -83,9 +91,33 @@ class OrderClerkProcessForm extends CommonClerkProcessForm
             throw new \Exception(json_encode($orderClerk->getErrors()));
         }
 
-        \Yii::$app->trigger(Order::EVENT_CONFIRMED, new OrderEvent([
-            'order' => $order
-        ]));
+        //把所有商户待结算设置为已结算
+        $mch = Mch::findOne([
+            "id"            => $order->mch_id,
+            "review_status" => 1,
+            "is_delete"     => 0
+        ]);
+        if($mch){
+            $details = $order->detail;
+            foreach($details as $detail){
+                $where = [
+                    'mall_id'     => $order->mall_id,
+                    'mch_id'      => $mch->id,
+                    'store_id'    => $store->id,
+                    'source_id'   => $detail->id,
+                    'source_type' => 'order_detail',
+                    'status'      => 'unconfirmed'
+                ];
+                $priceLog = MchPriceLog::findOne($where);
+                if($priceLog){
+                    $priceLog->status     = "confirmed";
+                    $priceLog->updated_at = time();
+                    $priceLog->remark     = "系统自动结算";
+                    $priceLog->save();
+                }
+            }
+        }
+
     }
 
     /**

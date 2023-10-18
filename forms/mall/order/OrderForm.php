@@ -8,7 +8,7 @@ class OrderForm extends BaseOrderForm
 {
     protected function extraConfirmWhere()
     {
-        if (\Yii::$app->admin->identity->mch_id > 0) {
+        if (\Yii::$app->admin->identity && \Yii::$app->admin->identity->mch_id > 0) {
             $mchSettingForm = new MchSettingForm();
             $mchSetting = $mchSettingForm->search();
 
