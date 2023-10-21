@@ -87,14 +87,14 @@ class PlateformsController extends Controller
     }
 
     /**
-     * @Note:添加平台产品
+     * @Note:保存平台产品
      * @return \yii\web\Response
      */
-    public function actionAddProduct()
+    public function actionSaveProduct()
     {
         $form = new PlateformsForm();
         $form->attributes = \Yii::$app->request->post();
-        return $this->asJson($form->addProduct());
+        return $this->asJson($form->saveProduct());
     }
 
 }

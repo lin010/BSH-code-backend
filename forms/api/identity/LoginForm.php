@@ -70,16 +70,18 @@ class LoginForm extends BaseModel
                 throw new \Exception('验证码不为空');
             }
 
-            $smsForm = new SmsForm();
-            $smsForm->captcha = $this->captcha;
-            $smsForm->mobile = $this->username;
-            if(!$smsForm->checkCode()){
-                return $this->returnApiResultData(ApiCode::CODE_FAIL,'验证码不正确');
+            $params = \Yii::$app->params;
+            if(empty($params['mobileLoginWhites']) || !in_array($this->username, $params['mobileLoginWhites'])){
+                $smsForm = new SmsForm();
+                $smsForm->captcha = $this->captcha;
+                $smsForm->mobile = $this->username;
+                if(!$smsForm->checkCode()){
+                    return $this->returnApiResultData(ApiCode::CODE_FAIL,'验证码不正确');
+                }
+                $duration = $this->checked == 'true' ? 86400 : 0;
+                Sms::updateCodeStatus($this->username, $this->captcha);
+                \Yii::$app->user->login($user, $duration);
             }
-
-            $duration = $this->checked == 'true' ? 86400 : 0;
-            Sms::updateCodeStatus($this->username, $this->captcha);
-            \Yii::$app->user->login($user, $duration);
 
             $user->last_login_at = time();
             $user->login_ip = get_client_ip();

@@ -167,22 +167,33 @@
                         </el-form-item>
                     </el-tab-pane>
                     <el-tab-pane label="产品信息" name="product" style="padding:20px 20px;background:white">
-
                         <div style="">
                             <el-table v-loading="listLoading" :data="ruleForm.product_json_data" >
 
                                 <el-table-column prop="product_id" label="ID" width="100"></el-table-column>
-                                <el-table-column prop="price" label="价格" width="100"></el-table-column>
+                                <el-table-column prop="sort" label="排序" width="200"></el-table-column>
+                                <el-table-column prop="price" label="价格" width="200"></el-table-column>
 
-                                <el-table-column label="类型">
+                                <el-table-column label="类型"  width="200">
                                     <template slot-scope="scope">
                                         <com-ellipsis v-if="scope.row.type =='slow'">慢充</com-ellipsis>
                                         <com-ellipsis v-else="">快充</com-ellipsis>
                                     </template>
                                 </el-table-column>
 
+                                <el-table-column label="运营商">
+                                    <template slot-scope="scope">
+                                        {{isvInfo(scope.row.allow)}}
+                                    </template>
+                                </el-table-column>
+
                                 <el-table-column label="操作" width="220">
                                     <template slot-scope="scope">
+                                        <el-button @click="editProduct(scope.$index)" circle type="text" size="mini">
+                                            <el-tooltip class="item" effect="dark" content="编辑" placement="top">
+                                                <img src="statics/img/mall/edit.png" alt="">
+                                            </el-tooltip>
+                                        </el-button>
                                         <el-button @click="delProduct(ruleForm.id, scope.row.product_id, scope.$index)" circle type="text" size="mini">
                                             <el-tooltip class="item" effect="dark" content="删除" placement="top">
                                                 <img src="statics/img/mall/del.png" alt="">
@@ -194,7 +205,6 @@
                             </el-table>
                             <el-button :loading="btnLoading" type="primary" @click="addProduct" size="big" style="margin-top:10px;">新增</el-button>
                         </div>
-
                     </el-tab-pane>
                 </el-tabs>
             </el-form>
@@ -206,7 +216,10 @@
     <el-dialog title="添加产品" :visible.sync="dialogProduct" width="30%">
         <el-form :model="productForm" label-width="80px" :rules="productFormRules" ref="productForm">
             <el-form-item label="产品ID" prop="product_id" size="small">
-                <el-input type="number" v-model="productForm.product_id"></el-input>
+                <el-input type="text" v-model="productForm.product_id"></el-input>
+            </el-form-item>
+            <el-form-item label="排序" prop="product_sort" size="small">
+                <el-input type="number" min="0" v-model="productForm.product_sort"></el-input>
             </el-form-item>
             <el-form-item label="金额" prop="product_price" size="small">
                 <el-input type="number" v-model="productForm.product_price"></el-input>
@@ -215,10 +228,17 @@
                 <el-radio v-model="productForm.product_type" label="1">快充</el-radio>
                 <el-radio v-model="productForm.product_type" label="2">慢充</el-radio>
             </el-form-item>
+            <el-form-item label="运营商" prop="product_allow">
+                <el-checkbox-group v-model="productForm.product_allow">
+                    <el-checkbox label="yidong">移动</el-checkbox>
+                    <el-checkbox label="liantong">联通</el-checkbox>
+                    <el-checkbox label="dianxin">电信</el-checkbox>
+                </el-checkbox-group>
+            </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
             <el-button @click="dialogProduct = false">取消</el-button>
-            <el-button :loading="pdLoading" type="primary" @click="productSubmit">添加</el-button>
+            <el-button :loading="pdLoading" type="primary" @click="productSubmit">保存</el-button>
         </div>
     </el-dialog>
 </div>
@@ -233,6 +253,7 @@
                 listLoading: false,
                 region_deny_list: [],
                 platList: [],
+                product_allow: [],
                 props: {
                     value: 'id',
                     label: 'name',
@@ -283,6 +304,8 @@
                 productForm: {
                     product_id: '',
                     product_price: '',
+                    product_sort: '',
+                    product_allow: ['yidong', 'liantong', 'dianxin'],
                     product_type: '',
                     type: '',
                     price: '',
@@ -293,11 +316,17 @@
                     product_id: [
                         {required: true, message: '请传入产品ID', trigger: 'blur'},
                     ],
+                    product_sort: [
+                        {required: true, message: '请设置排序', trigger: 'blur'},
+                    ],
                     product_price: [
                         {required: true, message: '金额不能为空', trigger: 'blur'},
                     ],
                     product_type: [
                         {required: true, message: '类型不能为空', trigger: 'change'},
+                    ],
+                    product_allow: [
+                        {required: true, message: '请设置运营商', trigger: 'change'},
                     ],
                 },
                 paramsList: [],
@@ -305,6 +334,17 @@
                 new_param_name: '',
                 new_param_edit: false,
             };
+        },
+        computed: {
+            isvInfo(str){
+                return function isvInfo(str){
+                    let infos = [];
+                    if(str && str.indexOf('yidong') != -1) infos.push('移动');
+                    if(str && str.indexOf('liantong') != -1) infos.push('联通');
+                    if(str && str.indexOf('dianxin') != -1) infos.push('电信');
+                    return infos.join(",");
+                }
+            }
         },
         methods: {
             delParam(row){
@@ -563,7 +603,30 @@
 
             addProduct() {
                 this.dialogProduct = true;
-                this.productForm.id = this.ruleForm.id;
+                this.productForm = {
+                    product_id: '',
+                    product_price: '',
+                    product_sort: '',
+                    product_allow: ['yidong', 'liantong', 'dianxin'],
+                    product_type: '',
+                    type: '',
+                    price: '',
+                    id: this.ruleForm.id,
+                };
+            },
+            editProduct(index){
+                let item = JSON.parse(JSON.stringify(this.ruleForm.product_json_data[index]));
+                this.productForm = {
+                    product_id: item.product_id,
+                    product_price: item.price,
+                    product_sort: item.sort,
+                    product_allow: item.allow.split(","),
+                    product_type: item.type == "fast" ? "1" : "2",
+                    type: item.type == "fast" ? "1" : "2",
+                    price: item.price,
+                    id: this.ruleForm.id,
+                };
+                this.dialogProduct = true;
             },
 
             productSubmit() {
@@ -574,7 +637,7 @@
                         self.pdLoading = true;
                         request({
                             params: {
-                                r: 'plugin/addcredit/mall/plateforms/plateforms/add-product',
+                                r: 'plugin/addcredit/mall/plateforms/plateforms/save-product',
                             },
                             method: 'post',
                             data: para,

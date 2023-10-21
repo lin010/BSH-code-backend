@@ -51,7 +51,7 @@ class PlateformsEditForm extends BaseModel
             $plateforms->name           = $this->name;
             $plateforms->sdk_dir        = $this->sdk_dir;
             $plateforms->ratio          = $this->ratio;
-            $plateforms->parent_id      = $this->parent_id ?? 0;
+            $plateforms->parent_id      = intval($this->parent_id ?? 0);
             $plateforms->transfer_rate  = $this->transfer_rate;
             $plateforms->class_dir      = $this->class_dir;
             $plateforms->enable_fast    = (int)$this->enable_fast;

@@ -31,6 +31,9 @@ class PhoneBillOrderListForm extends BaseModel
         try {
             $query = AddcreditOrder::find()->alias("ao");
             $query->innerJoin(["u" => User::tableName()], "u.id=ao.user_id");
+
+            $query->andWhere(["is_delete" => 0]);
+
             if (!empty($this->keyword)) {
                 $query->andWhere([
                     "OR",

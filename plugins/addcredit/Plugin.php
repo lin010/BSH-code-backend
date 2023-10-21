@@ -3,6 +3,7 @@
 namespace app\plugins\addcredit;
 
 use app\handlers\BaseHandler;
+use app\helpers\PluginHelper;
 use app\plugins\agent\handlers\HandlerRegister;
 
 class Plugin extends \app\plugins\Plugin{
@@ -94,5 +95,24 @@ class Plugin extends \app\plugins\Plugin{
 
     public function getPriceTypeName($price_log_id = 0){
         return '未知类型';
+    }
+
+    /**
+     * 插件可共用的跳转链接
+     * @return array
+     */
+    public function getPickLink()
+    {
+        $iconBaseUrl = PluginHelper::getPluginBaseAssetsUrl($this->getName()) . '/img';
+
+        return [
+            [
+                'key' => 'addcredit',
+                'name' => '话费充值',
+                'open_type' => 'navigate',
+                'icon' => $iconBaseUrl . '/phone.png',
+                'value' => '/mch/moreCredit/moreCredit',
+            ],
+        ];
     }
 }

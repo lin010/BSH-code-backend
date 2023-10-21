@@ -22,6 +22,8 @@ class PlateformsForm extends BaseModel
     public $mch_id;
     public $product_price;
     public $product_type;
+    public $product_sort;
+    public $product_allow;
 
 
     public function rules()
@@ -31,6 +33,7 @@ class PlateformsForm extends BaseModel
             [['page'], 'default', 'value' => 1],
             [['keyword'], 'string'],
             [['product_price'], 'number'],
+            [['product_sort', 'product_allow'], 'safe']
         ];
     }
 
@@ -201,7 +204,7 @@ class PlateformsForm extends BaseModel
         }
     }
 
-    public function addProduct()
+    public function saveProduct()
     {
         if (!$this->validate()) {
             return $this->responseErrorInfo();
@@ -216,17 +219,35 @@ class PlateformsForm extends BaseModel
             $product = $plateforms->product_json_data;
             if ($product) {
                 $product = json_decode($product, true);
+            }else{
+                $product = [];
             }
-            $addProduct = [
-                "product_id" => $this->product_id,
-                "price" => $this->product_price,
-                "type" => ($this->product_type == 1) ? 'fast' : 'slow',
-            ];
-            if ($product) {
-                array_push($product,  $addProduct);
-            } else {
-                $product = [$addProduct];
+
+            $isExists = false;
+            foreach($product as $key => $item){
+                $product[$key]['sort'] = isset($item['sort']) ? $item['sort'] : 0;
+                if($item['product_id'] == $this->product_id){
+                    $product[$key]['price'] = $this->product_price;
+                    $product[$key]['sort']  = max(0, intval($this->product_sort));
+                    $product[$key]['allow'] = !empty($this->product_allow) ? implode(",", $this->product_allow) : [];
+                    $product[$key]['type']  = ($this->product_type == 1) ? 'fast' : 'slow';
+                    $isExists = true;
+                    break;
+                }
             }
+
+            if(!$isExists){
+                $product[] = [
+                    "product_id" => $this->product_id,
+                    "price"      => $this->product_price,
+                    "sort"       => max(0, intval($this->product_sort)),
+                    "allow"      => !empty($this->product_allow) ? implode(",", $this->product_allow) : [],
+                    "type"       => ($this->product_type == 1) ? 'fast' : 'slow'
+                ];
+            }
+
+            $keys = array_column($product, "sort");
+            array_multisort($keys, SORT_DESC, $product);
 
             $plateforms->product_json_data = json_encode($product);
             if (!$plateforms->save())

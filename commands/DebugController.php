@@ -2,18 +2,77 @@
 
 namespace app\commands;
 
+use app\core\ApiCode;
+use app\logic\AppConfigLogic;
+use app\models\BsTransferOrder;
+use app\models\Mall;
 use app\models\User;
 use app\models\UserRelationshipLink;
+use app\plugins\addcredit\models\AddcreditOrder;
+use app\plugins\addcredit\models\AddcreditPlateforms;
 use app\plugins\mch\models\Mch;
 use app\plugins\mch\models\MchCheckoutOrder;
 use app\plugins\shopping_voucher\helpers\ShoppingVoucherHelper;
 use app\plugins\shopping_voucher\models\ShoppingVoucherFromStore;
 use app\plugins\shopping_voucher\models\ShoppingVoucherSendLog;
+use app\plugins\taobao\models\TaobaoAccount;
+use lin010\taolijin\Ali;
 
 class DebugController extends BaseCommandController{
 
     public function actionIndex(){
-        $query = MchCheckoutOrder::find()->alias("mco");
+
+        $addcreditOrder = AddcreditOrder::findOne(810);
+        $plateform = AddcreditPlateforms::findOne($addcreditOrder->plateform_id);
+
+        $platClass = new \app\plugins\addcredit\plateform\sdk\dayuanren\PlateForm();
+        $res = $platClass->query2($addcreditOrder, $plateform);
+
+
+        /*\Yii::$app->mall = Mall::findOne(5);
+
+        $account = TaobaoAccount::findOne(1);
+        $ali = new Ali($account->app_key, $account->app_secret);
+        $ali->publisher->save();
+        exit;
+
+
+        $transferOrder = BsTransferOrder::findOne(["outTradeNo" => "TX2023092010340233749"]);
+        $payconfig = AppConfigLogic::getPaymentConfig(5);
+        $user = User::findOne(235814);
+
+        $batch_no = $transferOrder->settlement_org_req_seq_id;
+        $reqdate = $transferOrder->settlement_org_req_date;
+        $res = \Yii::$app->bs->settlement_query($reqdate, $batch_no, $transferOrder->huifu_id);
+        print_r($res);
+        exit;
+
+        $isTransmitting = 1;
+        $batch_no_money = $transferOrder->amount;
+        $batch_no = 'D' . date('YmdHis') . 'CW' . $transferOrder->id . 'MONEY' . $batch_no_money;
+        $reqdate = date("Ymd");
+
+        $settlement_enchashment_data = array('money' => $batch_no_money,'batch_no'=>$batch_no,'date'=>$reqdate,'huifu_id'=>$user->huifu_id,'huifu_bank_token_no'=> "10034357702",'notifyUrl'=>$transferOrder->notifyUrl);
+        $transferOrder->acctpayment_request_text = json_encode($settlement_enchashment_data);
+        $transferOrder->settlement_org_req_seq_id = $batch_no;
+        $transferOrder->settlement_org_req_date = $reqdate;
+        $res = \Yii::$app->bs->settlement_enchashment($settlement_enchashment_data, "用户金豆提现");
+        $transferOrder->acctpayment_resonse_text = json_encode($res['data']);
+        if($res['code'] != ApiCode::CODE_SUCCESS){
+            $res['code'] = ApiCode::CODE_SUCCESS;
+            $res['msg']  = $res['msg'] == '交易不存在' ? '申请取现已提交,请等待汇付打款' : '申请取现失败,请重试; 失败原因:'.$res['msg'];
+        }else{
+            $transferOrder->status = 3;
+        }
+
+        $transferOrder->updated_at = time();
+        $transferOrder->save();
+
+        $res['is_transmitting'] = $isTransmitting;
+
+        print_r($res);
+        ext;*/
+        /*$query = MchCheckoutOrder::find()->alias("mco");
         $query->innerJoin(["m" => Mch::tableName()], "m.id=mco.mch_id AND m.is_delete=0 AND m.review_status=1");
         $query->innerJoin(["svfs" => ShoppingVoucherFromStore::tableName()], "svfs.store_id=mco.store_id AND svfs.is_delete=0");
         $query->leftJoin(["svsl" => ShoppingVoucherSendLog::tableName()], "svsl.source_id=mco.id AND svsl.source_type='from_mch_checkout_order'");
@@ -38,6 +97,6 @@ class DebugController extends BaseCommandController{
             $giveValue = ShoppingVoucherHelper::calculateMchRateByTransferRate($checkOrder['transfer_rate']);
             echo $giveValue;
             exit;
-        }
+        }*/
     }
 }
