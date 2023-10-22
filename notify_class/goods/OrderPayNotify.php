@@ -56,6 +56,8 @@ class OrderPayNotify extends PaymentNotify{
         $event->sender = $this;
         $event->order_type = CommonOrder::ORDER_TYPE_MALL_GOODS;
         \Yii::$app->trigger(Order::EVENT_PAYED, $event);
+
+
         return true;
     }
 }

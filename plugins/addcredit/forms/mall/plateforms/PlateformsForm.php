@@ -16,6 +16,7 @@ class PlateformsForm extends BaseModel
 
     public $id;
     public $product_id;
+    public $goods_id;
     public $page;
     public $is_default;
     public $keyword;
@@ -33,7 +34,7 @@ class PlateformsForm extends BaseModel
             [['page'], 'default', 'value' => 1],
             [['keyword'], 'string'],
             [['product_price'], 'number'],
-            [['product_sort', 'product_allow'], 'safe']
+            [['product_sort', 'product_allow', 'goods_id'], 'safe']
         ];
     }
 
@@ -227,6 +228,7 @@ class PlateformsForm extends BaseModel
             foreach($product as $key => $item){
                 $product[$key]['sort'] = isset($item['sort']) ? $item['sort'] : 0;
                 if($item['product_id'] == $this->product_id){
+                    $product[$key]['goods_id'] = $this->goods_id;
                     $product[$key]['price'] = $this->product_price;
                     $product[$key]['sort']  = max(0, intval($this->product_sort));
                     $product[$key]['allow'] = !empty($this->product_allow) ? implode(",", $this->product_allow) : [];
@@ -239,6 +241,7 @@ class PlateformsForm extends BaseModel
             if(!$isExists){
                 $product[] = [
                     "product_id" => $this->product_id,
+                    "goods_id"   => $this->goods_id,
                     "price"      => $this->product_price,
                     "sort"       => max(0, intval($this->product_sort)),
                     "allow"      => !empty($this->product_allow) ? implode(",", $this->product_allow) : [],

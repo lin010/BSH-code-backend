@@ -4,7 +4,7 @@ namespace app\plugins\addcredit;
 
 use app\handlers\BaseHandler;
 use app\helpers\PluginHelper;
-use app\plugins\agent\handlers\HandlerRegister;
+use app\plugins\addcredit\handlers\HandlerRegister;
 
 class Plugin extends \app\plugins\Plugin{
 

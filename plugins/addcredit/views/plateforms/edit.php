@@ -214,9 +214,12 @@
 
     <!-- 添加产品 -->
     <el-dialog title="添加产品" :visible.sync="dialogProduct" width="30%">
-        <el-form :model="productForm" label-width="80px" :rules="productFormRules" ref="productForm">
+        <el-form :model="productForm" label-width="100px" :rules="productFormRules" ref="productForm">
             <el-form-item label="产品ID" prop="product_id" size="small">
                 <el-input type="text" v-model="productForm.product_id"></el-input>
+            </el-form-item>
+            <el-form-item label="平台商品ID" prop="goods_id" size="small">
+                <el-input type="text" v-model="productForm.goods_id"></el-input>
             </el-form-item>
             <el-form-item label="排序" prop="product_sort" size="small">
                 <el-input type="number" min="0" v-model="productForm.product_sort"></el-input>
@@ -303,6 +306,7 @@
                 dialogProduct: false,
                 productForm: {
                     product_id: '',
+                    goods_id: '',
                     product_price: '',
                     product_sort: '',
                     product_allow: ['yidong', 'liantong', 'dianxin'],
@@ -315,6 +319,9 @@
                 productFormRules: {
                     product_id: [
                         {required: true, message: '请传入产品ID', trigger: 'blur'},
+                    ],
+                    goods_id: [
+                        {required: true, message: '请设置平台商品ID', trigger: 'blur'},
                     ],
                     product_sort: [
                         {required: true, message: '请设置排序', trigger: 'blur'},
@@ -605,6 +612,7 @@
                 this.dialogProduct = true;
                 this.productForm = {
                     product_id: '',
+                    goods_id: '',
                     product_price: '',
                     product_sort: '',
                     product_allow: ['yidong', 'liantong', 'dianxin'],
@@ -618,6 +626,7 @@
                 let item = JSON.parse(JSON.stringify(this.ruleForm.product_json_data[index]));
                 this.productForm = {
                     product_id: item.product_id,
+                    goods_id: item.goods_id,
                     product_price: item.price,
                     product_sort: item.sort,
                     product_allow: item.allow.split(","),
