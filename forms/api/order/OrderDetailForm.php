@@ -79,6 +79,7 @@ class OrderDetailForm extends BaseModel
             $detail["mobile"]                        = $order["mobile"];
             $detail["address"]                       = $order["address"];
             $detail["remark"]                        = $order["remark"];
+            $detail["seller_remark"]                        = $order["seller_remark"];
             $detail["is_pay"]                        = intval($order["is_pay"]);
             $detail['order_type']                    = $order['order_type'];
             $detail['expand_num']                    = $order['expand_num'];
