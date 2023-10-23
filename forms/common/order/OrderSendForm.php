@@ -46,6 +46,7 @@ class OrderSendForm extends BaseModel
 
     public $express_id;
 
+    public $is_console = false;
 
     public function rules()
     {
@@ -55,12 +56,12 @@ class OrderSendForm extends BaseModel
             [['merchant_remark', 'express_no', 'express', 'customer_name', 'city_mobile',
                 'express_content', 'man','express_code'], 'string'],
             [['merchant_remark', 'express', 'express_no', 'customer_name'], 'default', 'value' => ''],
-            [['order_detail_id', 'express_single_id'], 'safe']
+            [['order_detail_id', 'express_single_id', 'is_console'], 'safe']
         ];
     }
 
     //发货
-    public function save()
+    public function save($trans = true)
     {
         if (!$this->validate()) {
             return $this->responseErrorInfo();
@@ -71,7 +72,7 @@ class OrderSendForm extends BaseModel
             $this->express_single_id = 0;
         }
 
-        $transaction = \Yii::$app->db->beginTransaction();
+        $trans && ($transaction = \Yii::$app->db->beginTransaction());
         try {
             $this->checkData();
             /*if (substr_count($this->express, '京东') && empty($this->customer_name)) {
@@ -155,7 +156,7 @@ class OrderSendForm extends BaseModel
             if (!$order->save()) {
                 throw new \Exception($this->responseErrorMsg($order));
             }
-            $transaction->commit();
+            $trans && $transaction->commit();
 
             //售后中的订单详情,强制发货售后状态变为完成售后拒绝;
             $OrderSendActionService = new OrderSendActionService();
@@ -169,11 +170,12 @@ class OrderSendForm extends BaseModel
                 'msg' => '发货成功',
             ];
         } catch (\Exception $e) {
-            $transaction->rollBack();
+            $trans && $transaction->rollBack();
             return [
                 'code' => ApiCode::CODE_FAIL,
                 'msg' => $e->getMessage(),
                 'error' => [
+                    'file' => $e->getFile(),
                     'line' => $e->getLine()
                 ]
             ];
@@ -206,7 +208,7 @@ class OrderSendForm extends BaseModel
         } else {
             $orderDetailExpress = new OrderDetailExpress();
             $orderDetailExpress->mall_id = \Yii::$app->mall->id;
-            $orderDetailExpress->mch_id = \Yii::$app->admin->identity ? \Yii::$app->admin->identity->mch_id : 0;
+            $orderDetailExpress->mch_id = $this->is_console ? 0 : (\Yii::$app->admin->identity ? \Yii::$app->admin->identity->mch_id : 0);
             $orderDetailExpress->order_id = $this->order_id;
         }
         if ($this->is_express == 1) {
@@ -242,7 +244,7 @@ class OrderSendForm extends BaseModel
             if (!$relation) {
                 $model = new OrderDetailExpressRelation();
                 $model->mall_id = \Yii::$app->mall->id;
-                $model->mch_id = \Yii::$app->admin->identity ? \Yii::$app->admin->identity->mch_id : 0;
+                $model->mch_id = $this->is_console ? 0 : (\Yii::$app->admin->identity ? \Yii::$app->admin->identity->mch_id : 0);
                 $model->order_id = $this->order_id;
                 $model->order_detail_id = $detailId;
                 $model->order_detail_express_id = $orderDetailExpress->id;

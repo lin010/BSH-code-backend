@@ -2,6 +2,8 @@
 
 namespace app\commands\telephone_order_task;
 
+use app\models\Mall;
+use app\models\Order;
 use app\plugins\addcredit\models\AddcreditOrder;
 use app\plugins\addcredit\models\AddcreditOrderThirdParty;
 use app\plugins\addcredit\models\AddcreditPlateforms;
@@ -41,12 +43,17 @@ class DoProcessingAction extends Action{
         }
     }
 
+    public function debug(){
+        $this->process(AddcreditOrderThirdParty::findOne(565));
+    }
+
     /**
      * 任务处理
      * @param AddcreditOrderThirdParty $model
      * @return void
      */
     private function process(AddcreditOrderThirdParty $model){
+        \Yii::$app->mall = Mall::findOne($model->mall_id);
         $order = null;
         $t = \Yii::$app->db->beginTransaction();
         try {
@@ -54,7 +61,6 @@ class DoProcessingAction extends Action{
             if(!$order){
                 throw new \Exception("话费充值订单不存在");
             }
-
             $platModel = AddcreditPlateforms::findOne($order->plateform_id);
             if (!$platModel) {
                 throw new \Exception("无法获取平台信息");
@@ -84,13 +90,34 @@ class DoProcessingAction extends Action{
             if($res->status == "success"){ //充值成功
                 $model->process_status = "success";
                 $model->save();
+
+                //设置商品订单状态为已发货
+                if($order->order_id){
+                    $orderOrder = Order::findOne($order->order_id);
+                    $form = new \app\forms\common\order\OrderSendForm([
+                        "order_id"          => $order->order_id,
+                        "is_express"        => 0,
+                        "express"           => "",
+                        "express_no"        => "",
+                        "merchant_remark"   => "",
+                        "mch_id"            => 0,
+                        "customer_name"     => "",
+                        "order_detail_id"   => [$orderOrder->detail[0]->id],
+                        "express_content"   => "系统自动发货",
+                        "express_single_id" => "",
+                        "express_code"      => "",
+                        "is_console"        => true
+                    ]);
+                    $form->save(false, Mall::findOne($orderOrder->mall_id));
+                }
             }elseif($res->status == "fail"){ //充值失败
                 throw new \Exception($res->message);
             }
 
+            $t->commit();
+
             $this->controller->commandOut("话费充值任务[ID:{$model->id}]处理完成");
 
-            $t->commit();
         }catch (\Exception $e){
 
             $t->rollBack();

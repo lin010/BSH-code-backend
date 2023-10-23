@@ -29,6 +29,7 @@ class AddcreditHandler extends BaseHandler
                                     $addcreditOrder = new AddcreditOrder([
                                         "mall_id"       => $plateforms->mall_id,
                                         "plateform_id"  => $plateforms->id,
+                                        "order_id"      => $event->order->id,
                                         "user_id"       => $event->order->user_id,
                                         "mobile"        => $event->order->remark,
                                         "order_no"      => $orderNo,
