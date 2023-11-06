@@ -2,6 +2,7 @@
 
 namespace app\commands;
 
+use app\commands\telephone_order_task\DoProcessingAction;
 use app\core\ApiCode;
 use app\logic\AppConfigLogic;
 use app\models\BsTransferOrder;
@@ -22,12 +23,17 @@ class DebugController extends BaseCommandController{
 
     public function actionIndex(){
 
-        $addcreditOrder = AddcreditOrder::findOne(810);
-        $plateform = AddcreditPlateforms::findOne($addcreditOrder->plateform_id);
+        $addcreditOrder = AddcreditOrder::findOne(812);
+        /*$plateform = AddcreditPlateforms::findOne($addcreditOrder->plateform_id);
 
         $platClass = new \app\plugins\addcredit\plateform\sdk\dayuanren\PlateForm();
         $res = $platClass->query2($addcreditOrder, $plateform);
+        print_r($res);
+        exit;*/
 
+
+        (new DoProcessingAction(null, null, null))->debug();
+        exit;
 
         /*\Yii::$app->mall = Mall::findOne(5);
 
