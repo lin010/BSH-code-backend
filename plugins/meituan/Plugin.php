@@ -4,7 +4,9 @@
 namespace app\plugins\meituan;
 
 
+use app\handlers\BaseHandler;
 use app\helpers\PluginHelper;
+use app\plugins\meituan\handlers\HandlerRegister;
 
 class Plugin extends \app\plugins\Plugin
 {
@@ -20,10 +22,19 @@ class Plugin extends \app\plugins\Plugin
         ];
     }
 
-    public function handler()
-    {
+    public function handler(){
+        $register = new HandlerRegister();
+        $HandlerClasses = $register->getHandlers();
+        foreach ($HandlerClasses as $HandlerClass) {
+            $handler = new $HandlerClass();
+            if ($handler instanceof BaseHandler) {
+                /** @var BaseHandler $handler */
+                $handler->register();
+            }
+        }
         return $this;
     }
+
 
     /**
      * 插件唯一id，小写英文开头，仅限小写英文、数字、下划线
@@ -73,5 +84,7 @@ class Plugin extends \app\plugins\Plugin
     public function getPriceTypeName($price_log_id = 0){
         return;
     }
+
+
 }
 

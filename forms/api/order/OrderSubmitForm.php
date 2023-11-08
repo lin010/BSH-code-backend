@@ -253,6 +253,10 @@ class OrderSubmitForm extends BaseModel
      */
     public function doSubmitOrder()
     {
+        if($this->form_data['sign'] == "meituan"){
+            $this->sign = "meituan";
+        }
+
         $t = \Yii::$app->db->beginTransaction();
         try {
             if (!$this->validate()) {
@@ -935,10 +939,12 @@ class OrderSubmitForm extends BaseModel
 
         //判断如果有一个不是线下自取商品 就需要地址
         $is_need_address = false;
-        foreach ($listData as &$item) {
-            if (!$item['form_data']['is_offline']) {
-                $is_need_address = true;
-                break;
+        if($this->form_data['sign'] != "meituan"){
+            foreach ($listData as &$item) {
+                if (!$item['form_data']['is_offline']) {
+                    $is_need_address = true;
+                    break;
+                }
             }
         }
 

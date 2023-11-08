@@ -6,37 +6,25 @@ namespace app\plugins\meituan\helpers;
 
 class Req{
 
-    private function getContent(){
-        $params = [
-            'ts' => '',
-            'entId' => '',
 
-        ];
-    }
-
-    public function doPost($params){
-        $result = [];
+    public static function post($url, $params){
 
         try {
-            //$sign = static::getSign($params, $this->apikey);
-            //$params['sign'] = $sign;
-
-            $newParams['accessKey'] = "123";
-            $newParams['content'] = $this->getContent();
-
-            $headers = [
+            /*$headers = [
                 'Content-Type：application/x-www-form-urlencoded'
-            ];
+            ];*/
 
-            $ch = curl_init($this->host . $uri);
+            $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $newParams);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
             curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            //curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+
+            $result = curl_exec($ch);
 
             $errno  = curl_errno($ch);
             $error  = curl_error($ch);
@@ -45,11 +33,10 @@ class Req{
                 throw new \Exception($error);
             }
 
-
+            return !empty($result) ? json_decode($result, true) : [];
         }catch (\Exception $e){
-
+            return null;
         }
-        return $result;
     }
 
     /**
