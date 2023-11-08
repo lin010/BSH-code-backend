@@ -47,7 +47,7 @@ class PayCenterBalancePayForm extends BaseModel{
 
             $user = \Yii::$app->user->identity;
             $paymentOrderUnion = PaymentOrderUnion::findOne(['id' => $this->union_id]);
-            if (!$paymentOrderUnion) {
+            if (!$paymentOrderUnion || $paymentOrderUnion->is_delete) {
                 throw new \Exception('待支付订单不存在。');
             }
 

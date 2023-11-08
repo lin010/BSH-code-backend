@@ -29,7 +29,7 @@ class MeituanOrdeLogic
                     "ts" => time() * 1000,
                     "entId" => $setting['entId'],
                     "tradeNo" => $meituanOrderDetail->tradeNo,
-                    "thirdTradeNo" => $order->order_no,
+                    "thirdTradeNo" => (string)$meituanOrderDetail->id,
                     "tradeAmount" => $meituanOrderDetail->tradeAmount
                 ], $setting['secretKey'])
             ]);

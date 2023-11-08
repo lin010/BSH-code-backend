@@ -72,13 +72,22 @@ class Plugin extends \app\plugins\Plugin
     }
 
     /**
-     * 插件小程序端链接
+     * 插件可共用的跳转链接
      * @return array
      */
     public function getPickLink()
     {
-        $iconBaseUrl = PluginHelper::getPluginBaseAssetsUrl($this->getName()) . '/img/pick-link';
-        return [];
+        $iconBaseUrl = PluginHelper::getPluginBaseAssetsUrl($this->getName()) . '/img';
+
+        return [
+            [
+                'key' => 'mt_waimai',
+                'name' => '美团外卖',
+                'open_type' => 'navigate',
+                'icon' => $iconBaseUrl . '/mt_waimai.png',
+                'value' => '/meituan/waimai',
+            ],
+        ];
     }
 
     public function getPriceTypeName($price_log_id = 0){

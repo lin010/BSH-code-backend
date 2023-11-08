@@ -59,6 +59,7 @@ class PaymentOrder extends BaseActiveRecord
             [['order_no'], 'string', 'max' => 32],
             [['title'], 'string', 'max' => 128],
             [['notify_class'], 'string', 'max' => 512],
+            [['is_delete'], 'safe']
         ];
     }
 

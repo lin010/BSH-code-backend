@@ -16,10 +16,10 @@ class MeituanOrdeDetail extends BaseActiveRecord
     public function rules()
     {
         return [
-            [['mall_id', 'goods_id', 'payStatus', 'created_at', 'updated_at', 'ts', 'entId', 'traceId', 'method', 'tradeNo',
+            [['mall_id',  'goods_id', 'payStatus', 'created_at', 'updated_at', 'ts', 'entId', 'traceId', 'method', 'tradeNo',
               'sqtBizOrderId', 'tradeAmount', 'serviceFeeAmount', 'goodsName', 'tradeExpiringTime', 'notifyUrl',
               'returnUrl', 'firstBusinessType', 'secondBusinessType', 'staffInfo', 'extInfoMap'], 'required'],
-            [['is_delete', 'notifyStatus', 'notifyFeeback'], 'safe']
+            [['is_delete', 'notifyStatus', 'notifyFeeback', 'order_id'], 'safe']
         ];
     }
 }

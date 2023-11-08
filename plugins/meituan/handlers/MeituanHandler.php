@@ -15,6 +15,19 @@ class MeituanHandler extends BaseHandler
     public function register()
     {
         try {
+            \Yii::$app->on(Order::EVENT_CREATED, function ($event) {
+                $order = $event->order;
+                if($order->sign == "meituan") {
+                    $detail = $order->detail;
+                    $goods = $detail[0]->goods;
+
+                    //关联订单ID
+                    $meituanOrderDetail = MeituanOrdeDetail::findOne(["goods_id" => $goods->id]);
+                    $meituanOrderDetail->order_id = $order->id;
+                    $meituanOrderDetail->save();
+                }
+            });
+
             \Yii::$app->on(Order::EVENT_PAYED, function ($event) {
                 $order = $event->order;
                 if($order->sign == "meituan"){
