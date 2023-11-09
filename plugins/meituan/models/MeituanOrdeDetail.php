@@ -19,7 +19,7 @@ class MeituanOrdeDetail extends BaseActiveRecord
             [['mall_id',  'goods_id', 'payStatus', 'created_at', 'updated_at', 'ts', 'entId', 'traceId', 'method', 'tradeNo',
               'sqtBizOrderId', 'tradeAmount', 'serviceFeeAmount', 'goodsName', 'tradeExpiringTime', 'notifyUrl',
               'returnUrl', 'firstBusinessType', 'secondBusinessType', 'staffInfo', 'extInfoMap'], 'required'],
-            [['is_delete', 'notifyStatus', 'notifyFeeback', 'order_id'], 'safe']
+            [['is_delete', 'notifyStatus', 'notifyFeeback', 'order_id', 'tradeRefundNo', 'serviceFeeRefundAmount', 'refund_status', 'refund_money', 'refund_id', 'refund_at'], 'safe']
         ];
     }
 }

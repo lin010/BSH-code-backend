@@ -59,14 +59,14 @@ class OrderRefundForm extends BaseModel
         ];
     }
 
-    public function save()
+    public function save($trans = true)
     {
         if (!$this->validate()) {
             return $this->responseErrorInfo();
         }
 
         try {
-            $mchId = $this->mch_id ?: \Yii::$app->admin->identity->mch_id;
+            $mchId = $this->mch_id ?: (\Yii::$app->admin->identity ? \Yii::$app->admin->identity->mch_id : 0);
             /** @var OrderRefund $orderRefund */
             $orderRefund = OrderRefund::find()->where([
                 'id' => $this->order_refund_id,
@@ -85,7 +85,7 @@ class OrderRefundForm extends BaseModel
             switch ($orderRefund->status) {
                 case 1:
                     if ($this->is_agree) {
-                        return $this->agree($orderRefund, '已同意售后申请');
+                        return $this->agree($orderRefund, '已同意售后申请', $trans);
                     } else {
                         return $this->refuse($orderRefund);
                     }
@@ -95,7 +95,7 @@ class OrderRefundForm extends BaseModel
                         return $this->refuse($orderRefund);
                     }
                     if ($orderRefund->type == OrderRefund::TYPE_REFUND_RETURN || $orderRefund->type == OrderRefund::TYPE_ONLY_REFUND) {
-                        return $this->refund($orderRefund);
+                        return $this->refund($orderRefund, $trans);
                     }
                     if ($orderRefund->type == 2) {
                         return $this->confirm($orderRefund);
@@ -219,9 +219,9 @@ class OrderRefundForm extends BaseModel
      * @return array
      *
      */
-    private function agree($orderRefund, $remark)
+    private function agree($orderRefund, $remark, $trans = true)
     {
-        $transaction = \Yii::$app->db->beginTransaction();
+        $trans && ($transaction = \Yii::$app->db->beginTransaction());
         try {
             $address = RefundAddress::findOne([
                 'mall_id' => \Yii::$app->mall->id,
@@ -258,7 +258,7 @@ class OrderRefundForm extends BaseModel
             //退红包
             $this->returnShoppingVoucher($orderRefund);
 
-            $transaction->commit();
+            $trans && $transaction->commit();
             //更新订单售后状态,不能写在事务里
             $OrderSaleStatusService = new OrderSaleStatusService();
             $OrderSaleStatusService->updateOrderSaleStatus($orderRefund->order);
@@ -268,7 +268,7 @@ class OrderRefundForm extends BaseModel
                 'msg' => '处理成功,已同意售后申请',
             ];
         } catch (\Exception $exception) {
-            $transaction->rollBack();
+            $trans && $transaction->rollBack();
             return [
                 'code' => ApiCode::CODE_FAIL,
                 'msg' => $exception->getMessage()
@@ -313,9 +313,9 @@ class OrderRefundForm extends BaseModel
      * @return array
      *
      */
-    private function refund($orderRefund)
+    private function refund($orderRefund, $trans = true)
     {
-        $t = \Yii::$app->db->beginTransaction();
+        $trans && ($t = \Yii::$app->db->beginTransaction());
         try {
             /*if (($orderRefund->type == OrderRefund::TYPE_REFUND_RETURN || $orderRefund->type == OrderRefund::TYPE_EXCHANGE) && $orderRefund->is_confirm == 0) {
                 throw new \Exception('售后订单未确认收货');
@@ -364,7 +364,7 @@ class OrderRefundForm extends BaseModel
             }
 
             // 退款
-            $advance_refund = 0;
+            $price = $advance_refund = 0;
             if ($orderRefund->order->pay_type == 2) {
                 // 货到付款订单退款，线下沟通
                 $msg = '订单为货到付款方式，退款金额请线下自行处理';
@@ -450,7 +450,7 @@ class OrderRefundForm extends BaseModel
             if ($isRefund && $orderRefund->type == OrderRefund::TYPE_EXCHANGE && $orderRefund->order->is_confirm == 0) {
                 OrderCommon::getCommonOrder($orderRefund->order->sign)->confirm($orderRefund->order);
             }
-            $t->commit();
+            $trans && $t->commit();
 
             //若没有可发货的订单,订单状态更新为待收货
             $order              = $orderRefund->order;
@@ -468,7 +468,7 @@ class OrderRefundForm extends BaseModel
                 'msg' => $msg,
             ];
         } catch (\Exception $exception) {
-            $t->rollBack();
+            $trans && $t->rollBack();
             return [
                 'code' => ApiCode::CODE_FAIL,
                 'msg' => $exception->getMessage()

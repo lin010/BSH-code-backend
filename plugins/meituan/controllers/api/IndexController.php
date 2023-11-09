@@ -12,6 +12,7 @@ use app\models\PaymentOrderUnion;
 use app\plugins\meituan\helpers\Aes;
 use app\plugins\meituan\helpers\MeituanOrderGoods;
 use app\plugins\meituan\logic\MeituanOrdeLogic;
+use app\plugins\meituan\logic\MeituanOrderRefundLogic;
 use app\plugins\meituan\models\MeituanOrdeDetail;
 use app\plugins\meituan\models\MeituanSetting;
 
@@ -22,7 +23,7 @@ class IndexController extends ApiController
         return array_merge(parent::behaviors(), [
             'login' => [
                 'class' => LoginFilter::class,
-                'ignore' => ['create', 'query-pay-status', 'order-expired-close']
+                'ignore' => ['create', 'query-pay-status', 'order-expired-close', 'order-refund']
             ]
         ]);
     }
@@ -52,6 +53,57 @@ class IndexController extends ApiController
             return $this->asJson(["code" => ApiCode::CODE_SUCCESS, "detail" => $meituanOrderDetail->getAttributes()]);
         }catch (\Exception $e) {
             return $this->asJson(["code" => ApiCode::CODE_FAIL, "msg" => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * 退款接口
+     * @return \yii\web\Response
+     */
+    public function actionOrderRefund(){
+        try {
+            $setting = MeituanSetting::getSettings();
+
+            $accessKey = $setting['accessKey'];
+            $secretKey = $setting['secretKey'];
+            $entId = $setting['entId'];
+
+            //die(Aes::encrypt(['refundAmount' => '100.00', 'tradeRefundNo' => '398834470112536', 'tradeNo' => '398834470112378', 'traceId' => '9842336864303541145', 'method' => 'trade.third.refund', 'entId' => $entId, 'ts' => time() * 1000], $secretKey));
+            $contents = Aes::decrypt($this->requestData['content'], $secretKey);
+            if(empty($contents)){
+                throw new \Exception("参数错误", 401);
+            }
+
+            $meituanOrderDetail = MeituanOrdeDetail::findOne(["entId" => $contents['entId'], "tradeNo" => $contents['tradeNo']]);
+            if(!$meituanOrderDetail){
+                throw new \Exception("MeituanOrdeDetail 支付单不存在", 500);
+            }
+
+            if(!$meituanOrderDetail->payStatus ){
+                throw new \Exception("订单未支付", 500);
+            }
+
+            if($meituanOrderDetail->tradeAmount != $contents['refundAmount']){
+                throw new \Exception("金额不一致，无法处理退款", 500);
+            }
+
+            $orderRefund = MeituanOrderRefundLogic::doRefund($meituanOrderDetail, $contents['tradeRefundNo'], isset($contents['serviceFeeRefundAmount']) ? $contents['serviceFeeRefundAmount'] : "0.00");
+
+            $data = [
+                'thirdRefundNo' => (string)$orderRefund->id
+            ];
+
+            return $this->asJson([
+                'traceId' => $meituanOrderDetail->traceId,
+                'status'  => 0,
+                'msg'     => 'success',
+                'data'    => Aes::encrypt($data, $secretKey)
+            ], false);
+        }catch (\Exception $e){
+            return $this->asJson([
+                "status"  => $e->getCode() > 0 ? $e->getCode() : 401,
+                "msg"     => $e->getMessage()
+            ], false);
         }
     }
 
@@ -199,13 +251,13 @@ class IndexController extends ApiController
 
             /*die(Aes::encrypt([
                 "ts" => time() * 1000,
-                "traceId" => "9842336864303541115",
+                "traceId" => "9842336864303541145",
                 "entId"  => $entId,
                 "method" => "trade.third.pay",
-                "tradeNo" => "398834470112341",
-                "sqtBizOrderId" => "358945477365303",
-                "tradeAmount" => "1.00",
-                "serviceFeeAmount" => "0.06",
+                "tradeNo" => "398834470112378",
+                "sqtBizOrderId" => "358945477365343",
+                "tradeAmount" => "100.00",
+                "serviceFeeAmount" => "0.0",
                 "goodsName" => "MTDP-香丰阁(望京店)",
                 "tradeExpiringTime" => "2023-11-13 00:00:00",
                 "notifyUrl" => "https://waimai-openapi.apigw.test.meituan.com/api/sqt/open/standardThird/v2/pay/callback?tradeModel=FLOW",
