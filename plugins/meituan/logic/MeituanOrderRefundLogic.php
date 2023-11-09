@@ -14,26 +14,82 @@ use yii\db\Query;
 
 class MeituanOrderRefundLogic
 {
-    public static function doRefund(MeituanOrdeDetail $meituanOrderDetail, $tradeRefundNo, $serviceFeeRefundAmount){
+    public static function doRefund(MeituanOrdeDetail $meituanOrderDetail, $tradeRefundNo, $refundPrice, $serviceFeeRefundAmount){
+
+        //金豆券比例
+        //多少金豆券抵扣一元;
+        $integralPrice = 1;
 
         $t = \Yii::$app->db->beginTransaction();
         try {
-
             if($meituanOrderDetail->refund_status != 1){
 
-                //处理退款
+                //剩余可退款金额
+                $remainRefundAmount = bcsub(floatval($meituanOrderDetail->tradeAmount), floatval($meituanOrderDetail->refund_money));
+                if(floatval($refundPrice) > $remainRefundAmount){
+                    throw new \Exception('最多可退款金额￥' .$remainRefundAmount);
+                }
+
                 $order = Order::findOne($meituanOrderDetail->order_id);
 
                 /** @var OrderDetail $orderDetail */
                 $orderDetail = OrderDetail::find()->where([
-                    'order_id' => $order->id,
-                    'is_delete' => 0
+                    'order_id'  => $order->id,
+                    'is_delete' => 0,
+                    'is_refund' => 0
                 ])->with(['order', 'userCards' => function ($query) {
                     /** @var Query $query */
                     $query->andWhere(['is_use' => 1]);
                 }])->one();
+                if(!$orderDetail){
+                    throw new \Exception('订单详情记录不存在');
+                }
 
-                $refundPrice = $orderDetail->total_price;
+                //部分退款
+                if($refundPrice < $remainRefundAmount){
+                    $newCopyData = $orderDetail->getAttributes();
+                    unset($newCopyData['id']);
+                    $newCopyData['integral_price'] = 0;
+                    if($orderDetail->total_price >= $refundPrice){ //优先退现金余额
+                        $orderDetail->total_price = bcsub(floatval($orderDetail->total_price), floatval($refundPrice));
+                        $newCopyData['total_price'] = $refundPrice;
+                    }else{ //现金余额不足，退红包
+                        $newCopyData['total_price'] = $orderDetail->total_price;
+                        $stillNeedAmount = bcsub(floatval($refundPrice), floatval($orderDetail->total_price));
+                        $orderDetail->total_price = 0;
+
+                        //计算需要退款的金豆
+                        $needRefundIntegral = $integralPrice * $stillNeedAmount;
+
+                        if(floatval($orderDetail->integral_price) >= $needRefundIntegral){
+                            $orderDetail->integral_price = bcsub(floatval($orderDetail->integral_price), $needRefundIntegral);
+                        }else{
+                            $needRefundIntegral = $orderDetail->integral_price;
+                            $orderDetail->integral_price = 0;
+                        }
+
+                        $newCopyData['integral_price'] = $needRefundIntegral;
+                    }
+
+                    if(!$orderDetail->save()){
+                        throw new \Exception(json_encode($orderDetail->getErrors()));
+                    }
+
+                    $orderDetailCopy = new OrderDetail($newCopyData);
+                    $orderDetailCopy->created_at = time();
+                    $orderDetailCopy->updated_at = time();
+                    if(!$orderDetailCopy->save()){
+                        throw new \Exception(json_encode($orderDetailCopy->getErrors()));
+                    }
+
+                    $orderDetail = $orderDetailCopy;
+
+                    $meituanOrderDetail->refund_status = 2;
+                }else{ //全额退款
+                    $meituanOrderDetail->refund_status = 1;
+                }
+
+                $meituanOrderDetail->refund_money = bcadd(floatval($meituanOrderDetail->refund_money), floatval($refundPrice));
 
                 if ($order->is_sale == Order::IS_SALE_YES) {
                     throw new \Exception('订单已过售后时间,无法申请售后');
@@ -42,6 +98,7 @@ class MeituanOrderRefundLogic
                 if (!in_array($order->status, [Order::STATUS_WAIT_DELIVER,Order::STATUS_WAIT_RECEIVE,Order::STATUS_WAIT_COMMENT]))
                     throw new \Exception('该订单状态下,无法申请售后');
 
+                $refundPrice = $orderDetail->total_price;
                 $realityPrice = price_format($orderDetail->total_price);
 
                 if ($refundPrice > $realityPrice) {
@@ -98,16 +155,14 @@ class MeituanOrderRefundLogic
                 }
 
                 $meituanOrderDetail->tradeRefundNo          = $tradeRefundNo;
-                $meituanOrderDetail->refund_money           = $meituanOrderDetail->tradeAmount;
                 $meituanOrderDetail->serviceFeeRefundAmount = $serviceFeeRefundAmount;
                 $meituanOrderDetail->refund_id              = $orderRefund->id;
-                $meituanOrderDetail->refund_status          = 1;
                 $meituanOrderDetail->refund_at              = time();
                 if(!$meituanOrderDetail->save()){
                     throw new \Exception(json_encode($meituanOrderDetail->getErrors()));
                 }
             }else{
-                $orderRefund = OrderRefund::findOne($meituanOrderDetail->refund_id);
+                throw new \Exception("订单已退款");
             }
 
             $t->commit();
@@ -115,7 +170,7 @@ class MeituanOrderRefundLogic
             return $orderRefund;
         }catch (\Exception $e){
             $t->rollBack();
-            return null;
+            return json_encode(["message" => $e->getMessage(), "file" => $e->getFile(), "line" => $e->getLine()], JSON_UNESCAPED_UNICODE);
         }
     }
 }

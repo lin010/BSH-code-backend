@@ -13,7 +13,7 @@ class Aes
      * @return string
      */
     public static function encrypt($contents, $secretKey){
-        $encryptContent = openssl_encrypt(json_encode($contents,JSON_UNESCAPED_UNICODE), 'AES-128-ECB', base64_decode($secretKey));
+        $encryptContent = openssl_encrypt(json_encode($contents,JSON_UNESCAPED_SLASHES), 'AES-128-ECB', base64_decode($secretKey));
         $encryptContent = str_replace('/', '_', $encryptContent);
         $encryptContent = str_replace('+', '-', $encryptContent);
         $encryptContent = str_replace('=', '', $encryptContent);

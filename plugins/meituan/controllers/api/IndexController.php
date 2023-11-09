@@ -7,6 +7,7 @@ use app\core\ApiCode;
 use app\models\Cart;
 use app\models\Goods;
 use app\models\Order;
+use app\models\OrderRefund;
 use app\models\PaymentOrder;
 use app\models\PaymentOrderUnion;
 use app\plugins\meituan\helpers\Aes;
@@ -68,7 +69,7 @@ class IndexController extends ApiController
             $secretKey = $setting['secretKey'];
             $entId = $setting['entId'];
 
-            //die(Aes::encrypt(['refundAmount' => '100.00', 'tradeRefundNo' => '398834470112536', 'tradeNo' => '398834470112378', 'traceId' => '9842336864303541145', 'method' => 'trade.third.refund', 'entId' => $entId, 'ts' => time() * 1000], $secretKey));
+            //die(Aes::encrypt(['refundAmount' => '5', 'tradeRefundNo' => '348821170112537', 'tradeNo' => '398834471112376', 'traceId' => '9842336864303511243', 'method' => 'trade.third.refund', 'entId' => $entId, 'ts' => time() * 1000], $secretKey));
             $contents = Aes::decrypt($this->requestData['content'], $secretKey);
             if(empty($contents)){
                 throw new \Exception("参数错误", 401);
@@ -83,11 +84,10 @@ class IndexController extends ApiController
                 throw new \Exception("订单未支付", 500);
             }
 
-            if($meituanOrderDetail->tradeAmount != $contents['refundAmount']){
-                throw new \Exception("金额不一致，无法处理退款", 500);
+            $orderRefund = MeituanOrderRefundLogic::doRefund($meituanOrderDetail, $contents['tradeRefundNo'], $contents['refundAmount'], isset($contents['serviceFeeRefundAmount']) ? $contents['serviceFeeRefundAmount'] : "0.00");
+            if(!($orderRefund instanceof OrderRefund)){
+                throw new \Exception($orderRefund, 500);
             }
-
-            $orderRefund = MeituanOrderRefundLogic::doRefund($meituanOrderDetail, $contents['tradeRefundNo'], isset($contents['serviceFeeRefundAmount']) ? $contents['serviceFeeRefundAmount'] : "0.00");
 
             $data = [
                 'thirdRefundNo' => (string)$orderRefund->id
@@ -251,12 +251,12 @@ class IndexController extends ApiController
 
             /*die(Aes::encrypt([
                 "ts" => time() * 1000,
-                "traceId" => "9842336864303541145",
+                "traceId" => "9842336864303511243",
                 "entId"  => $entId,
                 "method" => "trade.third.pay",
-                "tradeNo" => "398834470112378",
-                "sqtBizOrderId" => "358945477365343",
-                "tradeAmount" => "100.00",
+                "tradeNo" => "398834471112376",
+                "sqtBizOrderId" => "358945432365343",
+                "tradeAmount" => "10.00",
                 "serviceFeeAmount" => "0.0",
                 "goodsName" => "MTDP-香丰阁(望京店)",
                 "tradeExpiringTime" => "2023-11-13 00:00:00",
@@ -352,21 +352,21 @@ class IndexController extends ApiController
            $meituanOrdeDetail->method             = $contents['method'];
            $meituanOrdeDetail->tradeNo            = $contents['tradeNo'];
            $meituanOrdeDetail->tradeAmount        = $contents['tradeAmount'];
-           $meituanOrdeDetail->serviceFeeAmount   = $contents['serviceFeeAmount'];
+           $meituanOrdeDetail->serviceFeeAmount   = isset($contents['serviceFeeAmount']) ? $contents['serviceFeeAmount'] : "";
            $meituanOrdeDetail->goodsName          = $contents['goodsName'];
            $meituanOrdeDetail->tradeExpiringTime  = $contents['tradeExpiringTime'];
            $meituanOrdeDetail->notifyUrl          = $contents['notifyUrl'];
            $meituanOrdeDetail->returnUrl          = $contents['returnUrl'];
-           $meituanOrdeDetail->firstBusinessType  = $contents['firstBusinessType'];
-           $meituanOrdeDetail->secondBusinessType = $contents['secondBusinessType'];
+           $meituanOrdeDetail->firstBusinessType  = isset($contents['firstBusinessType']) ? $contents['firstBusinessType'] : "";
+           $meituanOrdeDetail->secondBusinessType = isset($contents['secondBusinessType']) ? $contents['secondBusinessType'] : "";
            $meituanOrdeDetail->staffInfo          = json_encode($staffInfo, JSON_UNESCAPED_UNICODE);
            $meituanOrdeDetail->extInfoMap         = isset($contents['extInfoMap']) && !empty($contents['extInfoMap']) ? json_encode($contents['extInfoMap'], JSON_UNESCAPED_UNICODE) : "";
 
            if(!$meituanOrdeDetail->save()){
-               throw new \Exception("订单记录保存失败", 500);
+               throw new \Exception(json_encode($meituanOrdeDetail->getErrors()), 500);
            }
 
-           $data = Aes::encrypt(["thirdTradeNo" => $contents['tradeNo'], "thirdPayUrl" => $thirdPayUrl], $secretKey);
+           $data = Aes::encrypt(["thirdTradeNo" => (string)$meituanOrdeDetail->id, "thirdPayUrl" => $thirdPayUrl], $secretKey);
 
            return $this->asJson([
                "traceId"     => $contents['traceId'],
