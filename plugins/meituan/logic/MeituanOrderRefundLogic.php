@@ -22,6 +22,9 @@ class MeituanOrderRefundLogic
 
         $t = \Yii::$app->db->beginTransaction();
         try {
+
+
+
             if($meituanOrderDetail->refund_status != 1){
 
                 //剩余可退款金额
@@ -152,6 +155,10 @@ class MeituanOrderRefundLogic
                 $res = $form->save(false);
                 if($res['code'] != ApiCode::CODE_SUCCESS){
                     throw new \Exception($res['msg']);
+                }
+
+                if(empty($meituanOrderDetail->thirdRefundNo)){
+                    $meituanOrderDetail->thirdRefundNo = $orderRefund->id;
                 }
 
                 $meituanOrderDetail->tradeRefundNo          = $tradeRefundNo;

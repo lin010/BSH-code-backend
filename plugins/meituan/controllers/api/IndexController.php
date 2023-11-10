@@ -90,7 +90,7 @@ class IndexController extends ApiController
             }
 
             $data = [
-                'thirdRefundNo' => (string)$orderRefund->id
+                'thirdRefundNo' => (string)$meituanOrderDetail->thirdRefundNo
             ];
 
             return $this->asJson([
@@ -251,15 +251,15 @@ class IndexController extends ApiController
 
             /*die(Aes::encrypt([
                 "ts" => time() * 1000,
-                "traceId" => "9842336864303511243",
+                "traceId" => "9842636864303511454",
                 "entId"  => $entId,
                 "method" => "trade.third.pay",
-                "tradeNo" => "398834471112376",
-                "sqtBizOrderId" => "358945432365343",
+                "tradeNo" => "691634471412378",
+                "sqtBizOrderId" => "558955132365379",
                 "tradeAmount" => "10.00",
                 "serviceFeeAmount" => "0.0",
                 "goodsName" => "MTDP-香丰阁(望京店)",
-                "tradeExpiringTime" => "2023-11-13 00:00:00",
+                "tradeExpiringTime" => "2023-11-10 10:03:00",
                 "notifyUrl" => "https://waimai-openapi.apigw.test.meituan.com/api/sqt/open/standardThird/v2/pay/callback?tradeModel=FLOW",
                 "returnUrl" => "https://sqt.waimai.test.sankuai.com/c/finance/cashier/#/cashier-loading?serialNum=CCH1UH2E4SPV&payId=1625066085491413067",
                 "firstBusinessType" => "010",
@@ -341,7 +341,7 @@ class IndexController extends ApiController
            }
 
            //美团跳转收银台地址
-           $thirdPayUrl = "https://www.mingyuanriji.cn/h5/#/pages/order/submit?sign=meituan&nav_id=&mch_id=0&user_address_id=0&use_score=0&use_integral=0&list=" . $cart->id;
+           $thirdPayUrl = \Yii::$app->getRequest()->getHostInfo() . "/h5/#/pages/order/submit?sign=meituan&nav_id=&mch_id=0&user_address_id=0&use_score=0&use_integral=0&list=" . $cart->id;
 
            $meituanOrdeDetail->updated_at         = time();
            $meituanOrdeDetail->payStatus          = 0;
