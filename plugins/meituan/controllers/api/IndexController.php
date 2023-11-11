@@ -264,6 +264,10 @@ class IndexController extends ApiController
     public function actionCreate(){
         try {
 
+            //file_put_contents(__DIR__ . "/debug", json_encode($this->requestData)."\n", FILE_APPEND);
+
+            $startTime = microtime(true);
+
             $setting = MeituanSetting::getSettings();
 
             $accessKey = $setting['accessKey'];
@@ -388,6 +392,8 @@ class IndexController extends ApiController
            }
 
            $data = Aes::encrypt(["thirdTradeNo" => (string)$meituanOrdeDetail->id, "thirdPayUrl" => $thirdPayUrl], $secretKey);
+
+           //file_put_contents(__DIR__ . "/debug", (microtime(true) - $startTime) . "\n", FILE_APPEND);
 
            return $this->asJson([
                "traceId"     => $contents['traceId'],
