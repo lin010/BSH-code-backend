@@ -8,6 +8,7 @@ use app\models\Goods;
 use app\models\GoodsAttr;
 use app\models\GoodsWarehouse;
 use app\models\MallGoods;
+use app\plugins\meituan\models\MeituanSetting;
 
 class MeituanOrderGoods
 {
@@ -19,6 +20,8 @@ class MeituanOrderGoods
      * @return Goods|null
      */
     public static function create($mallId, $price, $name){
+
+        $settings = MeituanSetting::getSettings();
 
         $t = \Yii::$app->db->beginTransaction();
         try {
@@ -102,7 +105,7 @@ class MeituanOrderGoods
             $goods->order_sales = "";
             $goods->cannotrefund = "";
             $goods->is_on_site_consumption = 0;
-            $goods->integral_fee_rate = 0;
+            $goods->integral_fee_rate = isset($settings['integral_fee_rate']) ? max(0, intval($settings['integral_fee_rate'])) : 0;
             $goods->goods_brand = "";
             $goods->goods_supplier = "";
             $goods->is_recycle = 0;

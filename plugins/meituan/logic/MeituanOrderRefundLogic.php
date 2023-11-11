@@ -23,7 +23,12 @@ class MeituanOrderRefundLogic
         $t = \Yii::$app->db->beginTransaction();
         try {
 
+            $thirdRefundNo = !empty($meituanOrderDetail->thirdRefundNo) ? @json_decode($meituanOrderDetail->thirdRefundNo, true) : [];
+            if(!isset($thirdRefundNo[$tradeRefundNo])){
+                $thirdRefundNo[$tradeRefundNo] = date("ymdhis") . rand(1000, 9999);
+            }
 
+            $meituanOrderDetail->thirdRefundNo = json_encode($thirdRefundNo);
 
             if($meituanOrderDetail->refund_status != 1){
 

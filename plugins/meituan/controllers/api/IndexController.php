@@ -84,13 +84,24 @@ class IndexController extends ApiController
                 throw new \Exception("订单未支付", 500);
             }
 
-            $orderRefund = MeituanOrderRefundLogic::doRefund($meituanOrderDetail, $contents['tradeRefundNo'], $contents['refundAmount'], isset($contents['serviceFeeRefundAmount']) ? $contents['serviceFeeRefundAmount'] : "0.00");
-            if(!($orderRefund instanceof OrderRefund)){
-                throw new \Exception($orderRefund, 500);
+            $thirdRefundNo = json_decode($meituanOrderDetail->thirdRefundNo, true);
+            if(!isset($thirdRefundNo[$contents['tradeRefundNo']])){
+                //剩余可退款金额
+                $remainRefundAmount = bcsub(floatval($meituanOrderDetail->tradeAmount), floatval($meituanOrderDetail->refund_money));
+                if(floatval($contents['refundAmount']) > $remainRefundAmount){
+                    throw new \Exception('退款超额', 411);
+                }
+
+                $orderRefund = MeituanOrderRefundLogic::doRefund($meituanOrderDetail, $contents['tradeRefundNo'], $contents['refundAmount'], isset($contents['serviceFeeRefundAmount']) ? $contents['serviceFeeRefundAmount'] : "0.00");
+                if(!($orderRefund instanceof OrderRefund)){
+                    throw new \Exception($orderRefund, 500);
+                }
+
+                $thirdRefundNo = json_decode($meituanOrderDetail->thirdRefundNo, true);
             }
 
             $data = [
-                'thirdRefundNo' => (string)$meituanOrderDetail->thirdRefundNo
+                'thirdRefundNo' => (string)$thirdRefundNo[$contents['tradeRefundNo']]
             ];
 
             return $this->asJson([
@@ -118,7 +129,7 @@ class IndexController extends ApiController
             $secretKey = $setting['secretKey'];
             $entId = $setting['entId'];
 
-            //die(Aes::encrypt(['tradeNo' => '398834470112341', 'traceId' => '9842336864303541115', 'method' => 'trade.third.pay.close', 'entId' => $entId, 'ts' => time() * 1000], $secretKey));
+            //die(Aes::encrypt(['tradeNo' => '1722873119267393553', 'traceId' => '-4920717883340267227', 'method' => 'trade.third.pay.close', 'entId' => $entId, 'ts' => time() * 1000], $secretKey));
             $contents = Aes::decrypt($this->requestData['content'], $secretKey);
             if(empty($contents)){
                 throw new \Exception("参数错误", 401);
@@ -128,27 +139,29 @@ class IndexController extends ApiController
             if(!$meituanOrderDetail){
                 throw new \Exception("MeituanOrdeDetail 支付单不存在", 500);
             }
-
             //关闭订单
             $order = Order::findOne($meituanOrderDetail->order_id);
-            $order->is_delete  = 1;
-            $order->is_recycle = 1;
-            $order->deleted_at = time();
-            $order->status     = 5;
-            if(!$order->save()){
-                throw new \Exception("Order 订单关闭失败", 500);
-            }
+            if($order){
+                $order->is_delete  = 1;
+                $order->is_recycle = 1;
+                $order->deleted_at = time();
+                $order->status     = 5;
+                if(!$order->save()){
+                    throw new \Exception("Order 订单关闭失败", 500);
+                }
 
-            $paymentOrder = PaymentOrder::findOne(["order_no" => $order->order_no]);
-            $paymentOrder->is_delete = 1;
-            if(!$paymentOrder->save()){
-                throw new \Exception("PaymentOrder 订单关闭失败", 500);
-            }
+                $paymentOrder = PaymentOrder::findOne(["order_no" => $order->order_no]);
+                $paymentOrder->is_delete = 1;
+                if(!$paymentOrder->save()){
+                    throw new \Exception("PaymentOrder 订单关闭失败", 500);
+                }
 
-            $paymentOrderUnion = PaymentOrderUnion::findOne($paymentOrder->payment_order_union_id);
-            $paymentOrderUnion->is_delete = 1;
-            if(!$paymentOrderUnion->save()){
-                throw new \Exception("PaymentOrderUnion 订单关闭失败", 500);
+                $paymentOrderUnion = PaymentOrderUnion::findOne($paymentOrder->payment_order_union_id);
+                $paymentOrderUnion->is_delete = 1;
+                if(!$paymentOrderUnion->save()){
+                    throw new \Exception("PaymentOrderUnion 订单关闭失败", 500);
+                }
+
             }
 
             $goods = Goods::findOne($meituanOrderDetail->goods_id);
@@ -206,19 +219,27 @@ class IndexController extends ApiController
                 throw new \Exception("支付单不存在", 410);
             }
 
-            $tradeExpiringTime = strtotime($meituanOrderDetail->tradeExpiringTime);
-            if($meituanOrderDetail->payStatus){
-                $payStatus = 1;
-            }elseif((time() - 60) > $tradeExpiringTime){
+            if($meituanOrderDetail->is_delete){
                 $payStatus = 10;
             }else{
-                $payStatus = 0;
+                $tradeExpiringTime = strtotime($meituanOrderDetail->tradeExpiringTime);
+                if($meituanOrderDetail->payStatus){
+                    $payStatus = 1;
+                }elseif((time() - 60) > $tradeExpiringTime){
+                    $payStatus = 10;
+                }else{
+                    $payStatus = 0;
+                }
             }
+
+
+            $order = Order::findOne($meituanOrderDetail->order_id);
 
             $data = [
                 'tradeNo'          => $meituanOrderDetail->tradeNo,
                 'thirdTradeNo'     => (string)$meituanOrderDetail->id,
                 'payStatus'        => $payStatus,
+                'tradeTime'        => $payStatus == 1 ? date("Y-m-d H:i:s", $order->pay_at) : "1970-01-01 00:00:00",
                 'tradeAmount'      => $meituanOrderDetail->tradeAmount,
                 'serviceFeeAmount' => $meituanOrderDetail->serviceFeeAmount
             ];
@@ -251,15 +272,15 @@ class IndexController extends ApiController
 
             /*die(Aes::encrypt([
                 "ts" => time() * 1000,
-                "traceId" => "9842636864303511454",
+                "traceId" => "9842636864313511459",
                 "entId"  => $entId,
                 "method" => "trade.third.pay",
-                "tradeNo" => "691634471412378",
-                "sqtBizOrderId" => "558955132365379",
-                "tradeAmount" => "10.00",
+                "tradeNo" => "691634471352378",
+                "sqtBizOrderId" => "358955352365379",
+                "tradeAmount" => "100.00",
                 "serviceFeeAmount" => "0.0",
                 "goodsName" => "MTDP-香丰阁(望京店)",
-                "tradeExpiringTime" => "2023-11-10 10:03:00",
+                "tradeExpiringTime" => "2023-12-10 10:03:00",
                 "notifyUrl" => "https://waimai-openapi.apigw.test.meituan.com/api/sqt/open/standardThird/v2/pay/callback?tradeModel=FLOW",
                 "returnUrl" => "https://sqt.waimai.test.sankuai.com/c/finance/cashier/#/cashier-loading?serialNum=CCH1UH2E4SPV&payId=1625066085491413067",
                 "firstBusinessType" => "010",
