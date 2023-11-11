@@ -19,6 +19,11 @@ class MeituanOrderRefundLogic
         //金豆券比例
         //多少金豆券抵扣一元;
         $integralPrice = 1;
+        $order = Order::findOne($meituanOrderDetail->order_id);
+
+        //计算出红包服务费
+        $totalIntegralPrice = OrderDetail::find()->where(['order_id'  => $order->id, 'is_delete' => 0])->sum("integral_price");
+        $integralFeePrice = max(0, $order->integral_deduction_price - $totalIntegralPrice);
 
         $t = \Yii::$app->db->beginTransaction();
         try {
@@ -37,8 +42,6 @@ class MeituanOrderRefundLogic
                 if(floatval($refundPrice) > $remainRefundAmount){
                     throw new \Exception('最多可退款金额￥' .$remainRefundAmount);
                 }
-
-                $order = Order::findOne($meituanOrderDetail->order_id);
 
                 /** @var OrderDetail $orderDetail */
                 $orderDetail = OrderDetail::find()->where([
@@ -95,6 +98,14 @@ class MeituanOrderRefundLogic
                     $meituanOrderDetail->refund_status = 2;
                 }else{ //全额退款
                     $meituanOrderDetail->refund_status = 1;
+
+                    //退还红包服务费
+                    if($integralFeePrice > 0){
+                        $orderDetail->integral_price += $integralFeePrice;
+                        if(!$orderDetail->save()){
+                            throw new \Exception(json_encode($orderDetail->getErrors()));
+                        }
+                    }
                 }
 
                 $meituanOrderDetail->refund_money = bcadd(floatval($meituanOrderDetail->refund_money), floatval($refundPrice));

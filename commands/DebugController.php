@@ -13,6 +13,8 @@ use app\plugins\addcredit\models\AddcreditOrder;
 use app\plugins\addcredit\models\AddcreditPlateforms;
 use app\plugins\mch\models\Mch;
 use app\plugins\mch\models\MchCheckoutOrder;
+use app\plugins\meituan\logic\MeituanOrderRefundLogic;
+use app\plugins\meituan\models\MeituanOrdeDetail;
 use app\plugins\shopping_voucher\helpers\ShoppingVoucherHelper;
 use app\plugins\shopping_voucher\models\ShoppingVoucherFromStore;
 use app\plugins\shopping_voucher\models\ShoppingVoucherSendLog;
@@ -23,7 +25,11 @@ class DebugController extends BaseCommandController{
 
     public function actionIndex(){
 
-        $addcreditOrder = AddcreditOrder::findOne(812);
+        $meituanOrderDetail = MeituanOrdeDetail::findOne(100042);
+        MeituanOrderRefundLogic::doRefund($meituanOrderDetail, "1723268063257903159", 0, 0);
+
+
+        //$addcreditOrder = AddcreditOrder::findOne(812);
         /*$plateform = AddcreditPlateforms::findOne($addcreditOrder->plateform_id);
 
         $platClass = new \app\plugins\addcredit\plateform\sdk\dayuanren\PlateForm();

@@ -416,6 +416,11 @@ class IndexController extends ApiController
     public function actionLoginFree(){
         try {
 
+            $user = \Yii::$app->user->getIdentity();
+            if($user->balance <=0 && $user->static_integral <= 0){
+                throw new \Exception("请先升级成为会员");
+            }
+
             $longitude = $this->requestData['longitude'];
             $latitude = $this->requestData['latitude'];
 
@@ -454,13 +459,13 @@ class IndexController extends ApiController
 
             $encryptContent = Aes::encrypt($contents, $secretKey);
 
-            return $this->asJson(["data" => [
+            return $this->asJson(["status" => ApiCode::CODE_SUCCESS, "data" => [
                 "loginFreeUrl" => $setting['loginFreeUrl'],
                 "accessKey"    => $accessKey,
                 "content"      => $encryptContent]
             ]);
         }catch (\Exception $e){
-            die($e->getMessage());
+            return $this->asJson(["status" => ApiCode::CODE_FAIL, "msg" => $e->getMessage()]);
         }
     }
 }
