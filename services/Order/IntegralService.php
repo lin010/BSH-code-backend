@@ -121,7 +121,7 @@ class IntegralService
                 $max_deduct_integral = $this->user_remaining_integral/(1+($integral_fee_rate/100));
             }
 
-            $value['integral_service_fee'] = intval($max_deduct_integral * ($integral_fee_rate/100));
+            $value['integral_service_fee'] = floatval($max_deduct_integral * ($integral_fee_rate/100));
             $value['max_deduct_integral']  = $max_deduct_integral;
             $value['integral_fee_rate']    = $integral_fee_rate;
 

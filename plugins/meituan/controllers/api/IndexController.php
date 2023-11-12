@@ -418,7 +418,7 @@ class IndexController extends ApiController
 
             $user = \Yii::$app->user->getIdentity();
             if($user->balance <=0 && $user->static_integral <= 0){
-                throw new \Exception("请先升级成为会员");
+                throw new \Exception("红包余额不足，请您先获取红包免费点外卖");
             }
 
             $longitude = $this->requestData['longitude'];
