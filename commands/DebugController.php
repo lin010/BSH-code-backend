@@ -24,9 +24,14 @@ use lin010\taolijin\Ali;
 class DebugController extends BaseCommandController{
 
     public function actionIndex(){
+        $addcreditOrder = AddcreditOrder::findOne(1);
+        $plateform = AddcreditPlateforms::findOne($addcreditOrder->plateform_id);
+        $platClass = new \app\plugins\addcredit\plateform\sdk\liandong\PlateForm();
+        $platClass->submit($addcreditOrder, $plateform);
+        exit;
 
-        $meituanOrderDetail = MeituanOrdeDetail::findOne(100042);
-        MeituanOrderRefundLogic::doRefund($meituanOrderDetail, "1723268063257903159", 0, 0);
+        //$meituanOrderDetail = MeituanOrdeDetail::findOne(100042);
+        //MeituanOrderRefundLogic::doRefund($meituanOrderDetail, "1723268063257903159", 0, 0);
 
 
         //$addcreditOrder = AddcreditOrder::findOne(812);
