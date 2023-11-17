@@ -75,11 +75,17 @@ class UserTeamForm extends BaseModel
         //用户团队统计
         $result['team_commission']['space_push_total'] = UserRelationshipLinkForm::countUserTeam($user, $userLink);
 
-        //团队订单
-        $result['team_commission']['team_order_count'] = UserRelationshipLinkForm::countUserTeamOrder($user, $userLink);
+
 
         //团队订单
-        $result['team_commission']['team_order_total'] = UserRelationshipLinkForm::countUserTeamOrderTotoal($user, $userLink);
+        //$result['team_commission']['team_order_count'] = UserRelationshipLinkForm::countUserTeamOrder($user, $userLink);
+
+        //团队订单
+        //$result['team_commission']['team_order_total'] = UserRelationshipLinkForm::countUserTeamOrderTotoal($user, $userLink);
+
+        $teamOrder = (new \app\forms\mall\user\UserForm())->getTeamOrder($user->id);
+        $result['team_commission']['team_order_count'] = $teamOrder['order_num'];
+        $result['team_commission']['team_order_total'] = round($teamOrder['total_price'], 2);
 
         return $this->returnApiResultData(ApiCode::CODE_SUCCESS, '请求成功', $result);
     }
