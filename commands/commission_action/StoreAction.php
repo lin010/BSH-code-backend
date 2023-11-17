@@ -121,7 +121,7 @@ class StoreAction extends Action{
                                 "item_id"           => $checkoutOrder['id'],
                                 "item_type"         => 'checkout',
                                 "user_id"           => $user->parent_id,
-                                "price"             => round($price, 5),
+                                "price"             => round($price, 3),
                                 "status"            => 1,
                                 "created_at"        => $checkoutOrder['created_at'],
                                 "updated_at"        => $checkoutOrder['updated_at'],

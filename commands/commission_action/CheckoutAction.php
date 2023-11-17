@@ -95,7 +95,7 @@ class CheckoutAction extends Action{
                                     "mall_id"           => $checkoutOrder['mall_id'],
                                     "checkout_order_id" => $checkoutOrder['id'],
                                     "user_id"           => $parentData['id'],
-                                    "price"             => round($price, 5),
+                                    "price"             => round($price, 3),
                                     "status"            => 1,
                                     "created_at"        => $checkoutOrder['created_at'],
                                     "updated_at"        => $checkoutOrder['updated_at'],

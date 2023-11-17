@@ -89,6 +89,7 @@ class StoreScanCodeLogListForm extends BaseModel
                         $item['store_url'] = $store->cover_url ?: 'https://www.mingyuanriji.cn/web/static/header-logo.png';
                     }
                 }
+                $item['price'] = round($item['price'], 3);
             }
         }
         return [
