@@ -667,7 +667,15 @@ class UserForm extends BaseModel
                 'total_price' => 0
             ];
             if ($user_ids && is_array($user_ids)) {
-                $query = Order::find()->andWhere(['in','user_id',$user_ids]);
+                $query = Order::find()->andWhere([
+                    'AND',
+                    ['in', 'user_id', $user_ids],
+                    ['is_pay' => 1],
+                    ['cancel_status' => 0],
+                    ['is_delete' => 0],
+                    ['is_recycle' => 0],
+                    ['in', 'status', [1, 2, 3, 4, 6, 7, 8]]
+                ]);
                 $price_query = clone $query;
                 //获取总订单数
                 $data['order_num'] = $query->count();
