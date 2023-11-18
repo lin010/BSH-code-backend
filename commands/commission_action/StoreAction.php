@@ -104,7 +104,7 @@ class StoreAction extends Action{
                 $commission_res['ver'] = "2021/10/25";
                 $commission_res['commisson_value'] = min(0.02, (float)($commission_res['commisson_value']/100));
                 $commission_res['profit_price'] = ($transferRate/100) * $checkoutOrder['order_price'];
-                $price = $commission_res['commisson_value'] * $checkoutOrder['order_price'];
+                $price = $commission_res['commisson_value'] * $commission_res['profit_price'];
 
                 //生成分佣记录
                 if($price > 0){
