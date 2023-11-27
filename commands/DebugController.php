@@ -3,12 +3,15 @@
 namespace app\commands;
 
 use app\commands\telephone_order_task\DoProcessingAction;
+use app\component\jobs\BsPayQueryJob;
 use app\core\ApiCode;
+use app\core\payment\PaymentOrder;
 use app\logic\AppConfigLogic;
 use app\models\BsTransferOrder;
 use app\models\Mall;
 use app\models\User;
 use app\models\UserRelationshipLink;
+use app\notify_class\goods\OrderPayNotify;
 use app\plugins\addcredit\models\AddcreditOrder;
 use app\plugins\addcredit\models\AddcreditPlateforms;
 use app\plugins\mch\models\Mch;
@@ -24,11 +27,16 @@ use lin010\taolijin\Ali;
 class DebugController extends BaseCommandController{
 
     public function actionIndex(){
-        $addcreditOrder = AddcreditOrder::findOne(1);
+
+        (new BsPayQueryJob([
+            "outTradeNo" => "2023112514385941774"
+        ]))->execute(null);
+
+        /*$addcreditOrder = AddcreditOrder::findOne(1);
         $plateform = AddcreditPlateforms::findOne($addcreditOrder->plateform_id);
         $platClass = new \app\plugins\addcredit\plateform\sdk\liandong\PlateForm();
         $platClass->submit($addcreditOrder, $plateform);
-        exit;
+        exit;*/
 
         //$meituanOrderDetail = MeituanOrdeDetail::findOne(100042);
         //MeituanOrderRefundLogic::doRefund($meituanOrderDetail, "1723268063257903159", 0, 0);
