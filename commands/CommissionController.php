@@ -22,8 +22,8 @@ class CommissionController extends BaseCommandController{
             "store"              => "app\\commands\\commission_action\\StoreAction",
             "hotel"              => "app\\commands\\commission_action\\HotelAction",
             "hotel3r"            => "app\\commands\\commission_action\\Hotel3rAction",
-            "addcredit"          => "app\\commands\\commission_action\\AddcreditAction",
-            "addcredit3r"        => "app\\commands\\commission_action\\Addcredit3rAction",
+            //"addcredit"          => "app\\commands\\commission_action\\AddcreditAction",
+            //"addcredit3r"        => "app\\commands\\commission_action\\Addcredit3rAction",
             "giftpacks"          => "app\\commands\\commission_action\\GiftpacksAction",
             "region"             => "app\\commands\\commission_action\\RegionAction",//门店二维码收款区域分红
             "regionGoods"        => "app\\commands\\commission_action\\RegionGoodsAction",//商品消费区域分红
