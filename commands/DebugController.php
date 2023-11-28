@@ -29,8 +29,9 @@ class DebugController extends BaseCommandController{
     public function actionIndex(){
 
         (new BsPayQueryJob([
-            "outTradeNo" => "2023112514385941774"
+            "outTradeNo" => "2023112716434385533"
         ]))->execute(null);
+        exit;
 
         /*$addcreditOrder = AddcreditOrder::findOne(1);
         $plateform = AddcreditPlateforms::findOne($addcreditOrder->plateform_id);
