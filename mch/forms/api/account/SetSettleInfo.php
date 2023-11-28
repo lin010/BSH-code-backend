@@ -37,6 +37,7 @@ class SetSettleInfo extends BaseModel{
         }
 
         try {
+            $this->paper_settleAccountNo = preg_replace("/\s/", "", $this->paper_settleAccountNo);
             if (!$this->checkBank($this->paper_settleAccountNo))
                 throw new \Exception("银行卡填写不正确");
 
@@ -136,6 +137,10 @@ class SetSettleInfo extends BaseModel{
             return [
                 'code' => ApiCode::CODE_FAIL,
                 'msg'  => $e->getMessage(),
+                'error' => [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
             ];
         }
     }
