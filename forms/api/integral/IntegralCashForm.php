@@ -161,13 +161,13 @@ class IntegralCashForm extends BaseModel
                 $res = \Yii::$app->bs->user_busi_open($huifu);
                 $hasEdit = true;
 	            if($res['code']==-1){
-	                return $this->returnApiResultData(ApiCode::CODE_FAIL,$res['message']);
+	                return $this->returnApiResultData(ApiCode::CODE_FAIL,$res['msg']);
 	            }
             }else{
                 if($user->bank_account != $huifu['card_no']){
                     $res = \Yii::$app->bs->user_busi_modify($huifu);
 					if($res['code']==-1){
-		                return $this->returnApiResultData(ApiCode::CODE_FAIL,$res['message']);
+		                return $this->returnApiResultData(ApiCode::CODE_FAIL,$res['msg']);
 		            }                    
                     $hasEdit = true;
                 }
