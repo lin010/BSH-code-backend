@@ -82,7 +82,7 @@
                                             </el-radio-group>
                                         </el-form-item>
                                         <el-form-item label="赠送">
-                                            <el-input type="number" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');" :placeholder="`请输入赠送${currencyAlias.integral_alias}`数量" v-model="scope.row.editable_score.give_score">
+                                            <el-input type="number" min="0" oninput="this.value = this.value.replace(/[^0-9]/g, '');" :placeholder="'请输入赠送'+currencyAlias.integral_alias+'数量'" v-model="scope.row.editable_score.give_score">
                                                 <template slot="append"><span v-if="scope.row.editable_score.give_score_type == 1">分</span><span v-else>%</span></template>
                                             </el-input>
                                         </el-form-item>
@@ -142,6 +142,7 @@
                         </template>
                     </el-table-column>
                 </el-table>
+
             </el-tabs>
             <div flex="box:last cross:center">
                 <div></div>
