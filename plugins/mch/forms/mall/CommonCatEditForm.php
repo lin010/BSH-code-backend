@@ -17,8 +17,9 @@ class CommonCatEditForm extends BaseModel
     public function rules()
     {
         return [
-            [['name', 'pic_url', 'sort', 'status'], 'required'],
-            [['id', 'sort', 'status'], 'integer']
+            [['name', 'sort', 'status'], 'required'],
+            [['id', 'sort', 'status'], 'integer'],
+            [['pic_url'], 'safe']
         ];
     }
 
