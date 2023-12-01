@@ -2,6 +2,7 @@
 
 namespace app\commands;
 
+use app\commands\commission_action\CheckoutAction;
 use app\commands\telephone_order_task\DoProcessingAction;
 use app\component\jobs\BsPayQueryJob;
 use app\core\ApiCode;
@@ -28,10 +29,10 @@ class DebugController extends BaseCommandController{
 
     public function actionIndex(){
 
-        (new BsPayQueryJob([
+        /*(new BsPayQueryJob([
             "outTradeNo" => "2023112716434385533"
         ]))->execute(null);
-        exit;
+        exit;*/
 
         /*$addcreditOrder = AddcreditOrder::findOne(1);
         $plateform = AddcreditPlateforms::findOne($addcreditOrder->plateform_id);
@@ -52,8 +53,8 @@ class DebugController extends BaseCommandController{
         exit;*/
 
 
-        (new DoProcessingAction(null, null, null))->debug();
-        exit;
+        /*(new DoProcessingAction(null, null, null))->debug();
+        exit;*/
 
         /*\Yii::$app->mall = Mall::findOne(5);
 

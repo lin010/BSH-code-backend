@@ -134,9 +134,8 @@ class BossAwardsListForm extends BaseModel
                 $level->mall_id = \Yii::$app->mall->id;
                 $level->award_sn = 'BSH' . $top_sn;
             }
-            if (isset($post_data['level_ids'])) {
-                $level->level_id = json_encode($post_data['level_ids']);
-            }
+            $post_data['level_ids'] = !empty($post_data['level_ids']) ? $post_data['level_ids'] : [];
+            $level->level_id = json_encode($post_data['level_ids']);
             $level->name = $post_data['name'];
             $level->status = $post_data['status'];
             $level->period = $post_data['period'];

@@ -30,7 +30,7 @@ class CheckoutAction extends Action{
      * 二维码收款订单，新增分佣记录
      * @return boolean
      */
-    private function doNew(){
+    public function doNew(){
         $query = MchCheckoutOrder::find()->alias("mco");
         $query->innerJoin("{{%store}} s", "s.id=mco.store_id");
         $query->innerJoin("{{%plugin_mch}} m", "m.id=s.mch_id");
@@ -77,10 +77,18 @@ class CheckoutAction extends Action{
                     */
 
                     //新公式
-                    $ruleData['role_type'] = $parentData['role_type'];
+                    //结账金额×（区域经销商比例0.005 或者  经销商比例0.002）=应得的分佣
+                    /*$ruleData['role_type'] = $parentData['role_type'];
                     $ruleData['ver'] = "2021/12/10";
                     $ruleData['profit_price'] = ($transferRate/100) * $checkoutOrder['order_price'];
-                    $price = $ruleData['profit_price'] * $ruleData['commisson_value'];
+                    $price = $ruleData['profit_price'] * $ruleData['commisson_value'];*/
+
+                    //新公式
+                    //结账金额×（区域经销商比例0.005 或者  经销商比例0.002）=应得的分佣
+                    $ruleData['role_type'] = $parentData['role_type'];
+                    $ruleData['ver'] = "2023/12/01";
+                    $ruleData['order_price'] = $checkoutOrder['order_price'];
+                    $price = $ruleData['order_price'] * $ruleData['commisson_value'];
 
                     //生成分佣记录
                     if($price > 0){
