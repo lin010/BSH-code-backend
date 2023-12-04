@@ -37,6 +37,10 @@ class MchCashApplyForm  extends BaseModel{
                 throw new \Exception("提现记录不存在");
             }
 
+            if(empty($mchCash->type)){
+                $mchCash->type = "bs";
+            }
+
             $mchCash->content = $this->content;
 
             if($this->act == "confirm"){ //确认
