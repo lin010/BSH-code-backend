@@ -192,7 +192,7 @@ class MchApplyPassForm extends BaseModel{
             $fromStore->name          = $store->name;
             $fromStore->cover_url     = $store->cover_url;
             $fromStore->start_at      = time();
-            $fromStore->enable_score  = 1;
+            $fromStore->enable_score  = 0;
             $fromStore->score_setting = json_encode($scoreSetting) ;
             $fromStore->rate          = max(0, min(100, $giveValue));
 

@@ -44,13 +44,13 @@ class DebugController extends BaseCommandController{
         //MeituanOrderRefundLogic::doRefund($meituanOrderDetail, "1723268063257903159", 0, 0);
 
 
-        //$addcreditOrder = AddcreditOrder::findOne(812);
-        /*$plateform = AddcreditPlateforms::findOne($addcreditOrder->plateform_id);
+        $addcreditOrder = AddcreditOrder::findOne(814);
+        $plateform = AddcreditPlateforms::findOne($addcreditOrder->plateform_id);
 
         $platClass = new \app\plugins\addcredit\plateform\sdk\dayuanren\PlateForm();
         $res = $platClass->query2($addcreditOrder, $plateform);
         print_r($res);
-        exit;*/
+        exit;
 
 
         /*(new DoProcessingAction(null, null, null))->debug();

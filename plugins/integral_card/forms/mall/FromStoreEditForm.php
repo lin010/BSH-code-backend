@@ -72,7 +72,8 @@ class FromStoreEditForm extends BaseModel{
             $fromStore->name          = $this->name;
             $fromStore->cover_url     = $this->cover_url ?: 'https://www.mingyuanriji.cn/web/static/header-logo.png';
             $fromStore->start_at      = strtotime($this->start_at);
-            $fromStore->enable_score  = $this->score_enable == "true" ? 1 : 0;
+            //$fromStore->enable_score  = $this->score_enable == "true" ? 1 : 0;
+            $fromStore->enable_score  = 0;
             $fromStore->score_setting = is_array($this->score_give_settings) ? json_encode($this->score_give_settings) : '';
             $fromStore->rate          = min(max(0, (float)$this->rate), 100);
 

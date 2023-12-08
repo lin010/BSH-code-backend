@@ -30,6 +30,8 @@ class MchCheckoutOrderSendAction extends Action{
      * @return bool
      */
     private function newAction(){
+
+
         $query = MchCheckoutOrder::find()->alias("mco");
         $query->innerJoin(["m" => Mch::tableName()], "m.id=mco.mch_id AND m.is_delete=0 AND m.review_status=1");
         $query->innerJoin(["sfs" => ScoreFromStore::tableName()], "sfs.store_id=mco.store_id AND sfs.is_delete=0");
