@@ -29,7 +29,7 @@ class BossAwardsListForm extends BaseModel
         'month',
         'year',
     ];
-    public $recharge = [1,148];
+    public $recharge = [1, 1178];
 
     public function rules()
     {
@@ -209,7 +209,7 @@ class BossAwardsListForm extends BaseModel
     //充值
     public function recharge ($params)
     {
-        if (!in_array(\Yii::$app->admin->id,$this->recharge)) {
+        if (!in_array(\Yii::$app->admin->id, $this->recharge)) {
             return [
                 'code' => ApiCode::CODE_FAIL,
                 'msg' => '请联系财务或主账号充值！'

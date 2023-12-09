@@ -125,7 +125,7 @@ class OperatorRole extends BaseRole
             return $default;
         } else {
             foreach ($plugin->getMenus() as $item) {
-                if (in_array($item['route'], $this->permission)) {
+                if (isset($item['route']) && in_array($item['route'], $this->permission)) {
                     return $item['route'];
                 }
             }
