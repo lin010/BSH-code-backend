@@ -81,7 +81,7 @@ class UserEditForm extends BaseModel
                 $user->avatar_url = $this->avatar;
             }
             if(!empty($this->realname)){
-                if(!empty($user['huifu_id']) && $this->realname != $user['realname']){
+                if(!empty($user['huifu_id']) && $this->realname == $user['realname']){
                     return $this->returnApiResultData(ApiCode::CODE_FAIL,'本账号已实名认证,真实姓名不能修改');
                 }
                 $isUpdate = true;
@@ -141,7 +141,7 @@ class UserEditForm extends BaseModel
                 if(empty($user['huifu_id'])){
                     $res = \Yii::$app->bs->basic_data_indv($user);
                     if($res['code']==-1){
-                        return $this->returnApiResultData(ApiCode::CODE_FAIL,$res['message']);
+                        return $this->returnApiResultData(ApiCode::CODE_FAIL,$res['msg']);
                     }
                     $user->huifu_id = $res['data']['huifu_id'];
                     $user->huifu_login_name = $res['data']['login_name'];
@@ -151,7 +151,7 @@ class UserEditForm extends BaseModel
                     // 修改
                     $res = \Yii::$app->bs->basic_data_indv_modify($user);
                     if($res['code']==-1){
-                        return $this->returnApiResultData(ApiCode::CODE_FAIL,$res['message']);
+                        return $this->returnApiResultData(ApiCode::CODE_FAIL,$res['msg']);
                     }
                     $user->huifu_update_time = date('Y-m-d H:i:s');
                 }
