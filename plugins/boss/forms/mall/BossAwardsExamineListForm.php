@@ -46,6 +46,9 @@ class BossAwardsExamineListForm extends BaseModel
             ->all();
         if ($sent_list) {
             foreach ($sent_list as $key => $value) {
+                $sent_list[$key]['created_at'] = date("Y-m-d H:i:s", $value['created_at']);
+                $sent_list[$key]['payment_time'] = date("Y-m-d H:i:s", $value['payment_time']);
+                $sent_list[$key]['send_date'] = date("Y-m-d H:i:s", strtotime(preg_replace("/^(\d{4})(\d{2})(\d{2})$/", "$1-$2-$3 00:00:00", $value['send_date'])));
                 if ($value['bossAwardEachLog']) {
                     $sent_list[$key]['awards_cycle'] = $value['bossAwardEachLog'][0]['awards_cycle'];
                     unset($sent_list[$key]['bossAwardEachLog']);

@@ -66,9 +66,15 @@
                     </template>
                 </el-table-column>
 
-                <el-table-column label="发放时间" width="170">
+                <el-table-column label="申请时间" width="170">
                     <template slot-scope="scope">
-                        <com-ellipsis :line="1">{{scope.row.send_date}}</com-ellipsis>
+                        <com-ellipsis :line="1">{{scope.row.created_at}}</com-ellipsis>
+                    </template>
+                </el-table-column>
+
+                <el-table-column label="打款时间" width="170">
+                    <template slot-scope="scope">
+                        <com-ellipsis :line="1">{{scope.row.payment_time}}</com-ellipsis>
                     </template>
                 </el-table-column>
 
