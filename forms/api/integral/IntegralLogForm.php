@@ -51,8 +51,9 @@ class IntegralLogForm extends BaseModel
 
         foreach ($list as &$item) {
             $item['created_at'] = date('m月d日 H:i', $item['created_at']);
-            $item['money'] = sprintf("%.2f", $item['money']);
-            $item['income'] = sprintf("%.2f", $item['income']);
+            $item['money'] = isset($item['money']) ? sprintf("%.2f", $item['money']) : 0;
+            $item['income'] = isset($item['income']) ? sprintf("%.2f", $item['income']) : 0;
+            $item['current_integral'] = \Yii::$app->user->getIdentity()->static_integral;
         }
 
         return $this->returnApiResultData(
