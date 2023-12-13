@@ -54,6 +54,10 @@ class UserExport extends BaseExport
                 'value' => '会员身份',
             ],
             [
+                'key' => 'parent_info',
+                'value' => '推荐人信息',
+            ],
+            [
                 'key' => 'order_count',
                 'value' => '订单数',
             ],
@@ -88,7 +92,7 @@ class UserExport extends BaseExport
         // TODO 消费总额要加上其它消费、如充值等
         $consumeCount = Order::find()->where(['mall_id' => \Yii::$app->mall->id, 'is_delete' => 0, 'is_confirm' => 1])->andWhere('user_id = u.id')->select('sum(total_pay_price)');
 
-        $list = $query->with(['userInfo'])
+        $list = $query->with(['parent', 'userInfo'])
             ->select([
                 'u.*',
                 'coupon_count' => $couponQuery,
@@ -98,7 +102,6 @@ class UserExport extends BaseExport
             ])
             ->asArray()
             ->all();
-
 
         $this->transform($list);
         $this->getFields();
@@ -113,15 +116,23 @@ class UserExport extends BaseExport
         $newList = [];
         $number = 1;
         $members = CommonMallMember::getAllMember();
+
+        $roleTypes = [
+            'store' => '店主',
+            'partner' => '经销商',
+            'branch_office' => '区域经销商',
+            'user' => '游客'
+        ];
+
         foreach ($list as $item) {
             $arr = [];
             $arr['number'] = $number++;
-            $arr['platform'] = $this->getPlatform($item['userInfo']['platform']);
+            $arr['platform'] = isset($item['userInfo']) ? $this->getPlatform($item['userInfo']['platform']) : "";
             $arr['id'] = $item['id'];
-            $arr['unionid'] = $item['userInfo']['unionid'];
+            $arr['unionid'] = isset($item['userInfo']) ? $item['userInfo']['unionid'] : "";
             $arr['nickname'] = $item['nickname'];
             $arr['mobile'] = $item['mobile'];
-            $arr['remark'] = $item['userInfo']['remark'];
+            $arr['remark'] = isset($item['userInfo']) ? $item['userInfo']['remark'] : "";
             $arr['created_at'] = $this->getDateTime($item['created_at']);
 
             $memberLevel = $item['level'];
@@ -137,6 +148,10 @@ class UserExport extends BaseExport
             } else {
                 $arr['member_level'] = '未知';
             }
+            $arr['member_level'] = isset($roleTypes[$item['role_type']]) ? $roleTypes[$item['role_type']] : $arr['member_level'];
+
+            $arr['parent_info'] = "";
+
             $arr['order_count'] = (int)$item['order_count'];
             $arr['card_count'] = (int)$item['card_count'];
             $arr['coupon_count'] = (int)$item['coupon_count'];
