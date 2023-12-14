@@ -1,0 +1,24 @@
+{
+  "name": "jx_mall_app",
+  "version": "1.0.0",
+  "description": "git clone http://git.gdqijianshi.top:8099/ganxiaohao/jx_mall_app.git",
+  "main": "main.js",
+  "scripts": {
+    "dev:mp-weixin": "cross-env NODE_ENV=development UNI_PLATFORM=mp-weixin vue-cli-service uni-build --watch --minimize"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://git.gdqijianshi.top:8099/ganxiaohao/jx_mall_app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async-validator": "^3.2.4",
+    "html2canvas": "^1.0.0-rc.4",
+    "jweixin-module": "^1.6.0",
+    "moment": "^2.24.0",
+    "vue-clipboard2": "^0.3.1",
+    "vue-video-player": "^5.0.2"
+  }
+}

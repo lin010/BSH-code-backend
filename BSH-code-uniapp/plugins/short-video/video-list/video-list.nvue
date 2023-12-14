@@ -1,0 +1,1333 @@
+<template>
+	<view class="page">
+		<view class="navtab flex flex-y-center">
+			<view class="navtab-left">
+				<view class="iconfont icon-fanhui navtab-icon" style="font-size: 40rpx;" @click="tagBack"></view>
+			</view>
+		</view>
+		<block v-if="user_id_storage != user_id">
+			<view class="redEnvelope" v-if="is_show_winBox">
+				<view class="left red-item">
+					<view class="red-item-cir red-item-left" :style="{transform:'rotate('+leftRotate+'deg)'}"></view>
+				</view>
+				<view class="right red-item">
+					<view class="red-item-cir red-item-right" :style="{transform:'rotate('+rightRotate+'deg)'}"></view>
+				</view>
+				<view class="win-img-box" v-if="!is_show_win">
+					<image class="win-img" :src="img_url+'images/video/winImg.png'" mode=""></image>
+				</view>
+				<view class="win-msg" v-else>
+					<text>{{currencyAlias.balance_alias}}+6.00</text>
+					<text>{{currencyAlias.integral_alias}}+16</text>
+				</view>
+			</view>
+		</block>
+		<!-- <view v-if="true">123</view> -->
+		<block v-if="videoList.length > 0">
+			<swiper class="video_swiper" vertical :skip-hidden-item-layout="true" :current='swiperIndex' @change="onSwiperChange">
+				<swiper-item v-for="(item,index) of videoList" :key="index">
+					<block v-if="item.is_delete == 0">
+						<short-video
+							:play="swiperIndex == index"
+							:src="item.video_url"
+							:index="index"
+							:progress="progress"
+							:progressValue="progressValue"
+							@loadedmetadata='loadindEndPlay'
+							@timeupdate='update'
+							@ended='videoEndPlay'
+						></short-video>
+					</block>
+					<view class="delete-video delete-video_size" v-else>
+						<image :src="item.first_frame" class="first_frame delete-video_size" mode=""></image>
+						<view class="maskLayer delete-video_size flex flex-x-center flex-y-center">很抱歉，短视频已被删除！</view>
+					</view>
+					
+					<view class="content_bottom_box">
+						<swiper :autoplay="true" :circular='true' :interval="5000" v-if="shop_list.length > 0 && item.related_type == 1"
+						 :vertical="true" :duration="500" class="buyList-swiper">
+							<swiper-item v-for="(itemB,indexB) in shop_list" :key='index' catchtouchmove='catchTouchMove'>
+								<view class="content_goods_info" @tap="showPop('buy')">
+									<image class="content_goods_info_image" :src="itemB.avatar_url"></image>
+									<text class="content_goods_info_text over1">{{names(itemB.nickname)}}购买了{{itemB.num}}件</text>
+								</view>
+							</swiper-item>
+						</swiper>
+						
+						<view class="content_goods_info" @tap="chooseAddress(item.related_lon,item.related_lat,item.related_address,item.related_detailed_address)" v-if="item.related_type == 3 && item.related_address != ''">
+							<text class="iconfont icon-address address-cion" :style="{color:textColor}"></text>
+							<text class="content_goods_info_text over1">{{item.related_address}}</text>
+						</view>
+						
+						<text class="content_user_name">@{{item.nickname}}</text>
+						<!-- <text class="content_description" :class="{'over1':is_show_text}" @tap="showText">
+							{{item.title}}
+						</text> -->
+						<text class="content_description" :class="{'over1':is_show_text}" @tap="showText">
+							{{item.content}}
+						</text>
+						<view class="goods-box flex" @tap="showPop('buyGoods')" v-if="item.related_type == 1">
+							<view class="goods-left">
+								<image class="goods-left" :src="item.goods_list.cover_pic" mode=""></image>
+							</view>
+							<view class="content-box">
+								<text class="goods-name over1">{{item.goods_list.name}}</text>
+								<view class="flex price-box">
+									<view class="price" :style="{color:textColor}">&yen;{{item.goods_list.price}}</view>
+									<view class="iconfont icon-gouwuche1" :style="{color:textColor}"></view>
+								</view>
+							</view>
+						</view>
+					</view>
+					<view class="right_suspended">
+						<view class="suspended_user_info" @click="navTo(`/plugins/short-video/my/index?id=${item.user_id}`)">
+							<image class="suspended_user_info_image" :src="item.avatar_url" mode="aspectFill"></image>
+							<view class="attention-btn" :style="{'background-color':textColor}" @tap.stop="attention(item.user_id,item.is_follow,index)">
+								<view class="iconfont icon-plus attention-btn-icon" v-if="!item.is_follow"></view>
+								<view class="iconfont icon-dagou3 attention-btn-icon" v-else></view>
+							</view>
+						</view>
+						<view class="suspended_features_item">
+							<view class="iconfont icon-shoucang icons" @tap='switchLike(item.id,item.is_like,index)' :style="{color:item.is_like?textColor:''}"></view>
+							<text class="suspended_features_text">{{item.like_num}}</text>
+						</view>
+						<view class="suspended_features_item" @tap="showPop('comment',item.id)">
+							<view class="iconfont icon-IMliaotian-shixin icons"></view>
+							<text class="suspended_features_text">{{item.comment_num}}</text>
+						</view>
+						<view class="suspended_features_item" @click="shareShow = true">
+							<!-- #ifdef MP-WEIXIN -->
+							<button class="share-btn" open-type="share"></button>
+							<!-- #endif -->
+							<view class="iconfont icon-zhuanfa icons"></view>
+							<text class="suspended_features_text">{{item.share_num}}</text>
+						</view>
+						<view @click="releaseVideo('upgrade')" class="suspended_features_item suspended_features_item_c flex flex-y-center flex-x-center">
+							<view class="icon-plus iconfont release-icon"></view>
+						</view>
+					</view>
+				</swiper-item>
+			</swiper>
+		</block>
+		<!-- 菜单栏弹窗 -->
+		<com-modal :show="modal" @cancel="hideModal" width="88%" :custom="true" padding="46rpx 0 0">
+			<block v-if="modal_str == 'upgrade'">
+				<view class="upgrade-title">升级提示</view>
+				<view class="upgrade-content">{{config_data.remark}}</view>
+				<view class="tags-btns flex">
+					<text class="btns-list cancel" @tap="hideModal">取消</text>
+					<text class="btns-list" :style="{color:textColor}" @click="navTo('/pages/index/index')">立即升级</text>
+				</view>
+			</block>
+			<!-- <block v-if="modal_str == 'lable'">
+				<view class="tabSearch-box">
+					<text class="tabSearch-title">分类标签</text>
+				</view>
+				<view class="tabs-box flex">
+					<text class="tabs-item" :class="[lable_index == index?'tabs-item_active':'']" :style="{'background-color':lable_index == index?textColor:''}"
+					 @tap='tabSelect(index,item.id)' v-for="(item,index) in lable_list" :key='index'>
+						{{item.name}}
+					</text>
+				</view>
+				<view class="tags-btns flex">
+					<text class="btns-list cancel" @tap="hideModal">取消</text>
+					<text class="btns-list" :style="{color:textColor}" @click="sureLable">确定</text>
+				</view>
+			</block> -->
+		</com-modal>
+		<!-- 底部弹窗 -->
+		<com-bottom-popup :z_index="999999" :z_index2="999996" :show="popupShow" @close="hidePopup" borderRadius="30rpx 30rpx 0 0">
+			<!-- 购买记录 -->
+			<block v-if="bottom_pop_str == 'buy'">
+				<view class="buyList">
+					<view class="title">
+						<text>购买记录</text>
+						<view class="iconfont icon-guanbi close-icon" @tap='hidePopup'></view>
+					</view>
+					<view class="dataCount">
+						<text>
+							目前共 <text class="num-col" :style="{color:textColor}">{{buyList_peoples}}</text> 人参与购买，商品共销售 <text class="num-col" :style="{color:textColor}">{{buyList_sum}}</text> 件
+						</text>
+					</view>
+					<scroll-view scroll-y="true" class="list-scroll-box" @scrolltolower='buyListLower'>
+						<view v-for="(item,index) in shop_list" :key='index' class="record-list flex flex-y-center flex-x-between">
+							<view class="flex record-list-item">
+								<view class="avatar">
+									<image class="avatar" :src="item.avatar_url" mode=""></image>
+								</view>
+								<view class="info-box">
+									<text class="name">{{names(item.nickname)}}</text>
+									<view class="time">{{date(item.created_at)}}</view>
+								</view>
+							</view>
+							<view class="nums">
+								<text><text :style="{color:textColor}">{{item.num}}</text>件</text>
+							</view>
+						</view>
+					</scroll-view>
+				</view>
+			</block>
+			<!-- 评论 -->
+			<block v-if="bottom_pop_str == 'comment'">
+				<view class="comment-box">
+					<view class="title">
+						<text>共{{comment_nums}}条评论</text>
+						<view class="iconfont icon-guanbi close-icon" @tap='hidePopup'></view>
+					</view>
+					<scroll-view scroll-y="true" class="common-scroll-box" v-if="comment_list.length > 0" @scrolltolower='commentlower'>
+						<view v-for="(itemC,indexC) in comment_list" :key='indexC' class="comment-list flex flex-x-between">
+							<view class="comment-list-left flex">
+								<view class="avatar-img">
+									<image class="avatar-img" :src="itemC.avatar_url" mode=""></image>
+								</view>
+								<view class="comment-content">
+									<text>{{itemC.nickname}}</text>
+									<text class="comment">
+										{{itemC.content}}
+									</text>
+									<text class="date">{{itemC.date}}</text>
+									<!-- <text class="date">22</text> -->
+								</view>
+							</view>
+							<view>
+								<view :class="itemC.is_praise?'icon-shoucang':'icon-shoucang1'" :style="{color:itemC.is_praise?textColor:''}" @tap="commentLike(itemC.id,itemC.is_praise,indexC)" class="iconfont like-icon"></view>
+								<text class="like-nums">{{itemC.like_num}}</text>
+							</view>
+						</view>
+						<view style="height: 100rpx;"></view>
+					</scroll-view>
+					
+					<view class="comment-default" v-else>
+						暂时没有评论喔,快来抢沙发~
+					</view>
+					
+					<view class="comment-inp flex">
+						<view class="avatar-img">
+							<image class="avatar-img" :src="img_url+'ceshi/ceshi.png'" mode=""></image>
+						</view>
+						<view class="inps flex flex-x-center flex-y-center">
+							<input style="width: 490rpx;" v-model="comment_content" type="text"/>
+						</view>
+						<view class="send-btn" :style="{color:textColor}" @click="sendComment">发送</view>
+					</view>
+				</view>
+			</block>
+			<!-- 购买商品 -->
+			<block v-if="bottom_pop_str == 'buyGoods'">
+				<view class="goodsPop-box">
+					<view class="goods-header flex">
+						<view class="goods-img">
+							<image class="goods-img" :src="goods_data.cover_pic" mode=""></image>
+						</view>
+						<view class="goods-content">
+							<text class="goods-price" :style="{color: textColor}"><text style="font-size: 30rpx;">&yen;</text>{{goods_data.price}}</text>
+							<text>库存:{{goods_data.goods_stock}}</text>
+							<!-- <text style="color: #000000;">请选择规格:</text> -->
+						</view>
+					</view>
+					<scroll-view scroll-y="true" class="goods-scroll-box">
+						<view class="attrs-box">
+							<!-- <text>请选择规格:</text> -->
+							<view class="attrs-item" v-for="(item,index) in goods_data.attr_groups" :key="item.attr_group_name">
+								<text>{{item.attr_group_name}}</text>
+								<view class="flex" style="flex-direction:row;flex-wrap: wrap;">
+									<view class="attrs" v-for="(itemA,indexA) in item.attr_list" :key='indexA' @click="selectAttr">
+										{{itemA.attr_name}}
+									</view>
+								</view>
+							</view>
+						</view>
+						<view class="buy-btn" :style="{'background-color':textColor}">
+							立即下单
+						</view>
+					</scroll-view>
+				</view>
+			</block>
+		</com-bottom-popup>
+		<!-- <view class="progress_drag" @touchstart="onTouchstart" @touchmove="onTouchmove" @touchcancel="onTouchcancel" @touchend="onTouchend"></view> -->
+	</view>
+</template>
+<script>
+import shortVideo from "@/components/shortVideo/short_video.vue"
+export default {
+	components:{
+		shortVideo,
+	},
+	data() {
+		return {
+			img_url: this.$api.img_url,
+			begin:false,
+			swiperIndex: 0,
+			progress: 10000,
+			progressValue: 0,
+			shareShow: false,
+			textColor:'#bc0100',
+			
+			// 初始请求数据的参数
+			video_type:'',//视频类型，发布或者喜欢
+			user_id:'',//用户id
+			user_id_storage:'',//获取本地的用户id
+			video_id:'',//视频id
+			
+			is_show_text: true, //更多文本
+			is_show_like: false, //喜欢
+			modal: false, //控制菜单栏弹窗
+			bottom_pop_str:'',//控制底部弹出显示内容
+			modal_str:'',//控制modal弹窗里面显示内容
+			
+			loadingArr:[],
+			everySecond:0,
+			goods_data:'',//商品数据
+			lable_list:[],//标签列表
+			lable_index:-1,
+			lable_id:0,
+			is_show_back:false,
+			
+			config_data:'',//权限数据
+			page:1,//分页
+			page_count:0,//总页数
+			video_page_count:0,//视频总页数
+			buyList_page:1,//购买记录分页
+			buyList_peoples:1,//购买记录总人数
+			buyList_sum:1,//购买记总件数
+			comment_nums:0,//评论总条数
+			comment_list:[],//评论列表
+			comment_content:'',//评论内容
+			comment_page:1,//评论分页
+			comment_open:0,//评论列表打开次数
+			comment_page_count:0,//评论总页数
+			videoList:[], //短视频列表
+			shop_list:[],//购买记录(轮播图)
+			// 进度条
+			leftRotate:-224,
+			rightRotate:-135,
+			is_show_win:false, //是否显示浮窗里面的金豆
+			is_show_winBox:false, //是否展示金豆浮窗
+			// 关注按钮
+			is_attention:false,
+			// 底部弹窗
+			popupShow: false,
+			currencyAlias:{
+				balance_alias: '',
+				red_envelope_alias: '',
+				integral_alias: '',
+				silver_beans_alias: '',
+			},
+		};
+	},
+	computed:{
+		names(){
+			return function(val){
+				return val.substring(0,1) + '***';
+				// return val.substring(0,1) + new Array(val.length).join('*');
+			}
+		},
+	},
+	//第一次加载
+	onLoad(options) {
+		let currencyAliasConfig = uni.getStorageSync('currencyAlias');
+		if(currencyAliasConfig){
+			JSON.parse(currencyAliasConfig);
+			this.currencyAlias = JSON.parse(currencyAliasConfig);
+		}
+		this.textColor = this.globalSet('textCol');
+		console.log(options,'options');
+		// 如果没有带参数过来则不请求数据，因为请求回来的数据不对，直接返回
+		if(JSON.stringify(options) == '{}'){
+			this.$http.toast('出现问题，没有参数！');
+			setTimeout(()=>{
+				uni.navigateBack();
+			},1000)
+		}else{
+			this.video_type = options.video_type;
+			this.user_id = options.user_id;
+			this.video_id = options.video_id;
+			this.page = options.page;
+		}
+		
+		this.user_id_storage = JSON.parse(uni.getStorageSync('userInfo')).user_id;
+		// 隐藏原生的tabbar
+		// uni.hideTabBar();
+		let systemInfo = uni.getSystemInfoSync();
+		this.screenWidth = systemInfo.screenWidth;
+		
+		this.getVideo('','init'); //请求视频列表数据
+		// this.getLableList();//请求所有标签
+	},
+	//页面显示
+	onShow() {
+		// 隐藏原生的tabbar
+		// uni.hideTabBar();
+		// #ifdef APP-PLUS
+		uni.showModal({
+			title: "提示",
+			content: "APP体验效果不好，暂没做兼容",
+			showCancel:false
+		});
+		// #endif
+	},
+	//方法
+	methods: {
+		chooseAddress(longitude,latitude,name,address){ //打开地图查看地址
+			uni.openLocation({
+				longitude: Number(longitude),
+				latitude: Number(latitude),
+				name: name,
+				address: address
+			})
+		},
+		getVideo(str,str2){ //获取视频列表
+			this.$http.request({
+				url: this.$api.plugin.video.video_list,
+				showLoading:true,
+				method:'post',
+				data:{
+					page:this.page,
+					user_id:this.user_id,
+					video_type:this.video_type,
+				}
+			}).then((res) => {
+				if (res.code == 0) {
+					this.config_data = res.data.config;
+					this.video_page_count = res.data.pagination.page_count;
+					res.data.list.forEach(item => {
+						this.$set(item,'page',this.page);
+					})
+					if(str == 'top'){ //区别上下拉，加进去的数据不同
+						this.videoList.unshift(...res.data.list);
+					}else{
+						this.videoList.push(...res.data.list);
+					}
+					console.log(this.videoList,'this.videoList1');
+					this.videoList.forEach((item,index) => { //控制跳转到哪一个短视频
+						if(item.id == this.video_id){
+							this.swiperIndex = index;
+						}
+					})
+					
+					if(this.user_id != this.user_id_storage){
+						this.showWin(this.videoList[this.swiperIndex].is_award,this.videoList[this.swiperIndex].is_receive);
+					}
+					this.goods_data = this.videoList[this.swiperIndex].goods_list;
+					this.getBuyList();
+				}else{
+					this.$http.toast(res.msg);
+				}
+			})
+		},
+		releaseVideo(str){
+			if(this.config_data.release_rule){
+				if(!this.config_data.release_status){
+					this.modal_str = str;
+					this.modal = true;
+					return;
+				}
+			}
+			this.navTo('/plugins/short-video/release-video/release-video');
+		},
+		date(time){
+			return this.dateFormat(time);
+		},
+		catchTouchMove(res){ //劫取轮播图用户滑动事件
+		    return false;
+		},
+		getBuyList(){ //获取购买记录
+			if(this.videoList[this.swiperIndex].related_type != 1) return;
+			
+			this.$http.request({
+				url:this.$api.plugin.video.shopping_list,
+				method:'post',
+				data:{
+					video_id:this.videoList[this.swiperIndex].id
+				}
+			}).then(res => {
+				if(res.code == 0){
+					this.buyList_peoples = res.data.peoples;
+					this.buyList_sum = res.data.sum;
+					this.page_count = res.data.pagination.page_count;
+					this.shop_list.push(...res.data.list);
+				}else{
+					this.$http.toast(res.msg);
+				}
+			})
+		},
+		buyListLower(){ //购买记录滑动到底部
+			this.buyList_page++;
+			if(this.buyList_page <= this.page_count){
+				this.getBuyList();
+			}
+		},
+		showWin(is_award,is_receive){ //控制是否显示奖励浮窗
+			if(is_award && !is_receive){
+				this.is_show_win=false;
+				this.is_show_winBox = true;
+				this.leftRotate=-224;
+				this.rightRotate=-135;
+				this.everySecond = 0;
+			}else{
+				this.is_show_winBox = false;
+				this.is_show_win = true;
+			}
+		},
+		update(e){ //视频每250ms触发
+			//如果是自己发布的视频就不能领取奖励积分 
+			if(this.user_id_storage == this.user_id) return;
+			
+			if(this.begin){
+				if(this.is_show_win) return;
+				
+				if(e.detail.currentTime == e.detail.duration){
+					this.leftRotate = -45;
+					this.is_show_win = true;
+					this.videoList[this.swiperIndex].is_receive = 1;
+					setTimeout(()=>{
+						this.is_show_winBox = false;
+					},3000)
+					return;
+				}
+				this.everySecond = 360/(e.detail.duration*4);
+				
+				if(this.rightRotate>0 && this.rightRotate>= 45){
+					this.leftRotate = this.leftRotate + this.everySecond;
+				}else{
+					this.rightRotate = this.rightRotate + this.everySecond;
+				}
+			}
+		},
+		loadindEndPlay(e){ //视频加载完成
+			this.loadingArr.push(e);
+			this.begin = true;
+		},
+		videoEndPlay(e){ //视频播放完成
+			this.$http.request({
+				url:this.$api.plugin.video.look_complete_video,
+				method:'post',
+				data:{
+					video_id:this.videoList[this.swiperIndex].id
+				}
+			}).then(res => {
+				console.log(res,'resss');
+			})
+		},
+		videoBegin(id){
+			this.$http.request({
+				url:this.$api.plugin.video.video_remark,
+				method:'post',
+				data:{
+					video_id:id
+				}
+			}).then(res => {
+				console.log(res,'ress');
+			})
+		},
+		attention(user_id,is_follow,index){ //关注
+			this.$http.request({
+				url:this.$api.plugin.video.operation_follow,
+				method:'post',
+				data:{
+					type:is_follow?'unfollow':'follow',
+					user_id:user_id
+				}
+			}).then(res => {
+				if(res.code == 0){
+					this.videoList[index].is_follow = !this.videoList[index].is_follow;
+					this.is_attention = !this.is_attention;
+				}else{
+					this.$http.toast(res.msg);
+				}
+			})
+			
+		},
+		tabSelect(index,id){
+			this.lable_index = index;
+			this.lable_id = id;
+		},
+		hideModal() {
+			this.modal = false;
+		},
+		tagBack(){
+			uni.navigateBack();
+		},
+		sendComment(){//发送评论
+			this.$http.request({
+				url:this.$api.plugin.video.create_comment,
+				method:'post',
+				data:{
+					video_id:this.videoList[this.swiperIndex].id,
+					content:this.comment_content
+				}
+			}).then(res => {
+				if(res.code == 0){
+					this.comment_content = '';
+					this.comment_nums++;
+					this.videoList[this.swiperIndex].comment_num++;
+					this.comment_list.push(res.data);
+				}
+			})
+		},
+		commentLike(id,is_praise,index){ //评论点赞
+			this.$http.request({
+				url:this.$api.plugin.video.praise_comment,
+				method:'post',
+				showLoading:true,
+				data:{
+					comment_id:id,
+					type:is_praise?'unpraise':'praise'
+				}
+			}).then(res =>{
+				if(res.code == 0){
+					this.comment_list[index].is_praise = !this.comment_list[index].is_praise;
+					if(this.comment_list[index].is_praise){
+						this.comment_list[index].like_num++;
+					}else{
+						this.comment_list[index].like_num--;
+					}
+				}else{
+					this.$http.toast(res.msg);
+				}
+			})
+		},
+		getCommentList(id,str){ //获取评论列表
+			this.$http.request({
+				url:this.$api.plugin.video.comment_list,
+				method:'post',
+				data:{
+					video_id:id,
+					page:this.comment_page
+				}
+			}).then(res => {
+				if(res.code == 0){
+					var m,d;
+					res.data.list.forEach(item => {
+						m = new Date(item.created_at*1000).getMonth() + 1;
+						d = new Date(item.created_at*1000).getDate();
+						this.$set(item,'date',`${m}-${d}`);
+					})
+					this.comment_page_count = res.data.pagination.page_count;
+					// 判断是第一次打开评论列表才请求，如果是下拉加载则不影响
+					if(this.comment_open == 1 || str == 'scroll'){
+						this.comment_list.push(...res.data.list);
+					}
+				}else{
+					this.$http.toast(res.msg);
+				}
+			})
+		},
+		commentlower(){
+			this.comment_page++;
+			if(this.comment_page <= this.comment_page_count){
+				this.getCommentList(this.videoList[this.swiperIndex].id,'scroll');
+			}
+		},
+		hidePopup(num) { //关闭底部弹窗
+			this.popupShow = false;
+		},
+		showPop(str,id){
+			this.popupShow = true;
+			this.bottom_pop_str = str;
+			
+			if(str == 'comment'){
+				this.comment_nums = this.videoList[this.swiperIndex].comment_num;
+				if(this.comment_page == 1){
+					this.comment_open++;
+					console.log(this.comment_open,'this.comment_openthis.comment_open');
+					this.getCommentList(id,'open');
+				}
+			}
+		},
+		switchLike(id,is_like,index){ //点赞
+			this.$http.request({
+				url:this.$api.plugin.video.praise_video,
+				method:'post',
+				data:{
+					video_id:id,
+					type:is_like?'unpraise':'praise'
+				}
+			}).then(res =>{
+				if(res.code == 0){
+					this.videoList[index].is_like = !this.videoList[index].is_like;
+					if(this.videoList[index].is_like){
+						this.videoList[index].like_num++;
+					}else{
+						this.videoList[index].like_num--;
+					}
+				}else{
+					this.$http.toast(res.msg);
+				}
+			})
+		},
+		selectAttr(){ //选择多规格
+			console.log('--------------')
+		},
+		navTo(url){
+			uni.navigateTo({
+				url
+			})
+		},
+		showText(){ //展示更多文本
+			this.is_show_text = !this.is_show_text;
+		},
+		onSwiperChange(e){
+			this.swiperIndex = e.detail.current;
+			this.changeInitData();
+			
+			//上下拉加载数据操作，video_id两处操作相同，但是没有拿出来是因为以免每次切换时候都赋值，怕影响性能
+			if(this.swiperIndex == this.videoList.length - 1){ //下拉
+				//将数据的page拿出来进行请求,可以知道是在那一页，以免重复请求
+				this.page = parseInt(this.videoList[this.swiperIndex].page) + 1;
+				this.video_id = this.videoList[this.swiperIndex].id;
+				if(this.page <= this.video_page_count){
+					this.getVideo();
+				}
+			}
+			if(this.swiperIndex == 0){ // 上拉
+				this.page = parseInt(this.videoList[this.swiperIndex].page) - 1;
+				this.video_id = this.videoList[this.swiperIndex].id;
+				if(this.page >= 1){
+					this.getVideo('top');
+				}
+			}
+		},
+		changeInitData(){
+			// 更换商品数据
+			this.goods_data = this.videoList[this.swiperIndex].goods_list;
+			// 每次切换初始化进度条，不看自己作品时才操作
+			if(this.user_id != this.user_id_storage){
+				this.showWin(this.videoList[this.swiperIndex].is_award,this.videoList[this.swiperIndex].is_receive);
+			}
+			// 每次切换请求对应的购买记录(轮播图)
+			if(this.videoList[this.swiperIndex].related_type == 1){
+				// 每次切换请求对应的购买记录(轮播图)
+				this.shop_list=[];
+				this.buyList_page = 1;
+				this.getBuyList();
+			}
+			// 初始化评论列表
+			this.comment_list = [];
+			this.comment_page = 1;
+			this.comment_open = 0;
+			 //视频开始必需调用这个接口
+			this.videoBegin(this.videoList[this.swiperIndex].id);
+		},
+		onTouchstart(e) {
+			this.progress = 0;
+		},
+		// 手指触摸后移动
+		onTouchmove(e) {
+			//手指当前坐标
+			// #ifdef APP-NVUE
+			const clientX = e.changedTouches[0].screenX;
+			// #endif
+			// #ifndef APP-NVUE
+			const clientX = e.changedTouches[0].clientX;
+			// #endif
+			this.progress = parseInt((clientX / this.screenWidth) * 100);
+		},
+		// 手指触摸动作被打断，如来电提醒，弹窗
+		onTouchcancel(e) {
+			// #ifdef APP-NVUE
+			this.progressValue = parseInt((e.changedTouches[0].screenX / this.screenWidth) * 100);
+			// #endif
+			// #ifndef APP-NVUE
+			this.progressValue = parseInt((e.changedTouches[0].clientX / this.screenWidth) * 100);
+			// #endif
+		},
+		// 手指触摸动作结束
+		onTouchend(e) {
+			// #ifdef APP-NVUE
+			this.progressValue = parseInt((e.changedTouches[0].screenX / this.screenWidth) * 100);
+			// #endif
+			// #ifndef APP-NVUE
+			this.progressValue = parseInt((e.changedTouches[0].clientX / this.screenWidth) * 100);
+			// #endif
+		}
+	},
+	//页面隐藏
+	onHide() {},
+	//页面卸载
+	onUnload() {},
+	//页面下来刷新
+	onPullDownRefresh() {},
+	//页面上拉触底
+	onReachBottom() {},
+};
+</script>
+<style lang="scss" scoped>
+	.page {
+		background-color: #1a1b20;
+		width: 750rpx;
+		position: relative;
+	}
+	
+	.navtab{
+		position: fixed;
+		top: 60rpx;
+		left: 30rpx;
+		z-index: 5;
+		color: #FFFFFF;
+		
+		.navtab-left{
+			margin-right: 10rpx;
+			width: 52rpx;
+			text-align: center;
+		}
+		.navtab-icon{
+			font-size: 46rpx;
+			line-height: 46rpx;
+		}
+	}
+	
+	.progress_drag {
+		position: absolute;
+		bottom: 0rpx;
+		left: 0;
+		width: 100%;
+		padding: 15rpx 0;
+		z-index: 5;
+	}
+	.video_swiper {
+		width: 750rpx;
+		height: calc(100vh - var(--window-bottom));
+	}
+	.video_file {
+		width: 750rpx;
+		height: 100%;
+	}
+	.content_bottom_box {
+		position: absolute;
+		bottom: 100rpx;
+		width: 750rpx;
+		padding: 0 182rpx 40rpx 40rpx;
+		// background-image: linear-gradient(to, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4));
+		align-items: flex-start;
+		z-index: 1;
+	}
+	.content_goods_info {
+		height: 49rpx;
+		flex-direction: row;
+		align-items: center;
+		background: rgba(0,0,0,0.4);
+		padding: 0 20rpx;
+		border-radius: 40rpx;
+	}
+	.content_goods_info_image {
+		width: 30rpx;
+		height: 30rpx;
+		border-radius: 50%;
+	}
+	.content_goods_info_text {
+		font-size: 24rpx;
+		color: #ffffff;
+		margin-left: 12rpx;
+	}
+	.content_user_name {
+		font-size: 36rpx;
+		color: #ffffff;
+		font-weight: bold;
+		margin: 10rpx 0 4rpx;
+	}
+	.content_description {
+		font-size: 28rpx;
+		color: #ffffff;
+	}
+	.right_suspended {
+		position: absolute;
+		right: 30rpx;
+		bottom: 120rpx;
+		align-items: center;
+		z-index:2;
+	}
+	.suspended_user_info {
+		position: relative;
+	}
+	.attention-btn{
+		width: 24rpx;
+		height: 24rpx;
+		border-radius: 50%;
+		position: absolute;
+		bottom: -12rpx;
+		left: 34rpx;
+		z-index:5;
+		
+		.attention-btn-icon{
+			font-size: 24rpx;
+			color: #FFFFFF;
+			transform: scale(0.7);
+			line-height: 24rpx;
+		}
+	}
+	.suspended_user_info_image {
+		width: 90rpx;
+		height: 90rpx;
+		border: solid 2rpx #ffffff;
+		border-radius: 50%;
+	}
+	.suspended_user_info_icon {
+		width: 40rpx;
+		height: 40rpx;
+		position: absolute;
+		bottom: 0;
+		left: 50%;
+		transform: translateX(-50%) translateY(50%);
+	}
+	.suspended_features_item {
+		align-items: center;
+		position: relative;
+		margin-top: 30rpx;
+	}
+	.suspended_features_item_c{
+		background: #bc0100;
+		width: 78rpx;
+		height: 78rpx;
+		border-radius: 50%;
+		color: #FFFFFF;
+	}
+	.share-btn{
+		position: absolute;
+		top: 0;
+		background-color: transparent;
+		width: 100rpx;
+		height: 100rpx;
+		z-index:10;
+	}
+	.release-icon{
+		font-size: 48rpx;
+	}
+	.suspended_features_icon {
+		width: 48rpx;
+		height: 48rpx;
+	}
+	.suspended_features_text {
+		margin-top: 6rpx;
+		font-size: 28rpx;
+		color: #ffffff;
+	}
+	.suspended_features_dot {
+		font-size: 20rpx;
+		color: #ffffff;
+		position: absolute;
+		top: -10rpx;
+		right: 0;
+		transform: translateX(50%);
+		height: 24rpx;
+		background-color: #ff3682;
+		border-radius: 12rpx;
+		line-height: 24rpx;
+		padding: 0 9rpx;
+	}
+	
+	.icons{
+		color: #FFFFFF;
+		font-size: 60rpx;
+		line-height: 54rpx;
+	}
+	.goods-box{
+		background: #ffffff;
+		width: 474rpx;
+		height: 110rpx;
+		border-radius: 10rpx;
+		margin-top: 14rpx;
+		display: flex;
+		flex-direction: row;
+	}
+	.goods-left{
+		width: 120rpx;
+		height: 110rpx;
+		border-radius: 10rpx 0 0 10rpx;
+	}
+	.content-box{
+		padding: 4rpx 12rpx;
+		flex: 1;
+		justify-content: space-between;
+		flex-direction: column;
+	}
+	.goods-name{
+		color: #000000;
+		font-size: 32rpx;
+	}
+	.price-box{
+		flex-direction: row;
+		justify-content: space-between;
+	}
+	.price{
+		font-size: 28rpx;
+	}
+	
+	// 购买记录
+	.buyList{
+		
+		.dataCount{
+			width: 710rpx;
+			background: #FAF5F4;
+			padding: 26rpx 0rpx;
+			margin: 26rpx auto 0;
+			font-size: 30rpx;
+			text-align: center;
+			
+			.num-col{
+				margin: 0 6rpx 0;
+			}
+		}
+		
+		.list-scroll-box{
+			height: 700rpx;
+			padding: 10rpx 24rpx;
+			
+			.record-list{
+				padding: 20rpx 0;
+				flex-direction: row;
+				
+				.record-list-item{
+					flex-direction: row;
+				}
+				.avatar{
+					width: 80rpx;
+					height: 80rpx;
+					border-radius: 50%;
+				}
+				.info-box{
+					font-size: 26rpx;
+					color: #000000;
+					margin-left: 24rpx;
+					
+					.name{
+						color: #929292;
+					}
+				}
+			}
+			.nums{
+				font-size: 28rpx;
+			}
+		}
+	}
+	// 购买记录轮播图
+	.buyList-swiper{
+		height: 50rpx;
+		width:260rpx;
+	}
+	
+	// 评论
+	.comment-box{
+		position: relative;
+	}
+	.common-scroll-box{
+		height: 900rpx;
+		padding: 10rpx 0rpx 0;
+		
+		.comment-list{
+			flex-direction: row;
+			align-items: flex-start;
+			padding: 30rpx 30rpx 40rpx;
+			border-bottom-color: #F2F2F2;
+			border-bottom-width: 1rpx;
+			border-bottom-style: solid;
+			
+			.comment-list-left{
+				flex-direction: row;
+				align-items: flex-start;
+			}
+			.avatar-img{
+				width: 80rpx;
+				height: 80rpx;
+				border-radius: 50%;
+				margin-right: 20rpx;
+			}
+			.comment-content{
+				font-size: 26rpx;
+				color: #999999;
+				
+				.comment{
+					color: #000000;
+					padding: 10rpx 0;
+					width: 500rpx;
+				}
+				.date{
+					font-size: 24rpx;
+				}
+			}
+			.like-icon{
+				font-size: 46rpx;
+			}
+			.like-nums{
+				font-size: 24rpx;
+				color: #999999;
+				text-align: center;
+			}
+		}
+	}
+	.comment-default{
+		height: 900rpx;
+		padding-top: 300rpx;
+		text-align: center;
+	}
+	.comment-inp{
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		height: 100rpx;
+		flex-direction: row;
+		background-color: #FFFFFF;
+		border-top-color: #F2F2F2;
+		border-top-width: 1px;
+		border-top-style: solid;
+		align-items: center;
+		justify-content: center;
+		
+		.avatar-img{
+			width: 80rpx;
+			height: 80rpx;
+			border-radius: 50%;
+		}
+		.inps{
+			border-width: 2rpx;
+			border-color: #F2F2F2;
+			border-style: solid;
+			width: 540rpx;
+			height: 66rpx;
+			border-radius: 40rpx;
+			margin: 0 20rpx;
+			padding: 0 20rpx;
+			font-size: 28rpx;
+		}
+		.send-btn{
+			font-size: 28rpx;
+		}
+	}
+	
+	// 商品
+	.goodsPop-box{
+		padding: 30rpx;
+		
+		.goods-header{
+			flex-direction: row;
+			font-size: 28rpx;
+			color: #808080;
+			padding-bottom: 30rpx;
+			border-bottom-color: #F7F7F7;
+			border-bottom-width: 1px;
+			border-bottom-style: solid;
+			
+			.goods-img{
+				width: 220rpx;
+				height: 220rpx;
+				margin-right: 40rpx;
+			}
+			.goods-content{
+				justify-content: space-between;
+				padding: 16rpx 0;
+				font-size: 28rpx;
+				color: #808080;
+			}
+			.goods-price{
+				font-size: 40rpx;
+			}
+		}
+		.goods-scroll-box{
+			max-height: 600rpx;
+		}
+		.attrs-box{
+			padding: 30rpx 26rpx;
+			color: #000000;
+			font-size: 26rpx;
+			
+			.attrs-item{
+				padding-top: 30rpx;
+				
+				.attrs{
+					height: 66rpx;
+					background-color: #F2F2F2;
+					border-radius: 6rpx;
+					padding: 0 30rpx;
+					margin: 16rpx 20rpx 0 0;
+					line-height: 66rpx;
+					
+					&:nth-of-type(4n){
+						margin-right: 0;
+					}
+				}
+			}
+		}
+		.buy-btn{
+			width: 690rpx;
+			height: 90rpx;
+			color: #FFFFFF;
+			border-radius: 56rpx;
+			text-align: center;
+			line-height: 90rpx;
+			font-size: 26rpx;
+			margin-top: 40rpx;
+		}
+	}
+	
+	// 公共标题样式
+	.title{
+		font-size: 36rpx;
+		color: #000000;
+		position: relative;
+		text-align: center;
+		height: 90rpx;
+		line-height: 90rpx;
+		border-bottom: 1px solid #F2F2F2;
+		
+		.close-icon{
+			position: absolute;
+			top: 20rpx;
+			right: 30rpx;
+			font-size: 30rpx;
+			line-height: 30rpx;
+		}
+	}
+	
+	// 菜单栏(modal)弹窗
+	.tabSearch-box{
+		
+		.tabSearch-title{
+			font-size: 48rpx;
+			color: #282828;
+			text-align: center;
+			margin-bottom: 30rpx;
+		}
+	}
+	.tabs-box{
+		flex-direction: row;
+		flex-wrap: wrap;
+		padding: 0 30rpx;
+		
+		.tabs-item{
+			padding: 0 18rpx;
+			height: 60rpx;
+			line-height: 60rpx;
+			border-radius: 40rpx;
+			background-color: #F2F2F2;
+			font-size: 28rpx;
+			color: #000000;
+			margin: 0 38rpx 20rpx 0;
+		}
+		.tabs-item_active{
+			color: #ffffff;
+		}
+	}
+	.tags-btns{
+		flex-direction: row;
+		border-top-width: 1px;
+		border-top-color: #EDEDED;
+		border-top-style: solid;
+		font-size: 38rpx;
+		color: #999999;
+		width: 100%;
+		margin-top: 20rpx;
+		
+		.cancel{
+			border-right-width: 1px;
+			border-right-color: #EDEDED;
+			border-right-style: solid;
+		}
+		.btns-list{
+			width: 50%;
+			height: 98rpx;
+			text-align: center;
+			line-height: 98rpx;
+		}
+	}
+	
+	// 金豆浮窗
+	.redEnvelope{
+		width: 120rpx;
+		height: 120rpx;
+		border-radius: 50%;
+		background-color: rgba(0,0,0,0.7);
+		position: fixed;
+		top: 220rpx;
+		left: 30rpx;
+		z-index:5;
+	}
+	.red-item{
+		width: 60rpx;
+		height: 120rpx;
+		position: absolute;
+		top: 0;
+		overflow: hidden;
+	}
+	.left{
+		left: 0;
+	}
+	.right{
+		right: 0;
+	}
+	.red-item-cir{
+		width: 120rpx;
+		height: 120rpx;
+		border-radius: 50%;
+		position: absolute;
+		border-width: 6rpx;
+		border-style: solid;
+	}
+	.red-item-left{
+		border-left-color: #F6B557;
+		border-top-color: #F6B557;
+		transform: rotate(-224deg);
+		// transform: rotate(-45deg);
+	}
+	.red-item-right{
+		border-right-color: #F6B557;
+		border-top-color: #F6B557;
+		transform: rotate(-135deg);
+		// transform: rotate(45deg);
+		left: -60rpx;
+	}
+	.win-img-box{
+		width: 56rpx;
+		height: 64rpx;
+		position: absolute;
+		top: 30rpx;
+		left: 34rpx;
+	}
+	.win-img{
+		width: 56rpx;
+		height: 64rpx;
+	}
+	.win-msg{
+		width: 120rpx;
+		color: #FFFFFF;
+		position: absolute;
+		top: 24rpx;
+		left: 0rpx;
+		font-size: 24rpx;
+		transform: scale(0.75);
+		color: #F6B557;
+		text-align: center;
+	}
+	// 升级提示弹窗
+	.upgrade-title{
+		color: #343434;
+		font-size: 48rpx;
+		text-align: center;
+		padding-bottom: 30rpx;
+	}
+	.upgrade-content{
+		color: #666666;
+		font-size: 32rpx;
+		text-align: center;
+		line-height: 60rpx;
+		padding: 0 30rpx 14rpx;
+	}
+	// 已删除的视频
+	.delete-video_size{
+		width: 750rpx;
+		height: calc(100vh - var(--window-bottom));
+	}
+	.delete-video{
+		position: relative;
+	}
+	.first_frame{
+		filter: blur(10rpx);
+	}
+	.maskLayer{
+		background-color: rgba($color: #000000, $alpha: 0.5);
+		position: absolute;
+		top: 0;
+		left: 0;
+		color: #FFFFFF;
+		font-size: 36rpx;
+	}
+</style>
