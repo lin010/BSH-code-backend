@@ -89,12 +89,10 @@
                     </el-table-column>
                     <el-table-column label="账户信息">
                         <template slot-scope="scope">
-                            <template v-if="scope.row.type == 'efps_bank'">
-                                <div>开户人:{{scope.row.bankUserName}}</div>
-                                <div>银行卡号:{{scope.row.bankCardNo}}</div>
-                                <div>开户行:{{scope.row.bankName}}</div>
-                                <div>账户类型:{{scope.row.bankAccountType}}</div>
-                            </template>
+                            <div>开户人:{{scope.row.bankUserName}}</div>
+                            <div>银行卡号:{{scope.row.bankCardNo}}</div>
+                            <div>开户行:{{scope.row.bankName}}</div>
+                            <div>账户类型:{{scope.row.bankAccountType}}</div>
                         </template>
                     </el-table-column>
                     <el-table-column label="提现信息">
