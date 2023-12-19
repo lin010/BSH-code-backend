@@ -277,8 +277,11 @@ class UserForm extends BaseModel
 
         if ($this->flag == "EXPORT") {
             $new_query = clone $query;
+            $new_query->andWhere("u.role_type <> 'user'");
+            //$new_query->page($pagination, $this->page_size, \Yii::$app->request->get('page', 1), $this->page_size);
             $exp = new UserExport();
             $exp->fieldsKeyList = $this->fields;
+            //$exp->pagination = $pagination;
             $exp->export($new_query);
             return false;
         }

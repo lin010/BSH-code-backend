@@ -52,6 +52,7 @@ $url = Yii::$app->urlManager->createUrl(Yii::$app->controller->route);
                 <div class="modal-body">
                     <input name="_csrf" type="hidden" id="_csrf" value="<?= Yii::$app->request->csrfToken ?>">
                     <input name="flag" value="EXPORT" type="hidden">
+                    <input name="page_size" value="1000" type="hidden">
                     <input name="fields" :value="checkedFields" type="hidden">
                     <input v-for="(value,key,index) in params" :name="key" :value="value" type="hidden">
                     <el-checkbox class="all-choose" :indeterminate="isIndeterminate" v-model="checkAll"

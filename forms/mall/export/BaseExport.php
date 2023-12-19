@@ -15,6 +15,7 @@ abstract class BaseExport extends BaseModel
     public $fieldsKeyList;
     public $fieldsNameList;
     public $dataList;
+    public $pagination;
 
     abstract public function fieldsList();
 

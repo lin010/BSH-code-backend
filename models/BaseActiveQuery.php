@@ -21,7 +21,7 @@ class BaseActiveQuery extends ActiveQuery
      * @param Integer $page
      * @return BaseActiveQuery
      */
-    public function page(&$pagination = null, $limit = 20, $page = null)
+    public function page(&$pagination = null, $limit = 20, $page = null, $maxLimit = null)
     {
         $count = $this->count();
         if ($page) {
@@ -29,7 +29,7 @@ class BaseActiveQuery extends ActiveQuery
         } else {
             $currentPage = \Yii::$app->request->get('page', 1) - 1;
         }
-        $limit = min(100, $limit);
+        $limit = $maxLimit !== null ? $maxLimit : min(100, $limit);
         $pagination = new BasePagination(['totalCount' => $count, 'pageSize' => $limit, 'page' => $currentPage]);
         $this->limit($pagination->limit)->offset($pagination->offset);
         return $this;

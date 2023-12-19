@@ -107,6 +107,9 @@ class UserExport extends BaseExport
         $this->getFields();
         $dataList = $this->getDataList();
 
+        //$offset = $this->pagination->offset;
+
+        //$fileName = '用户列表' . date('YmdHis') . '_' . $offset  . '_' . ($offset + $this->pagination->limit);
         $fileName = '用户列表' . date('YmdHis');
         (new CsvExport())->export($dataList, $this->fieldsNameList, $fileName);
     }
