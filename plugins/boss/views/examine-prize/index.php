@@ -101,9 +101,13 @@
             </el-table>
 
             <div style="text-align: center;margin-top: 20px;">
-                <div v-if="clickPayId.length > 0" style="float: left;">
-                    <el-button @click="OnekeyExamine" type="primary">一键打款</el-button>
+                <div v-if="clickPayId.length > 0 || selections.length > 0" style="float: left;">
+                    <el-button v-if="clickPayId.length > 0" @click="OnekeyExamine" type="primary" style="margin-right:10px;">一键打款</el-button>
+                    <el-button @click="doDelete(null)" type="danger" >一键删除</el-button>
                 </div>
+
+
+
                 <el-pagination
                         @current-change="pagination"
                         background
@@ -146,6 +150,7 @@
                     }
                 },
                 clickPayId:[],
+                selections: []
             };
         },
         mounted: function () {
@@ -153,6 +158,7 @@
         },
         methods: {
             oneClickPayment (selection) {
+                this.selections = selection;
                 let self = this;
                 selection.forEach(function (item) {
                     if (item.status == 0) {
@@ -302,6 +308,13 @@
             //删除
             doDelete(id) {
                 let self = this;
+                if(!id){
+                    id = [];
+                    console.log(this.selections);
+                    this.selections.forEach(item => {
+                        id.push(item.id);
+                    })
+                }
                 self.$confirm('是否删除', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',

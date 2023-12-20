@@ -20,7 +20,7 @@ class BossAwardsExamineDeleteForm extends BaseModel
     {
         return [
             [['id'], 'required'],
-            [['id'], 'integer']
+            //[['id'], 'integer']
         ];
     }
 
@@ -30,15 +30,18 @@ class BossAwardsExamineDeleteForm extends BaseModel
         if (!$this->validate()) {
             return $this->responseErrorInfo();
         }
-        $BossAward = BossAwardSentLog::find()->where(['id' => $this->id])->one();
+
+        $BossAward = BossAwardSentLog::find()->where(['id' => $this->id])->all();
 
         if (!$BossAward)
             return $this->returnApiResultData(ApiCode::CODE_FAIL, '数据异常,该条数据不存在');
 
         try {
-            $res = $BossAward->delete();
-            if (!$res)
-                throw new \Exception($this->responseErrorMsg($BossAward));
+            foreach($BossAward as $item){
+                $res = $item->delete();
+                if (!$res)
+                    throw new \Exception($this->responseErrorMsg($item));
+            }
 
             return $this->returnApiResultData(ApiCode::CODE_SUCCESS, '删除成功');
         } catch (\Exception $e) {
