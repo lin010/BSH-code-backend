@@ -52,30 +52,28 @@
 			if(options.id){
 				that.id=options.id
 				//#ifdef H5
-				   if(this.$http.getPlatform()=='wechat'){
-					   this.$wechatSdk.location(function(res){
-					   		var longitude=res.longitude
-					   		var latitude=res.latitude
+				   if (this.$http.getPlatform() == 'wechat') {
+					   $wechatSdk.location(function(res){
+							if (uni.getStorageSync('x-longitude') && uni.getStorageSync('x-latitude')) {
+								uni.setStorageSync('x-longitude-new', res.longitude)
+								uni.setStorageSync('x-latitude-new', res.latitude)
+							} else {
+								uni.setStorageSync('x-longitude', res.longitude)
+								uni.setStorageSync('x-latitude', res.latitude)
+								uni.setStorageSync('flag', true)
+							}
 							that.form.id=options.id
-					   		that.form.latitude=String(latitude)
-					   		that.form.longitude=String(longitude)
-							uni.setStorageSync('x-longitude',res.longitude)
-							uni.setStorageSync('x-latitude',res.latitude)
+							that.form.latitude=res.latitude
+							that.form.longitude=res.longitude
 							that.getshopList(that.form)
 					   })
 				   }else{
-					    that.form.id=options.id
-					    that.getLocationData()
+						that.form.id=options.id
+						that.getLocationData()
 						// that.getshopList(that.form)
 				   }
-				   
 				// #endif
-				// #ifndef H5
-					that.form.id=options.id
-					that.getLocationData()
-					// that.getshopList(that.form)
-				// #endif
-				// #ifdef MP-WEIXIN
+				// #ifdef MP-WEIXIN || APP-PLUS
 					that.form.id=options.id
 					that.getLocationData()
 					// that.getshopList(that.form)
@@ -140,14 +138,21 @@
 				})
 			},
 			positionLo(addrress,lat,lot){ //点击导航				
-				uni.openLocation({
-					latitude:Number(lat),
-					longitude:Number(lot),
-					address:addrress,
-					success: function () {
-						console.log('success');
-					}
-				})	
+				// #ifdef H5
+				window.location.href = 'https://apis.map.qq.com/tools/poimarker?type=0&marker=coord:' + lat + ',' + lot +
+										';addr:' + addrress + '&referer=myapp&key=O3DBZ-IFH3W-KKIRN-RZPNQ-AOSH3-EGB5N'
+				// #endif
+				// #ifdef MP-WEIXIN || APP-PLUS
+					uni.openLocation({
+						latitude: Number(lat),
+						longitude: Number(lnt),
+						name: addrress,
+						address: addrress,
+						success: function() {
+							
+						}
+					});
+				// #endif
 			}
 		},
 		onReachBottom() {
