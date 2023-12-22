@@ -53,30 +53,23 @@
 				that.id=options.id
 				//#ifdef H5
 				   if (this.$http.getPlatform() == 'wechat') {
-					   $wechatSdk.location(function(res){
-							if (uni.getStorageSync('x-longitude') && uni.getStorageSync('x-latitude')) {
-								uni.setStorageSync('x-longitude-new', res.longitude)
-								uni.setStorageSync('x-latitude-new', res.latitude)
-							} else {
-								uni.setStorageSync('x-longitude', res.longitude)
-								uni.setStorageSync('x-latitude', res.latitude)
-								uni.setStorageSync('flag', true)
-							}
+					   this.$wechatSdk.location(function(res){
 							that.form.id=options.id
-							that.form.latitude=res.latitude
 							that.form.longitude=res.longitude
+							that.form.latitude=res.latitude
+							console.log('0='+res.longitude+'__'+res.latitude);
+							uni.setStorageSync('x-longitude',res.longitude)
+							uni.setStorageSync('x-latitude',res.latitude)
 							that.getshopList(that.form)
-					   })
+							})
 				   }else{
 						that.form.id=options.id
 						that.getLocationData()
-						// that.getshopList(that.form)
 				   }
 				// #endif
 				// #ifdef MP-WEIXIN || APP-PLUS
 					that.form.id=options.id
 					that.getLocationData()
-					// that.getshopList(that.form)
 				// #endif
 			}
 		},
@@ -85,8 +78,8 @@
 				var that = this
 				that.list=[]
 				that.form.page=1
-				uni.removeStorageSync('x-longitude')
-				uni.removeStorageSync('x-latitude')
+				// uni.removeStorageSync('x-longitude')
+				// uni.removeStorageSync('x-latitude')
 				uni.chooseLocation({
 					success: function(res) {
 						that.address=res.address
@@ -94,7 +87,6 @@
 						that.form.longitude=String(res.longitude)
 						that.form.latitude=String(res.latitude)
 						that.getshopList(that.form)
-						console.log(that.form)
 					}
 				})
 			},
@@ -146,7 +138,7 @@
 					uni.openLocation({
 						latitude: Number(lat),
 						longitude: Number(lnt),
-						name: addrress,
+						// name: addrress,
 						address: addrress,
 						success: function() {
 							
