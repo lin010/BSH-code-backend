@@ -1,12 +1,13 @@
 <template>
 	<view v-if="!allowActive">
 		<view class="select-isv">
-			<view style="color:red;">请选择您的号码类型！</view>
-			<text>
+			<view style="color:red;">话费充值功能维护中，请稍后！</view>
+			<!-- <view style="color:red;">请选择您的号码类型！</view> -->
+			<!-- <text>
 				<picker :value="allowPickerIndex" @change="allowPickerChange" range-key="label" :range="allowTypes" style="width:100%">
 					<view>选择</view>
 				</picker>
-			</text>
+			</text> -->
 		</view>
 	</view>
 	<view v-else class="moreCreadit-app">
