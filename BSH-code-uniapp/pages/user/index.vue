@@ -51,7 +51,8 @@
 					<view class="jx-btm-text">{{currencyAlias.integral_alias}}</view>
 				</view>
 				<view class="jx-btm-item last" @click="openUrl('redBag')">
-					<view class="jx-btm-num">{{ Number(userInfo.dynamic_integral)+Number(userInfo.static_integral) }}</view>
+					<view class="jx-btm-num">{{ Number(userInfo.static_integral) }}</view>
+					<!-- <view class="jx-btm-num">{{ Number(userInfo.dynamic_integral)+Number(userInfo.static_integral) }}</view> -->
 					<view class="jx-btm-text">{{currencyAlias.red_envelope_alias}}</view>
 				</view>
 				<view class="jx-btm-item last" @click="openUrl('shopping_voucher')">

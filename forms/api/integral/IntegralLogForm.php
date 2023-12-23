@@ -53,7 +53,13 @@ class IntegralLogForm extends BaseModel
             $item['created_at'] = date('m月d日 H:i', $item['created_at']);
             $item['money'] = isset($item['money']) ? sprintf("%.2f", $item['money']) : 0;
             $item['income'] = isset($item['income']) ? sprintf("%.2f", $item['income']) : 0;
-            $item['current_integral'] = \Yii::$app->user->getIdentity()->static_integral;
+//            $item['current_integral'] = \Yii::$app->user->getIdentity()->static_integral;//不应显示实时红包余额
+            $current_integral = floatval($item['current_integral']) + floatval($item['integral']);
+            if ($item['type']==2){
+                $current_integral = floatval($item['current_integral']) - floatval($item['integral']);
+                if($current_integral<0) $current_integral = 0;
+            }
+            $item['current_integral'] = sprintf("%.2f", $current_integral);
         }
 
         return $this->returnApiResultData(

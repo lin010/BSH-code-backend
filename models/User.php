@@ -577,7 +577,7 @@ class User extends BaseActiveRecord implements \yii\web\IdentityInterface
      */
     public static function getCanUseIntegral($user_id){
         $user = self::find()->where(array('id'=>$user_id))->one();
-        return empty($user) ? 0 : ($user['static_integral'] + $user['dynamic_integral']);
+        return empty($user) ? 0 : ($user['static_integral']);// + $user['dynamic_integral']);
     }
 
     /**
