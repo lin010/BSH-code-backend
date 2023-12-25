@@ -3,7 +3,7 @@
 		<!-- <view class="app-header">
 			<view class="back iconfont icon-fanhui" @click="back()"></view>
 		</view> -->
-		<com-nav-bar :fixed="true" @clickLeft="back" left-icon="back" title="推广中心" :status-bar="true" :background-color="navBg" :border="false"
+		<com-nav-bar :fixed="true" @clickLeft="back" left-icon="back" title="收益中心" :status-bar="true" :background-color="navBg" :border="false"
 		:color="navCol"></com-nav-bar>
 		<view class="app-body">
 			<image :src="bg_url" mode="aspectFill" class="jx-bg"></image>

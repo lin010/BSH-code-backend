@@ -1187,7 +1187,7 @@
 				}, {
 					"path": "extensions/poster",
 					"style": {
-						"navigationBarTitleText": "分享海报",
+						"navigationBarTitleText": "我的海报",
 						"navigationBarBackgroundColor": "#FFFFFF",
 						"navigationBarTextStyle": "black"
 					}

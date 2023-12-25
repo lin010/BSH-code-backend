@@ -48,7 +48,7 @@
 							<text style="color:rgb(255, 113, 4);font-size: 25rpx;">元</text>
 						</view>
 						<view style="font-size: 25rpx;color: #9E9E9E;">
-							送{{getSendNum(item.price)}}{{currencyAlias.silver_beans_alias}}
+							<!-- 送{{getSendNum(item.price)}}{{currencyAlias.silver_beans_alias}} -->
 						</view>
 					</view>
 				</view>
@@ -64,12 +64,12 @@
 					1：充值前请核对充值号码
 				</view>
 				<view v-if="typeIndex==0">
-					2：充值后1-30分钟内到账，月初稍慢一些
+					2：充值后24小时内到账，月底月初对账期间不支持充值
 				</view>
 				<view v-if="typeIndex==1">
-					2：充值72小时内到账，月初稍慢一些
+					2：充值后24小时内到账，月底月初对账期间不支持充值
 				</view>
-				<view v-if="typeIndex==0">
+				<!-- <view v-if="typeIndex==0">
 					3：快充赠送充值金额30%{{currencyAlias.silver_beans_alias}}
 				</view>
 				<view v-if="typeIndex==1">
@@ -77,12 +77,12 @@
 				</view>
 				<view>
 					4：{{currencyAlias.red_envelope_alias}}充值不返{{currencyAlias.silver_beans_alias}}
+				</view> -->
+				<view>
+					3：如对本次充值相关内容有疑问,请联系客服
 				</view>
 				<view>
-					5：如对本次充值相关内容有疑问,请联系客服
-				</view>
-				<view>
-					6：暂不支持携号转网的手机号充值
+					4：暂不支持携号转网的手机号充值
 				</view>
 			</view>
 		
