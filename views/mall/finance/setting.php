@@ -99,11 +99,11 @@
                         </el-col>
                     </el-row>
                 </el-tab-pane>
-                <el-tab-pane label="汇付天下微信支付" name="bspay">
+                <el-tab-pane label="汇付天下微信支付(提现)" name="bspay">
                     <el-row>
                         <el-col :span="24">
                             <div class="title">
-                                <span>汇付天下微信支付配置</span>
+                                <span>汇付天下微信支付配置(提现)</span>
                             </div>
                             <div class="form-body">
                                 <el-form-item label="启用汇付天下微信支付" prop="bswechat_status">
@@ -145,7 +145,54 @@
                             </div>
                         </el-col>
                     </el-row>
-                </el-tab-pane>                
+                </el-tab-pane>
+                <el-tab-pane label="汇付天下微信支付(收款)" name="bsincome">
+                    <el-row>
+                        <el-col :span="24">
+                            <div class="title">
+                                <span>汇付天下微信支付配置(收款)</span>
+                            </div>
+                            <div class="form-body">
+                                <el-form-item label="启用汇付天下微信支付" prop="bswechat_status">
+                                    <el-switch v-model="ruleForm.bswechat_status" active-value="1"
+                                               inactive-value="0"></el-switch>
+                                </el-form-item>
+                                <el-form-item label="商户号" prop="bspay_wechat_merchid">
+                                    <el-input v-model="ruleForm.bspay_wechat_merchid"></el-input>
+                                </el-form-item>
+                                <el-form-item label="sys_id" prop="bspay_wechat_sys_id">
+                                    <el-input v-model.trim="ruleForm.bspay_wechat_sys_id"></el-input>
+                                </el-form-item>
+                                <el-form-item label="out_acct_id" prop="bspay_wechat_out_acct_id">
+                                    <el-input v-model.trim="ruleForm.bspay_wechat_out_acct_id"></el-input>
+                                </el-form-item>
+                                <el-form-item label="product_id" prop="bspay_wechat_product_id">
+                                    <el-input v-model.trim="ruleForm.bspay_wechat_product_id"></el-input>
+                                </el-form-item>
+                                <el-form-item label="汇付天下公钥(PUBLIC_KEY)" prop="bspay_wechat_public_key">
+                                    <el-input @focus="hiddenBs.bspay_wechat_public_key = false"
+                                              v-if="hiddenBs.bspay_wechat_public_key"
+                                              readonly
+                                              type="textarea"
+                                              :rows="5"
+                                              placeholder="已隐藏内容，点击查看或编辑">
+                                    </el-input>
+                                    <el-input v-else type="textarea" :rows="5" v-model="ruleForm.bspay_wechat_public_key"></el-input>
+                                </el-form-item>
+                                <el-form-item label="商户应用私钥(PRIVATE_KEY)" prop="bspay_wechat_private_key">
+                                    <el-input @focus="hiddenBs.bspay_wechat_private_key = false"
+                                              v-if="hiddenBs.bspay_wechat_private_key"
+                                              readonly
+                                              type="textarea"
+                                              :rows="5"
+                                              placeholder="已隐藏内容，点击查看或编辑">
+                                    </el-input>
+                                    <el-input v-else type="textarea" :rows="5" v-model="ruleForm.bspay_wechat_private_key"></el-input>
+                                </el-form-item>
+                            </div>
+                        </el-col>
+                    </el-row>
+                </el-tab-pane>
                 <el-tab-pane label="积分设置" name="score">
                     <el-row>
                         <el-col :span="24">

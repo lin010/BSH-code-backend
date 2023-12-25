@@ -102,7 +102,7 @@ class PickLinkForm extends BaseModel
             ],
             [
                 'type' => 'marketing',
-                'name' => '推广中心',
+                'name' => '收益中心',
                 'open_type' => '',
                 'icon' => $iconUrlPrefix . 'icon-share-center.png',
                 'value' => '/plugins/extensions/index',
@@ -512,7 +512,7 @@ class PickLinkForm extends BaseModel
 //            ],
             [
                 'type' => 'base',
-                'name' => '推广中心',
+                'name' => '收益中心',
                 'open_type' => '',
                 'icon' => $iconUrlPrefix . 'icon-summary.png',
                 'value' => '/plugins/extensions/index',

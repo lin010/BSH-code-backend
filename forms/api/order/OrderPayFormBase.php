@@ -74,13 +74,13 @@ abstract class OrderPayFormBase extends BaseModel
         $supportPayTypes = OrderLogic::getPaymentTypeConfig();
         $notSupportPayTypes = [];
         if(in_array(\Yii::$app->appPlatform, [User::PLATFORM_H5, User::PLATFORM_APP]) ){
-            $notSupportPayTypes[] = "wechat";
-            $notSupportPayTypes[] = "bswechat";
+//            $notSupportPayTypes[] = "wechat";
+//            $notSupportPayTypes[] = "bswechat";
         }elseif(in_array(\Yii::$app->appPlatform, [User::PLATFORM_WECHAT, User::PLATFORM_MP_WX])){
             $notSupportPayTypes[] = "alipay";
         }else{
-            $notSupportPayTypes[] = "wechat";
-            $notSupportPayTypes[] = "bswechat";
+//            $notSupportPayTypes[] = "wechat";
+//            $notSupportPayTypes[] = "bswechat";
             $notSupportPayTypes[] = "alipay";
         }
         $supportPayTypes = array_diff($supportPayTypes, $notSupportPayTypes);
