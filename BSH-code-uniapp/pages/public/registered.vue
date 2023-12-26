@@ -6,10 +6,10 @@
 				<image class="avatar-img" :src="img_url+'images/login/user.png'" mode="" v-else></image>
 			</view>
 			<view class="login-content">
-				<view class="common">
+				<!-- <view class="common">
 					<view class="iconCss iconfont icon-shouji"></view>
 					<input class="com-inp" type="number" v-model="dataForm.parent_mobile" placeholder="请输入邀请人的手机号" />
-				</view>
+				</view> -->
 				<view class="common">
 					<view class="iconCss iconfont icon-shouji"></view>
 					<input class="com-inp" type="number" v-model="dataForm.mobile" placeholder="请输入您的手机号" />

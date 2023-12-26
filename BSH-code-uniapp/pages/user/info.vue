@@ -222,15 +222,15 @@
 					},
 					showLoading: true
 				}).then(res => {
-					if (res.code == 0) {
+					// if (res.code == 0) {
 						this.$http.toast("保存成功");
 						this.showEditImg = false;
 						setTimeout(() => {
 							this.navBack();
 						}, 1000 * 2)
-					} else {
-						this.$http.toast(res.msg);
-					}
+					// } else {
+					// 	this.$http.toast(res.msg);
+					// }
 				}).catch(err => {
 					console.log(err)
 				})

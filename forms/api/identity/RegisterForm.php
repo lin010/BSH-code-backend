@@ -39,9 +39,11 @@ class RegisterForm extends BaseModel
     public function rules()
     {
         return [
-            [['parent_mobile','mobile', 'captcha'], 'required'],
+//            [['parent_mobile','mobile', 'captcha'], 'required'],
+            [['mobile', 'captcha'], 'required'],
             [['recommend_id','mall_id'],"integer"],
-            [['mobile','parent_mobile'], PhoneNumberValidator::className()],
+//            [['mobile','parent_mobile'], PhoneNumberValidator::className()],
+            [['mobile'], PhoneNumberValidator::className()],
         ];
     }
 
@@ -160,27 +162,27 @@ class RegisterForm extends BaseModel
         $trans = \Yii::$app->db->beginTransaction();
         try {
             //上级绑定
-            if(empty($this->recommend_id) && !empty($this->parent_mobile)){
-                $existParentUser = User::getOneUser(['=', 'mobile', $this->parent_mobile]);
-                if(empty($existParentUser)){
-                    return $this->returnApiResultData(ApiCode::CODE_FAIL,'没有找到该邀请人手机号');
-                }
-                $this->recommend_id = $existParentUser['id'];
-            }
+//            if(empty($this->recommend_id) && !empty($this->parent_mobile)){
+//                $existParentUser = User::getOneUser(['=', 'mobile', $this->parent_mobile]);
+//                if(empty($existParentUser)){
+//                    return $this->returnApiResultData(ApiCode::CODE_FAIL,'没有找到该邀请人手机号');
+//                }
+//                $this->recommend_id = $existParentUser['id'];
+//            }
 
             $existUser = User::getOneUser(['or',['=', 'username', $this->mobile],['=', 'mobile', $this->mobile]]);
             if(!empty($existUser)){
                 return $this->returnApiResultData(ApiCode::CODE_FAIL,'手机号已被注册');
             }
             $third_parent_id = $second_parent_id = 0;
-            if(!empty($this->recommend_id)){
-                $recommendUsers = User::findOne($this->recommend_id);
-                if(empty($recommendUsers)){
-                    return $this->returnApiResultData(ApiCode::CODE_FAIL,'推荐人不存在');
-                }
-                $second_parent_id = $recommendUsers["parent_id"];
-                $third_parent_id  = $recommendUsers["second_parent_id"];
-            }
+//            if(!empty($this->recommend_id)){
+//                $recommendUsers = User::findOne($this->recommend_id);
+//                if(empty($recommendUsers)){
+//                    return $this->returnApiResultData(ApiCode::CODE_FAIL,'推荐人不存在');
+//                }
+//                $second_parent_id = $recommendUsers["parent_id"];
+//                $third_parent_id  = $recommendUsers["second_parent_id"];
+//            }
 
             $smsForm = new SmsForm();
             $smsForm->captcha = $this->captcha;
