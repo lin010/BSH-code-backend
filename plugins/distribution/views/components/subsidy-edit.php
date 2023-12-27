@@ -28,7 +28,7 @@
                     </el-col>
                 </el-form-item>
 
-                <el-form-item label="推荐人数">
+                <el-form-item label="推荐数">
                     <el-col :span="13">
                         <el-input v-model="ruleForm.min_num">
                             <template slot="append">人</template>

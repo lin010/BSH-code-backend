@@ -3,7 +3,7 @@
 		<!-- <view class="app-header">
 			<view class="back iconfont icon-fanhui" @click="back()"></view>
 		</view> -->
-		<com-nav-bar :fixed="true" @clickLeft="back" left-icon="back" title="收益中心" :status-bar="true" :background-color="navBg" :border="false"
+		<com-nav-bar :fixed="true" @clickLeft="back" left-icon="back" title="我的工作台" :status-bar="true" :background-color="navBg" :border="false"
 		:color="navCol"></com-nav-bar>
 		<view class="app-body">
 			<image :src="bg_url" mode="aspectFill" class="jx-bg"></image>
@@ -44,7 +44,7 @@
 						</view>
 						<view class="text-icon flex flex-column-x-center" @click="openUrl('/plugins/extensions/income/income')">
 							<view class="icon iconfont icon-shouyi" :style="{color:'#FF7104'}"></view>
-							<view class="text">收益明细</view>
+							<view class="text">销售差价明细</view>
 						</view>
 						<view class="text-icon flex flex-column-x-center" @click="openUrl('/plugins/extensions/cash/details')">
 							<view class="icon iconfont icon-icon" :style="{color:'#FF7104'}"></view>

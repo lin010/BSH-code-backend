@@ -411,7 +411,7 @@ class AgentLevelUpgradeJob extends Component implements JobInterface
                     //上级推广送名额
                     $pagent = Agent::getAgentByUserId($parent_id);
                     if(!empty($pagent)){
-                        echo '上级经销商推广名额赠送start'.PHP_EOL;
+                        echo '经销商推广名额赠送start'.PHP_EOL;
                         $res = AgentLevelNum::increaseNum($pagent,AgentLevelNum::SCENE_INVITED,$agent->level);
                         if($res === false) Yii::error("经销商推广送名额失败，msg:" . AgentLevelNum::getError());
                     }

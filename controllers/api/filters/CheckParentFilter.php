@@ -50,7 +50,7 @@ class CheckParentFilter extends ActionFilter
             if(!$user->save()){
                 \Yii::$app->response->data = [
                     'code' => ApiCode::CODE_BIND_PARENT,
-                    'msg' => '请先绑定推荐人',
+                    'msg' => '请先绑定我的供货商',
                 ];
                 return false;
             }

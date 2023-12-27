@@ -70,7 +70,7 @@ class DistributionUserExport extends BaseExport
             ],
             [
                 'key' => 'parent_name',
-                'value' => '推荐人',
+                'value' => '我的供货商',
             ],
             [
                 'key' => 'remark',

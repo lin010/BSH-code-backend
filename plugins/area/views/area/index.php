@@ -50,7 +50,7 @@ Yii::$app->loadPluginComponentView('area-level');
                             <div>{{scope.row.total_price}}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="推荐人" prop="parent_name"></el-table-column>
+                    <el-table-column label="我的供货商" prop="parent_name"></el-table-column>
                     <el-table-column label="区域代理等级" width="120" prop="level_name"></el-table-column>
                     <el-table-column label="代理区域" width="120" prop="address"></el-table-column>
                     <el-table-column label="时间" width="200">

@@ -55,7 +55,7 @@ Yii::$app->loadComponentView('com-select-cat');
                                 <el-form-item label="分销内购" prop="is_rebate" required>
                                     <label slot="label">分销内购
                                         <el-tooltip class="item" effect="dark"
-                                                    content="开启分销内购，分销商自己购买商品，享受一级佣金，上级享受二级佣金，上上级享受三级佣金"
+                                                    content="开启分销内购，分销商自己购买商品，享受一级佣金，我的供货商享受二级佣金，我的供货商的供货商享受三级佣金"
                                                     placement="top">
                                             <i class="el-icon-info"></i>
                                         </el-tooltip>

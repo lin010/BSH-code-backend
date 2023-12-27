@@ -294,7 +294,7 @@
                         <td><span style="color: rgb(30,208,255)">{{ infoDialog.discount }}</span>折</td>
                     </tr>
                     <tr class="c4">
-                        <td class="label">上级用户信息：</td>
+                        <td class="label">我的供货商用户信息：</td>
                         <td>
                             <div flex="cross:center" v-if="infoDialog.parentUserInfo">
                                 <com-image :src="infoDialog.parentUserInfo.avatar_url"></com-image>
@@ -306,7 +306,7 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="label">上级等级：</td>
+                        <td class="label">我的供货商等级：</td>
                         <td>
                             <div v-if="infoDialog.parentUserInfo">
                                 {{infoDialog.parentUserInfo.role_type}}

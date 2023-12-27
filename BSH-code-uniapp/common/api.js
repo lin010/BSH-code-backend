@@ -6,7 +6,8 @@ let api_host = "https://www.mingyuanriji.cn";
 
 
 // 本地服务器
-//let api_host = "http://local.mingyuanriji.cn";
+// let api_host = "http://local.mingyuanriji.cn";
+// let api_host = "http://192.168.1.188";
 
 
 let api_root = api_host + '/web/index.php?r=';

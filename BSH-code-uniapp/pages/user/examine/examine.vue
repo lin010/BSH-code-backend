@@ -40,7 +40,7 @@
 					</view>
 				</view>
 				<view class="recommend">
-					<text>推荐人:{{item.parent_nickname}}</text>
+					<text>我的供货商:{{item.parent_nickname}}</text>
 					<text>{{item.parent_mobile}}</text>
 					<text>{{item.parent_role_type}}</text>
 				</view>

@@ -101,7 +101,7 @@
                             <div v-if="scope.row.item_type == 'goods'">全部商品</div>
                             <div v-if="scope.row.item_type == 'hotel'">全部酒店</div>
                             <div v-if="scope.row.item_type == 'store'">全部门店</div>
-                            <div v-if="scope.row.item_type == 'hotel_3r'">全部酒店上级（3r）分佣</div>
+                            <div v-if="scope.row.item_type == 'hotel_3r'">全部酒店供货商（3r）分佣</div>
                             <div v-if="scope.row.item_type == 'addcredit'">全部话费直推</div>
                             <div v-if="scope.row.item_type == 'addcredit_3r'">全部话费消费分佣</div>
                             <div v-if="scope.row.item_type == 'giftpacks'">全部大礼包消费分佣</div>

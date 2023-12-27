@@ -74,7 +74,7 @@ class SetSettleInfo extends BaseModel{
             if($user->realname != $this->paper_settleAccount){
                 return $this->returnApiResultData(ApiCode::CODE_FAIL, '银行卡户名和实名认证名字不一致,请使用实名认证名字开户的银行卡');
             }
-            $huifu_bank_token_no = $reviewInfo->huifu_bank_token_no;            
+            $huifu_bank_token_no = $reviewInfo->huifu_bank_token_no;
             $huifu = [];
             $huifu['card_name'] = $this->paper_settleAccount;
             $huifu['card_no'] =  $this->paper_settleAccountNo;

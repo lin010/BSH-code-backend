@@ -195,7 +195,7 @@ class BusinessCardCustomerForm extends BaseModel
             $parentId = $user->parent_id;
             if($parentId != \Yii::$app->user->id){
                 $t->rollBack();
-                return $this->returnApiResultData(ApiCode::CODE_FAIL,"只有直推上级才能设置信息");
+                return $this->returnApiResultData(ApiCode::CODE_FAIL,"只有直推供货商才能设置信息");
             }
             $data = ["id" => $this->id,"basic_info" => json_encode($params,JSON_UNESCAPED_UNICODE)];
             $result = BusinessCardCustomer::operateData($data);

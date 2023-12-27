@@ -46,7 +46,7 @@ class RelationLogic extends BaseLogic
         }
 
         if($user->parent_id && $user->parent_id != GLOBAL_PARENT_ID){
-            throw new Exception("用户已存在上级[PID:{$user->parent_id}]");
+            throw new Exception("用户已存在供货商[PID:{$user->parent_id}]");
         }
 
         if ($parent_id == $user->id) {
@@ -56,12 +56,12 @@ class RelationLogic extends BaseLogic
         $parent = User::findOne($parent_id);
         
         if (!$parent) {
-            throw new Exception('绑定的上级用户不存在'.$parent_id);
+            throw new Exception('绑定的供货商用户不存在'.$parent_id);
         }
 
         $parentLink = UserRelationshipLink::findOne(["user_id" => $parent->id]);
         if(!$parentLink){
-            throw new Exception('上级关系链异常，ID：' . $parent->id);
+            throw new Exception('供货商关系链异常，ID：' . $parent->id);
         }
 
         $userLink = UserRelationshipLink::findOne(["user_id" => $user->id]);
@@ -70,7 +70,7 @@ class RelationLogic extends BaseLogic
         }
 
         if($parentLink->left > $userLink->left && $parentLink->right < $userLink->right){
-            throw new \Exception("上级推荐人不能变更为团队下级，必须是平级和上级");
+            throw new \Exception("我的供货商不能反向变更");//"为团队下级，必须是平级和上级");
         }
 
         /*
@@ -126,7 +126,7 @@ class RelationLogic extends BaseLogic
             $user->third_parent_id = isset($parent_ids[3]["parent_id"]) ? $parent_ids[3]["parent_id"] : 0;
             $res = $user->save();
             if($res === false){
-                throw new \Exception("用户上级更新失败");
+                throw new \Exception("用户供货商更新失败");
             }
             //获取所有下级
             $childList = $user->getChildList();
@@ -141,7 +141,7 @@ class RelationLogic extends BaseLogic
                     //$userChilds->third_parent_id = isset($parent_ids[3]["parent_id"]) ? $parent_ids[3]["parent_id"] : 0;
                     $res = $userChilds->save();
                     if($res === false){
-                        throw new \Exception("用户上级更新失败！");
+                        throw new \Exception("用户供货商更新失败！");
                     }
                 }
             }

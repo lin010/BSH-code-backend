@@ -43,7 +43,7 @@
                             </el-input>
                             <div style="color: red;font-size: 12px">例如：10   充值100元 金豆扣取110</div>
                         </el-form-item>
-                        <el-form-item label="推荐人" prop="parent_id">
+                        <el-form-item label="我的供货商" prop="parent_id">
                             <el-autocomplete v-model="ruleForm.parent_name"
                                              value-key="nickname"
                                              :fetch-suggestions="querySearchAsync"

@@ -90,7 +90,7 @@ echo $this->render("../com/com-tab-from");
                                     <div v-if="scope.row.give_type == 1">按比例{{scope.row.give_value}}%赠送</div>
                                     <div v-if="scope.row.give_type == 2">按固定值{{scope.row.give_value}}赠送</div>
                                 </div>
-                                <div><b>推荐人：</b>
+                                <div><b>我的供货商：</b>
                                     <div v-for="recommender in scope.row.recommender">
                                         <span v-for="(typeName,typeKey) in userRoleTypes"  v-if="recommender.type == typeKey">{{typeName}}</span>
                                         <span v-if="recommender.give_type == 1">按比例{{recommender.give_value}}%赠送</span>

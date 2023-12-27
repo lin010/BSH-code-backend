@@ -131,8 +131,8 @@ class DistributionCustomForm extends BaseModel
                     'default' => '已提现佣金',
                 ],
                 'parent_name' => [
-                    'name' => '推荐人',
-                    'default' => '推荐人',
+                    'name' => '我的供货商',
+                    'default' => '我的供货商',
                 ],
                 'pending_money' => [
                     'name' => '待打款佣金',

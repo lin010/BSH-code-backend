@@ -16,8 +16,8 @@
 							<image :src="info.avatar_url" mode="aspectFill" class="acatar"></image>
 						</block>
 						<view class="userinfo" v-if="info.is_parent==1">
-							<!-- <view class="username">推荐人: {{ parent.parent_name || '社交新零售系统-七件事' }}</view> -->
-							<view class="username over1">推荐人: {{ info.parent_agent.nickname }}</view>
+							<!-- <view class="username">我的供货商: {{ parent.parent_name || '社交新零售系统' }}</view> -->
+							<view class="username over1">我的供货商: {{ info.parent_agent.nickname }}</view>
 							<view class="desc" :style="{color:textColor}">
 								<span>等级:</span>
 								<!-- {{ parent.parent_level_name }} -->
@@ -31,7 +31,7 @@
 							</view>
 						</view>
 						<view class="userinfo" v-if="info.is_parent==0">
-							<!-- <view class="username">推荐人: {{ parent.parent_name || '社交新零售系统-七件事' }}</view> -->
+							<!-- <view class="username">我的供货商: {{ parent.parent_name || '社交新零售系统' }}</view> -->
 							<view class="username over1"> {{ info.nickname }}</view>
 							<view class="desc" :style="{color:textColor}">
 								<span>等级:</span>

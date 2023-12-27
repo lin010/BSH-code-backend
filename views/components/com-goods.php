@@ -467,7 +467,7 @@ Yii::$app->loadComponentView('goods/com-goods-agent');
                                         <el-form-item label="是否开启独立分销价" >
                                             <div style="display:flex;align-items: center">
                                                 <el-switch :active-value="1" :inactive-value="0" v-model="ruleForm.enable_commisson_price"></el-switch>
-                                                <span style="margin-left:10px;color:red;">设置了独立分销价后，购买商品同级别上级用户不分佣</span>
+                                                <span style="margin-left:10px;color:red;">设置了独立分销价后，购买商品同级别我的供货商用户不分佣</span>
                                             </div>
                                         </el-form-item>
 

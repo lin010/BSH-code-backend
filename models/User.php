@@ -30,7 +30,7 @@ use Yii;
  * @property int $temp_parent_id 临时父级id
  * @property int $parent_id 第一父级ID（直推人id）
  * @property int $second_parent_id 第二推荐人id
- * @property int $third_parent_id 第三推荐人id235632
+ * @property int $third_parent_id 第三推荐人id
  * @property float $score 当前积分
  * @property string $avatar_url 头像
  * @property int $total_score 总积分
@@ -170,10 +170,10 @@ class User extends BaseActiveRecord implements \yii\web\IdentityInterface
             'auth_key' => 'auth_key',
             'avatar_url' => '头像',
             'platform' => '来源平台',
-            'temp_parent_id' => '临时推荐人id',
-            'parent_id' => '父级id(直推人id)',
-            'second_parent_id' => '第二推荐人id',
-            'third_parent_id' => '第三推荐人id',
+            'temp_parent_id' => '临时供货商id',
+            'parent_id' => '父级id(我的供货商id)',
+            'second_parent_id' => '第二供货商id',
+            'third_parent_id' => '第三供货商id',
             'score' => '积分',
             'total_score' => '总积分',
             'balance' => '余额',

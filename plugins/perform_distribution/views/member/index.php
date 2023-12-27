@@ -58,7 +58,7 @@ Yii::$app->loadComponentView('com-dialog-select');
                     <el-table-column prop="mobile" label="手机" width="120" align="center"></el-table-column>
                     <el-table-column prop="total_income" label="总收益" width="120" align="center"></el-table-column>
                     <el-table-column prop="level_name" label="等级" width="120" align="center"></el-table-column>
-                    <el-table-column  label="上级" align="center">
+                    <el-table-column  label="我的供货商" align="center">
                         <template slot-scope="scope">
                             <el-table :show-header="false" :data="cParentInfo(scope.row)" border size="small">
                                 <el-table-column prop="label" width="100" align="right"></el-table-column>

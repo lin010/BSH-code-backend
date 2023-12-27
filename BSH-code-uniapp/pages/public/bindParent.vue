@@ -73,7 +73,7 @@
 				let _self = this;
 				let {parent_mobile,mobile,captcha} = _self.dataForm;
 				if (!isNullOrEmpty(parent_mobile) || !isMobile(parent_mobile)) {
-					_self.$http.toast("请输入正确的推荐人手机号")
+					_self.$http.toast("请输入正确的我的供货商手机号")
 					return;
 				}
 				_self.$http.request({

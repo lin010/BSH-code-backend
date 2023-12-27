@@ -65,7 +65,7 @@ class SmartShopCyorderAction extends BaseAction{
             //获取商户推荐人
             $parent = User::findOne($mchUser->parent_id);
             if (!$parent){
-                throw new \Exception("智慧经营>>门店小程序订单推荐分佣>>ID:".$localCyorder->id.">>商户推荐人信息不存在");
+                throw new \Exception("智慧经营>>门店小程序订单推荐分佣>>ID:".$localCyorder->id.">>商户供货商信息不存在");
             }
             if ($parent->role_type == 'user'){
                 throw new \Exception("智慧经营>>门店小程序订单推荐分佣>>ID:".$localCyorder->id.">>VIP会员不分佣");

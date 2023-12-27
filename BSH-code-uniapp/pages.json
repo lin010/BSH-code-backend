@@ -289,7 +289,7 @@
 		}, {
 			"path": "pages/public/bindParent",
 			"style": {
-				"navigationBarTitleText": "填写推荐人手机号",
+				"navigationBarTitleText": "填写我的供货商手机号",
 				"navigationBarBackgroundColor": "#FFFFFF",
 				"navigationBarTextStyle": "black"
 			}

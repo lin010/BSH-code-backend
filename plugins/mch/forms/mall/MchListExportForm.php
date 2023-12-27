@@ -107,10 +107,10 @@ class MchListExportForm extends BaseModel{
             'mobile'           => '绑定手机号',
             'user_id'          => '小程序用户ID',
             'nickname'         => '小程序用户名',
-            'parent_id'        => '推荐人用户ID',
-            'parent_mobile'    => '推荐人手机号',
-            'parent_nickname'  => '推荐人用户名',
-            'parent_role_type' => '推荐人等级',
+            'parent_id'        => '我的供货商用户ID',
+            'parent_mobile'    => '我的供货商手机号',
+            'parent_nickname'  => '我的供货商用户名',
+            'parent_role_type' => '我的供货商等级',
             'created_at'       => '申请时间'
         ];
         $roleTypes = User::USER_ROLE_TYPES;

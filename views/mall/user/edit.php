@@ -57,13 +57,13 @@
                     <el-input size="small" v-model="form.role_type_label" autocomplete="off" style="width:215px;"></el-input>
                 </el-form-item>
 
-                <el-form-item label="上级推荐人" prop="parent_id">
+                <el-form-item label="我的供货商" prop="parent_id">
                     <el-autocomplete size="small" v-model="form.parent_name" value-key="nickname"
                                      :fetch-suggestions="querySearchAsync" placeholder="请输入搜索内容"
                                      @select="inviterClick"></el-autocomplete>
                 </el-form-item>
 
-                <el-form-item label="锁定上下级关系" prop="is_lianc">
+                <el-form-item label="锁定上下关系" prop="is_lianc">
                     <el-switch v-model="form.lock_parent" :active-value="1" :inactive-value="0"></el-switch>
                     <span class="tip">开启可锁定上下级不变</span>
                 </el-form-item>

@@ -85,7 +85,7 @@ Yii::$app->loadPluginComponentView('distribution-level');
                             <div>{{scope.row.total_price}}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="推荐人" prop="parent_name"></el-table-column>
+                    <el-table-column label="我的供货商" prop="parent_name"></el-table-column>
                     <el-table-column width='200' label="下级用户">
                         <template slot-scope="scope">
                             <template v-for="(item, key, index) in share_name" v-if="scope.row[key] !== undefined">

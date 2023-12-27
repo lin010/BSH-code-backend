@@ -44,8 +44,8 @@ Yii::$app->loadPluginComponentView('team-edit');
                         width="80">
                 </el-table-column>
                 <el-table-column prop="name" label="名称" width="200"></el-table-column>
-                <el-table-column prop="parent_level_name" label="上级等级" width="200"></el-table-column>
-                <el-table-column prop="child_level_name" label="下级分销商等级" width="200"></el-table-column>
+                <el-table-column prop="parent_level_name" label="我的供货商等级" width="200"></el-table-column>
+                <el-table-column prop="child_level_name" label="我的分销商等级" width="200"></el-table-column>
                 <el-table-column prop="price_type" label="分佣类型" width="200">
                     <template slot-scope="scope">
                         {{scope.row.price_type==1?'固定金额':'百分比'}}

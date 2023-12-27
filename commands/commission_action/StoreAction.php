@@ -54,7 +54,7 @@ class StoreAction extends Action{
 
                 $parent_user = User::findOne($user->parent_id);
                 if (!$parent_user)
-                    throw new \Exception("收款推荐分佣>>ID:".$checkoutOrder['id'].">>商铺上级用户[ID:".($parent_user ? $parent_user->id : 0)."]不存在");
+                    throw new \Exception("收款推荐分佣>>ID:".$checkoutOrder['id'].">>商铺供货商用户[ID:".($parent_user ? $parent_user->id : 0)."]不存在");
 
                 if ($parent_user->role_type == 'user')
                     throw new \Exception("收款推荐分佣>>ID:".$checkoutOrder['id'].">>VIP会员不分佣");

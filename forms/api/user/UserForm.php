@@ -353,14 +353,14 @@ class UserForm extends BaseModel
             'id'   => \Yii::$app->user->id,
             'is_delete' => 0
         ])->andWhere(['or',['role_type' => 'partner'],['role_type' => 'branch_office']])->exists();
-        if($isBoss || $isUserRole) {
-            $userCenter['menus'][] = [
-                "icon_url"  => "https://www.mingyuanriji.cn/web/static/bonus.png",
-                "name"      => "奖金分红",
-                "link_url"  => "/pages/user/bonus/bonus",
-                "open_type" => "navigate"
-            ];
-        }
+//        if($isBoss || $isUserRole) {
+//            $userCenter['menus'][] = [
+//                "icon_url"  => "https://www.mingyuanriji.cn/web/static/bonus.png",
+//                "name"      => "奖金分红",
+//                "link_url"  => "/pages/user/bonus/bonus",
+//                "open_type" => "navigate"
+//            ];
+//        } //要求手动通知开关个人中心奖金分红20231227
 
         //店铺审核显示
         $user_res = user::findOne(\Yii::$app->user->id);

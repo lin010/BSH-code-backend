@@ -506,14 +506,14 @@ Yii::$app->loadComponentView('order/com-city');
                                             <div>{{scope.row.nickname}}</div>
                                         </template>
                                     </el-table-column>
-                                    <el-table-column label="等级">
-                                        <template slot-scope="scope">
-                                            <div v-for="(typeName,typeKey) in userRoleTypes" v-if="scope.row.role_type==typeKey">{{typeName}}</div>
-                                        </template>
+<!--                                    <el-table-column label="等级">-->
+<!--                                        <template slot-scope="scope">-->
+<!--                                            <div v-for="(typeName,typeKey) in userRoleTypes" v-if="scope.row.role_type==typeKey">{{typeName}}</div>-->
+<!--                                        </template>-->
+<!--                                    </el-table-column>-->
+                                    <el-table-column prop="price" label="进货差价">
                                     </el-table-column>
-                                    <el-table-column prop="price" label="佣金">
-                                    </el-table-column>
-                                    <el-table-column label="佣金类型">
+                                    <el-table-column label="进货差价类型">
                                         <template slot-scope="scope">
                                             <div>分销</div>
                                         </template>

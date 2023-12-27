@@ -60,7 +60,7 @@ echo $this->render('@app/plugins/commission/views/components/com-commission-stor
             </el-form>
         </div>
 
-        <div class="form-body">店铺推荐人
+        <div class="form-body">店铺供货商
             <el-form label-width="180px" size="small">
                 <el-form-item label="是否开启独立分佣设置" >
                     <el-switch @change="commissionOpen(2)" :active-value="1" :inactive-value="0" v-model="is_alone">

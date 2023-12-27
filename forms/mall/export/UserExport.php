@@ -55,7 +55,7 @@ class UserExport extends BaseExport
             ],
             [
                 'key' => 'parent_info',
-                'value' => '推荐人信息',
+                'value' => '我的供货商信息',
             ],
             [
                 'key' => 'order_count',

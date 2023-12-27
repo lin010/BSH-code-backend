@@ -16,7 +16,7 @@ echo $this->render("../com/com-tab-from");
 
             <el-card class="box-card" style="margin-top:20px;margin-bottom:20px;">
                 <el-form label-width="15%" size="small">
-                    <el-form-item label="推荐人">
+                    <el-form-item label="我的供货商">
                         <el-input style="width:300px;" placeholder="ID/昵称/手机号" v-model="searchData.parent" clearable >
                             <!--
                             <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
@@ -110,7 +110,7 @@ echo $this->render("../com/com-tab-from");
                 </el-table-column>
                 <el-table-column prop="total_income" label="总收入" width="110"></el-table-column>
                 <el-table-column prop="total_send" label="总送出" width="110"></el-table-column>
-                <el-table-column prop="parent_nickname" label="推荐人" width="150"></el-table-column>
+                <el-table-column prop="parent_nickname" label="我的供货商" width="150"></el-table-column>
                 <el-table-column label="手机/地址" width="180">
                     <template slot-scope="scope">
                         <div>{{scope.row.mobile}}</div>

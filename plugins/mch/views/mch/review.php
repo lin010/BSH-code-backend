@@ -33,9 +33,9 @@
                             <div>申请人身份：
                                 <span v-for="(typeName,typeKey) in userRoleTypes"  v-if="scope.row.role_type == typeKey">{{typeName}}</span>
                             </DIV>
-                            <div>推荐人：{{scope.row.parent_nickname}}</div>
-                            <div>推荐人手机：{{scope.row.parent_mobile}}</DIV>
-                            <div>推荐人等级：
+                            <div>我的供货商：{{scope.row.parent_nickname}}</div>
+                            <div>我的供货商手机：{{scope.row.parent_mobile}}</DIV>
+                            <div>我的供货商等级：
                                 <span v-for="(typeName,typeKey) in userRoleTypes"  v-if="scope.row.parent_role_type == typeKey">{{typeName}}</span>
                             </DIV>
                         </div>
@@ -176,13 +176,13 @@
                         <el-form-item label="申请人手机：">
                             <div>{{apply.data.mobile}}</div>
                         </el-form-item>
-                        <el-form-item label="推荐人：">
+                        <el-form-item label="我的供货商：">
                             <div>{{apply.data.parent_nickname}}</div>
                         </el-form-item>
-                        <el-form-item label="推荐人手机：">
+                        <el-form-item label="我的供货商手机：">
                             <div>{{apply.data.parent_mobile}}</div>
                         </el-form-item>
-                        <el-form-item label="推荐人等级：">
+                        <el-form-item label="我的供货商等级：">
                             <div v-for="(typeName,typeKey) in userRoleTypes"  v-if="apply.data.parent_role_type == typeKey">{{typeName}}</div>
                         </el-form-item>
                     </el-tab-pane>

@@ -82,7 +82,7 @@
 				<view class="info">
 					<view class="mark">
 						<view class="flex">
-							<text style="width:130rpx;text-align: right;">推荐人：</text>
+							<text style="width:130rpx;text-align: right;">我的供货商：</text>
 							<text style="color:#07beb4">{{ item.parent_nickname }}</text>
 						</view>
 						<view class="flex">

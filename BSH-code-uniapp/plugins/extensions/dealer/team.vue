@@ -10,8 +10,8 @@
 						<!-- <image :src="parent.avatar_url" mode="aspectFill" class="acatar"></image> -->
 						<image :src="'http://yingmlife-1302693724.cos.ap-guangzhou.myqcloud.com/uploads/images/original/20201216/15262b999e48acc5891864e3f2463cb0.jpg'" mode="aspectFill" class="acatar"></image>
 						<view class="userinfo">
-							<!-- <view class="username">推荐人: {{ parent.parent_name || '社交新零售系统-七件事' }}</view> -->
-							<view class="username">推荐人: {{ '社交新零售系统-七件事' }}</view>
+							<!-- <view class="username">我的供货商: {{ parent.parent_name || '社交新零售系统' }}</view> -->
+							<view class="username">我的供货商: {{ '社交新零售系统' }}</view>
 							<view class="desc">
 								<span class="iconfont icon-huiyuan1"></span>
 								<!-- {{ parent.parent_level_name }} -->

@@ -44,7 +44,7 @@
                     </el-switch>
                 </el-form-item>
 
-                <el-form-item label="上级同步奖励">
+                <el-form-item label="我的供货商同步奖励">
                     <el-switch
                             v-model="formData.parent_award_enable"
                             active-text="启用"

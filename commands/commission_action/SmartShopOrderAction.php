@@ -63,7 +63,7 @@ class SmartShopOrderAction extends Action{
         try {
             $parent = User::findOne($order['parent_id']);
             if (!$parent || $parent->is_delete){
-                throw new \Exception("智慧门店小程序订单推荐分佣>>订单[ID:".$order['id']."]>>推荐人[ID:".$order['parent_id']."]不存在");
+                throw new \Exception("智慧门店小程序订单推荐分佣>>订单[ID:".$order['id']."]>>供货商[ID:".$order['parent_id']."]不存在");
             }
             if ($parent->role_type == 'user'){
                 throw new \Exception("智慧门店小程序订单推荐分佣>>订单[ID:".$order['id']."]>>VIP会员不分佣");

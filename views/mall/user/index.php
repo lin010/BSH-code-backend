@@ -66,11 +66,11 @@
                 <el-table-column label="推广" width="200">
                     <template slot-scope="scope">
                         <div style="font-size:12px;">
-                            <div>上级名称：[ID:{{scope.row.parent_id}}]{{scope.row.parent_nickname}}</div>
-                            <div>上级身份：
+                            <div>我的供货商名称：[ID:{{scope.row.parent_id}}]{{scope.row.parent_nickname}}</div>
+                            <div>我的供货商身份：
                                 <span v-for="(typeName,typeKey) in userRoleTypes"  v-if="scope.row.parent_role_type == typeKey">{{typeName}}</span>
                             </div>
-                            <div>上级手机：{{scope.row.parent_mobile}}</div>
+                            <div>我的供货商手机：{{scope.row.parent_mobile}}</div>
                             <div>
                                 <el-link @click="childDialog(scope.row)"  type="primary" style="font-size:12px;">
                                     用户推荐：{{scope.row.child_sum}}人（查看）

@@ -121,7 +121,7 @@
 					<view class="modal-title">补货提醒</view>
 					<view class="modal-content-text flex-col flex-y-center">
 						<view>您的商品库存不足，请在3小时内进行补货</view>
-						<view>否则会自动跳到上级代理商！</view>
+						<view>否则会自动跳到我的供货代理商！</view>
 					</view>
 				</view>
 				<view class="btns flex">

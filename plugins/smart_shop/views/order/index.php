@@ -186,10 +186,10 @@
                     infos.push({name: "用户昵称", value: item.user ? item.user.nickname : '-'});
                     infos.push({name: "手机号码", value: item.pay_user_mobile});
                     infos.push({name: "用户身份", value: item.user ? this.roleText(item.user.role_type) : '-'});
-                    infos.push({name: "上级ID", value: item.parent ? item.parent.id : '-'});
-                    infos.push({name: "上级昵称", value: item.parent ? item.parent.nickname : '-'});
-                    infos.push({name: "上级手机号", value: item.parent ? item.parent.mobile : '-'});
-                    infos.push({name: "上级身份", value: item.parent ? this.roleText(item.parent.role_type) : '-'});
+                    infos.push({name: "我的供货商ID", value: item.parent ? item.parent.id : '-'});
+                    infos.push({name: "我的供货商昵称", value: item.parent ? item.parent.nickname : '-'});
+                    infos.push({name: "我的供货商手机号", value: item.parent ? item.parent.mobile : '-'});
+                    infos.push({name: "我的供货商身份", value: item.parent ? this.roleText(item.parent.role_type) : '-'});
                     return infos;
                 }
             },

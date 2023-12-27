@@ -8,9 +8,9 @@
 
                     </el-col>
                 </el-form-item>
-                <el-form-item label="上级等级">
+                <el-form-item label="供货商等级">
                     <el-col :span="13">
-                        <el-select v-model="ruleForm.parent_level" placeholder="请选择上级分销商等级">
+                        <el-select v-model="ruleForm.parent_level" placeholder="请选择我的供货商等级">
                             <el-option
                                     v-for="item in level_list"
                                     :label="item.name"
@@ -19,9 +19,9 @@
                         </el-select>
                     </el-col>
                 </el-form-item>
-                <el-form-item label="下级分销商等级">
+                <el-form-item label="分销商等级">
                     <el-col :span="13">
-                        <el-select v-model="ruleForm.child_level" placeholder="请选择下级分销商等级">
+                        <el-select v-model="ruleForm.child_level" placeholder="请选择我的分销商等级">
                             <el-option
                                     v-for="item in level_list"
                                     :label="item.name"

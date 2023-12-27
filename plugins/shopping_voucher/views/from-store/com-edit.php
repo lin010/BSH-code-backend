@@ -6,7 +6,7 @@
         <el-dialog width="70%" :title="dialogTitle" :visible.sync="dialogVisible" :close-on-click-modal="false" @close="close">
 
             <el-form label-width="15%" size="small">
-                <el-form-item label="推荐人">
+                <el-form-item label="我的供货商">
                     <el-input :disabled="searchStatus==1" style="width:300px;" placeholder="ID/昵称/手机号" v-model="searchForm.parent" clearable >
                         <!--
                         <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
@@ -107,7 +107,7 @@
                         </template>
                     </el-table-column>
                     <el-table-column prop="account_money" label="账户余额" width="150"> </el-table-column>
-                    <el-table-column label="推荐人" width="150">
+                    <el-table-column label="我的供货商" width="150">
                         <template slot-scope="scope">
                             <com-ellipsis :line="1">{{scope.row.parent_nickname}}</com-ellipsis>
                         </template>

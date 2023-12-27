@@ -52,7 +52,7 @@ class UserEditForm extends BaseModel
     {
         return [
             'id' => 'ID',
-            'parent_id' => '上级id',
+            'parent_id' => '供货商id',
             'member_level' => '等级',
             'is_blacklist' => '是否黑名单',
             'contact_way' => '联系方式',
@@ -92,7 +92,7 @@ class UserEditForm extends BaseModel
 
                 $parentUser = User::findOne($this->parent_id);
                 if(!$parentUser){
-                    throw new \Exception("上级推荐人不存在");
+                    throw new \Exception("我的供货商不存在");
                 }
 
                 $parentLink = UserRelationshipLink::findOne(["user_id" => $parentUser->id]);
@@ -102,7 +102,7 @@ class UserEditForm extends BaseModel
                 }
 
                 if($parentLink->left > $userLink->left && $parentLink->right < $userLink->right){
-                    throw new \Exception("上级推荐人不能变更为团队下级，必须是平级和上级");
+                    throw new \Exception("我的供货商不能反向变更");//"变更为团队下级，必须是平级和上级");
                 }
             }catch (\Exception $e){
                 return [

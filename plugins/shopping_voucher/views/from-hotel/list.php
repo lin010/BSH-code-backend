@@ -62,7 +62,7 @@ echo $this->render("../com/com-tab-from");
                         </el-table-column>
                         <el-table-column prop="total_income" label="总收入" width="110"></el-table-column>
                         <el-table-column prop="total_send" label="总送出" width="110"></el-table-column>
-                        <el-table-column prop="parent_nickname" label="推荐人" width="150"></el-table-column>
+                        <el-table-column prop="parent_nickname" label="我的供货商" width="150"></el-table-column>
                         <el-table-column prop="scope" width="110" label="启动时间">
                             <template slot-scope="scope">
                                 {{scope.row.start_at}}

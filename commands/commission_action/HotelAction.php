@@ -55,7 +55,7 @@ class HotelAction extends Action{
             $recommander = User::findOne($hotel->recommander_uid);
             if(!$recommander || $recommander->is_delete){
                 $hotelOrder->commission_status = 1;
-                throw new \Exception("酒店推荐人不存在");
+                throw new \Exception("酒店供货商不存在");
             }
 
             //计算利润

@@ -79,7 +79,7 @@ class RebuyLogJob extends Component implements JobInterface
             \Yii::warning('创建订单');
             $distribution = Distribution::findOne(['user_id' => $user->parent_id, 'is_delete' => 0]);
             if (!$distribution) {
-                \Yii::warning('上级不是分销商');
+                \Yii::warning('我的供货商不是分销商');
                 return;
             }
 

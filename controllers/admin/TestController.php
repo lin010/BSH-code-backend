@@ -205,9 +205,9 @@ class TestController extends Controller
 SET u1.parent_id=t1.new_parent_id';
         $res = \Yii::$app->db->createCommand($sql)
             ->execute();
-        $msg = $res ? '成功更新[' . $res . ']个会员的上级' : '未更新';
+        $msg = $res ? '成功更新[' . $res . ']个会员的供货商' : '未更新';
         file_put_contents("updateParent.log", $msg, FILE_APPEND);
-        echo "更新会员上级：" . $msg . '<b/>';
+        echo "更新会员供货商：" . $msg . '<b/>';
         $sql = 'UPDATE jxmall_user u
 JOIN ( SELECT * FROM ims_vcshop_member WHERE jxmall_user_id > 0 ) m ON u.id = m.jxmall_user_id 
 SET u.cert_no = m.cert_no,

@@ -125,7 +125,7 @@ class UserLogic
                 if(!empty($user->parent_id)){
                     $parentLink = UserRelationshipLink::findOne(["user_id" => $user->parent_id]);
                     if(!$parentLink){
-                        throw new Exception("推荐人关系链异常");
+                        throw new Exception("供货商关系链异常");
                     }
                 }
                 if ($user->save() === false) {

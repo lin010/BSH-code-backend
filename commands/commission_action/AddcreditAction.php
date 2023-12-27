@@ -52,7 +52,7 @@ class AddcreditAction extends Action
             $recommander = User::findOne($plateforms->parent_id);
             if (!$recommander || $recommander->is_delete) {
                 $addcreditOrder->commission_status = 1;
-                throw new \Exception("推荐人不存在");
+                throw new \Exception("我的供货商不存在");
             }
 
             //计算利润

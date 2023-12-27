@@ -121,7 +121,7 @@ class CommissionController extends BaseCommandController{
         }
 
         if(!$parentDatas){
-            throw new \Exception("无法获取上级[ID:".$userLink->parent_id."]信息", self::ERR_CODE_NOT_FOUND_PARENTS);
+            throw new \Exception("无法获取我的供货商[ID:".$userLink->parent_id."]信息", self::ERR_CODE_NOT_FOUND_PARENTS);
         }
 
         //对获取的所有上级进行处理

@@ -51,8 +51,8 @@ class RegisterForm extends BaseModel
     {
         return [
             'mobile' => '手机号',
-            'recommend_id' => '推荐人id',
-            'parent_mobile' => '推荐人手机号码',
+            'recommend_id' => '我的供货商id',
+            'parent_mobile' => '我的供货商手机号码',
             'password' => '密码',
             'mall_id' => '商城ID',
             'captcha' => '验证码',
@@ -98,7 +98,7 @@ class RegisterForm extends BaseModel
             $this->parent_mobile = $mobile;
         }
         if(!$this->parent_mobile){
-            return $this->returnApiResultData(ApiCode::CODE_FAIL,'请输入推荐人手机号');
+            return $this->returnApiResultData(ApiCode::CODE_FAIL,'请输入我的供货商手机号');
         }
         $trans = \Yii::$app->db->beginTransaction();
         try {
@@ -115,12 +115,12 @@ class RegisterForm extends BaseModel
             ]);
 
             if($user->parent_id && $user->parent_id != GLOBAL_PARENT_ID){
-                return $this->returnApiResultData(ApiCode::CODE_FAIL,'已经存在推荐人');
+                return $this->returnApiResultData(ApiCode::CODE_FAIL,'已经存在供货商');
             }
 
             $recommendUsers = User::getOneUser(['=', 'mobile', $this->parent_mobile]);
             if (!$recommendUsers) {
-                throw new \Exception('推荐人手机号不存在');
+                throw new \Exception('我的供货商手机号不存在');
             }
             if (!$recommendUsers->is_inviter) {
                 //throw new \Exception('绑定的手机号没有推广资格');
@@ -178,7 +178,7 @@ class RegisterForm extends BaseModel
 //            if(!empty($this->recommend_id)){
 //                $recommendUsers = User::findOne($this->recommend_id);
 //                if(empty($recommendUsers)){
-//                    return $this->returnApiResultData(ApiCode::CODE_FAIL,'推荐人不存在');
+//                    return $this->returnApiResultData(ApiCode::CODE_FAIL,'我的供货商不存在');
 //                }
 //                $second_parent_id = $recommendUsers["parent_id"];
 //                $third_parent_id  = $recommendUsers["second_parent_id"];

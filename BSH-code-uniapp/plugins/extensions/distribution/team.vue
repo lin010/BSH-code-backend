@@ -9,8 +9,8 @@
 						<image :src="detail.avatar_url || 'http://yingmlife-1302693724.cos.ap-guangzhou.myqcloud.com/uploads/images/original/20201216/15262b999e48acc5891864e3f2463cb0.jpg'" mode="aspectFill"
 						 class="acatar"></image>
 						<view class="userinfo">
-							<!-- <view class="username">{{parent.username}}(推荐人)</view> -->
-							<view class="username">推荐人: {{ detail.parent_name }}</view>
+							<!-- <view class="username">{{parent.username}}(我的供货商)</view> -->
+							<view class="username">我的供货商: {{ detail.parent_name }}</view>
 							<view class="desc">
 								<span class="iconfont icon-huiyuan1"></span>
 								{{ detail.parent_level_name }}
