@@ -93,20 +93,19 @@ class UserEditForm extends BaseModel
                             return $this->returnApiResultData(ApiCode::CODE_FAIL,'非长期身份证需要填写身份证有效期截止日期');
                         }
                     }
-
                     if(!empty($this->cert_no)){
                         $isUpdate = true;
                         $user->cert_no = $this->cert_no;
                     }
-                    if(!empty($this->cert_begin_date)){
-                        $isUpdate = true;
-                        $user->cert_begin_date = $this->cert_begin_date;
-                    }
-                    if(!empty($this->cert_end_date)){
-                        $isUpdate = true;
-                        $user->cert_end_date = $this->cert_end_date;
-                    }
                 }
+            }
+            if(!empty($this->cert_begin_date)){
+                $isUpdate = true;
+                $user->cert_begin_date = $this->cert_begin_date;
+            }
+            if(!empty($this->cert_end_date)){
+                $isUpdate = true;
+                $user->cert_end_date = $this->cert_end_date;
             }
             if(!empty($this->mobile)){
                 $smsForm = new SmsForm();
