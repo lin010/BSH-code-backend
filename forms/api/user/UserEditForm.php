@@ -81,33 +81,33 @@ class UserEditForm extends BaseModel
                 $user->avatar_url = $this->avatar;
             }
             if(!empty($this->realname)){
-                if(!empty($user['huifu_id']) && $this->realname == $user['realname']){
-                    return $this->returnApiResultData(ApiCode::CODE_FAIL,'本账号已实名认证,真实姓名不能修改');
-                }
                 $isUpdate = true;
-                $user->realname = $this->realname;
-            }
-            if(is_numeric($this->cert_validity_type)){
-                $isUpdate = true;
-                $user->cert_validity_type = $this->cert_validity_type;
-                if($this->cert_validity_type == 0 && empty($this->cert_end_date)){
-                    return $this->returnApiResultData(ApiCode::CODE_FAIL,'非长期身份证需要填写身份证有效期截止日期');
-                }
-            }
+                if(!empty($user['huifu_id'])){// && $this->realname == $user['realname']){
+//                    return $this->returnApiResultData(ApiCode::CODE_FAIL,'本账号已实名认证,真实姓名不能修改');
+                }else{
+                    if($isUpdate==true) $user->realname = $this->realname;
+                    if(is_numeric($this->cert_validity_type)){
+                        $isUpdate = true;
+                        $user->cert_validity_type = $this->cert_validity_type;
+                        if($this->cert_validity_type == 0 && empty($this->cert_end_date)){
+                            return $this->returnApiResultData(ApiCode::CODE_FAIL,'非长期身份证需要填写身份证有效期截止日期');
+                        }
+                    }
 
-            if(!empty($this->cert_no)){
-                $isUpdate = true;
-                $user->cert_no = $this->cert_no;
+                    if(!empty($this->cert_no)){
+                        $isUpdate = true;
+                        $user->cert_no = $this->cert_no;
+                    }
+                    if(!empty($this->cert_begin_date)){
+                        $isUpdate = true;
+                        $user->cert_begin_date = $this->cert_begin_date;
+                    }
+                    if(!empty($this->cert_end_date)){
+                        $isUpdate = true;
+                        $user->cert_end_date = $this->cert_end_date;
+                    }
+                }
             }
-            if(!empty($this->cert_begin_date)){
-                $isUpdate = true;
-                $user->cert_begin_date = $this->cert_begin_date;
-            }
-            if(!empty($this->cert_end_date)){
-                $isUpdate = true;
-                $user->cert_end_date = $this->cert_end_date;
-            }
-
             if(!empty($this->mobile)){
                 $smsForm = new SmsForm();
                 $smsForm->captcha = $this->captcha;
