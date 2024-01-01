@@ -16,7 +16,7 @@ class SubmitFastAction extends BaseAction {
             'out_trade_num' => $this->orderModel->order_no,
             'product_id'    => $this->orderModel->product_id, //产品ID（代理后台查看）
             'mobile'        => $this->orderModel->mobile,
-            'notify_url'    => 'https://www.mingyuanriji.cn/web/addcredit-notify/index.php',
+            'notify_url'    => 'https://www.h5-mingyuanriji.cn/web/addcredit-notify/index.php',
             'userid'        => $configs['userid']
         ];
 

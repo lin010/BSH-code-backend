@@ -18,7 +18,8 @@ class SetToken
     public function SetToken()
     {
         $config = (new PluginMpwxConfig())->getConfig();
-        $tokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . $config['app_id'] . "&secret=" . $config['secret'];
+//        $tokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . $config['app_id'] . "&secret=" . $config['secret'];
+        $tokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx128948e34645cbd0&secret=ec31b991d2d11d5823b67c0191895937";
         $getArr = [];
         $tokenArr = json_decode($this->send_post($tokenUrl, $getArr, "GET"));
         $access_token = $tokenArr->access_token;

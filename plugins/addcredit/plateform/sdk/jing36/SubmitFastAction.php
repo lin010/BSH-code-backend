@@ -13,7 +13,7 @@ class SubmitFastAction extends BaseAction {
         $params['orderId']   = $this->orderModel->order_no;
         $params['mobile']    = $this->orderModel->mobile;
         $params['amount']    = $this->orderModel->order_price;
-        $params['notifyUrl'] = "https://www.mingyuanriji.cn/web/addcredit-notify/index.php";
+        $params['notifyUrl'] = "https://www.h5-mingyuanriji.cn/web/addcredit-notify/index.php";
 
         $res = $req->doPost("/v1/mobile/order", $params);
 

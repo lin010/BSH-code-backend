@@ -30,7 +30,7 @@ class HotelInfoForm extends BaseModel
             //获取首页轮播图
             $resultData['banner'] = [
                 [
-                    'image' => 'https://www.mingyuanriji.cn/web/static/hotel/hotel-poster1.jpg',
+                    'image' => 'https://www.h5-mingyuanriji.cn/web/static/hotel/hotel-poster1.jpg',
                     'link' => '',
                 ],
                 [

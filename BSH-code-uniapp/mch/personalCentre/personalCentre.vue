@@ -192,7 +192,8 @@
 				store:'',
 				stat:'',
 				loading: true,
-				link:'https://www.mingyuanriji.cn/web/index.php?r=mch%2Fadmin%2Flogin',
+				// link:'https://www.mingyuanriji.cn/web/index.php?r=mch%2Fadmin%2Flogin',
+				link:'https://h5-mingyuanriji.cn/web/index.php?r=mch%2Fadmin%2Flogin',
 				change:false,
 				currencyAlias:{
 					balance_alias: '',

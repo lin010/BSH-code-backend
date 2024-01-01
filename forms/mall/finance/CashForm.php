@@ -100,7 +100,7 @@ class CashForm extends BaseModel
                     $this->validateCash($cash);
                     break;
                 case 2:
-                    $this->remit($cash);
+                    $this->remit($cash);//报错
                     break;
                 case 3:
                     $this->reject($cash);
@@ -217,7 +217,7 @@ class CashForm extends BaseModel
                 $res = EfpsCashTransfer::transfer($cash);
             }
             if($res['code'] != ApiCode::CODE_SUCCESS) { //打款失败
-                throw new \Exception($res['msg']);
+                throw new \Exception($res['msg']);  //{"code":1,"msg":"暂未开通余额支付权限"}
             }
             $cash->is_transmitting = $res['is_transmitting'];
         }

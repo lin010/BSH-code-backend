@@ -199,10 +199,10 @@
 				}).then(res => {
 					if(res.code == 0){
 						let baseInfo = res.data.base_info;
-						// if(baseInfo.user.huifu_id == null || baseInfo.user.huifu_id == ''){
-						// 	this.modal2 = true;
-						// 	return;
-						// }//屏蔽一下汇付
+						if(baseInfo.user.huifu_id == null || baseInfo.user.huifu_id == ''){
+							this.modal2 = true;
+							return;
+						}//屏蔽一下汇付
 						that.form.paper_settleAccountType=baseInfo.settle.paper_settleAccountType
 						for(let i=0;i<that.banktype.length;i++){
 							if(that.banktype[i].num == baseInfo.settle.paper_settleAccountType){

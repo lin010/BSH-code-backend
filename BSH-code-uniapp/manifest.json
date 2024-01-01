@@ -175,7 +175,8 @@
         "usingComponents" : true
     },
     "h5" : {
-        "publicPath" : "https://www.mingyuanriji.cn/h5/",
+        "publicPath" : "https://h5-mingyuanriji.cn/h5/",
+		// "publicPath" : "https://www.mingyuanriji.cn/h5/",
         // "publicPath" : "http://dev.mingyuanriji.cn/h5/",
         //"publicPath" : "http://local.mingyuanriji.cn/h5/",
         "router" : {
@@ -187,7 +188,8 @@
             "disableHostCheck" : true,
             "proxy" : {
                 "/api" : {
-                    "target" : "https://www.mingyuanriji.cn/h5/web/index.php",
+                    "target" : "https://h5-mingyuanriji.cn/h5/web/index.php",
+					// target" : "https://www.mingyuanriji.cn/h5/web/index.php",
                     // "target" : "http://dev.mingyuanriji.cn/h5/web/index.php",
                     //"target" : "http://local.mingyuanriji.cn/h5/web/index.php",
                     "changeOrigin" : true,
@@ -199,7 +201,8 @@
             },
             "port" : 80
         },
-        "domain" : "https://www.mingyuanriji.cn/h5/",
+        "domain" : "https://h5-mingyuanriji.cn/h5/",
+		// "domain" : "https://www.mingyuanriji.cn/h5/",
         // "domain" : "http://dev.mingyuanriji.cn/h5/",
         "title" : "兰亭臻选",
         "template" : "template.h5.html",

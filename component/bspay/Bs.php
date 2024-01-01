@@ -45,7 +45,7 @@ class Bs extends Component{
     }
 	public function wechat_build($paramss, $type = 0)
 	{
-		
+
 		$log = new ExceptionLogLogic();
 		require_once __DIR__ . "/BsPaySdk/loader.php";
 		$realpayconfig = $this->getPaymentConfig();
@@ -92,7 +92,7 @@ class Bs extends Component{
 		// 3. 发起API调用
 		$client = new \BsPaySdk\core\BsPayClient();
 		$result = $client->postRequest($request);
-
+//        throw new \Exception("0xxxx".($result==null));
 		if (!$result || $result->isError()) {  //失败处理
 		    $err = $result->getErrorInfo();
 		    $log->error('汇付天下微信支付请求失败', [$err]); 

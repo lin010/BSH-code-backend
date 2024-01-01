@@ -156,7 +156,7 @@ class CityHelper{
 
         $key = \Yii::$app->params['qqMapApiKey'];
         $url = "https://apis.map.qq.com/ws/geocoder/v1/?location=".$latitude.",".$longitude."&key={$key}&get_poi=1";
-        $hostInfo = "https://www.mingyuanriji.cn";
+        $hostInfo = "https://www.h5-mingyuanriji.cn";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_REFERER, $hostInfo);

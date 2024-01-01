@@ -24,19 +24,19 @@ class OrderLogic
         $paymentConfigs = AppConfigLogic::getPaymentConfig();
         $payTypeData = [];
         if(!empty($paymentConfigs)){
-//            if(isset($paymentConfigs["wechat_status"]) && $paymentConfigs["wechat_status"] == 1){
-//                $payTypeData[] = "wechat";
-//            }
+            if(isset($paymentConfigs["wechat_status"]) && $paymentConfigs["wechat_status"] == 1){
+                $payTypeData[] = "wechat";
+            }
             if(isset($paymentConfigs["balance_status"]) && $paymentConfigs["balance_status"] == 1){
                 $payTypeData[] = "balance";
             }
-//            if(isset($paymentConfigs["bswechat_status"]) && $paymentConfigs["bswechat_status"] == 1){
-//                $payTypeData[] = "bswechat";
-//            }
+            if(isset($paymentConfigs["bswechat_status"]) && $paymentConfigs["bswechat_status"] == 1){
+                $payTypeData[] = "bswechat";
+            }
         }
-//        if(empty($payTypeData)){
-//            $payTypeData[] = "wechat";
-//        }
+        if(empty($payTypeData)){
+            $payTypeData[] = "wechat";
+        }
         $payTypeData[] = "alipay";
         return $payTypeData;
     }

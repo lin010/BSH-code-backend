@@ -28,7 +28,7 @@ class SubmitFastAction extends BaseAction {
             'face_value' => $product['price'],
             'num' => 1,
             'equity_number' => $this->orderModel->mobile,
-            'notify_url' => 'https://www.mingyuanriji.cn/web/addcredit-notify/index.php'
+            'notify_url' => 'https://www.h5-mingyuanriji.cn/web/addcredit-notify/index.php'
         ];
 
         $res = $req->doPost("/api/order/phone", $params);

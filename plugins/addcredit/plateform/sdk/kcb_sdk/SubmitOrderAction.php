@@ -44,7 +44,7 @@ class SubmitOrderAction extends BaseObject
                 'product_id'       => $this->AddcreditOrder->product_id,
                 'account'          => $this->AddcreditOrder->mobile,
                 'userid'           => $configs['app_id'],
-                'notify_url'       => "https://www.mingyuanriji.cn/web/pay-notify/telephone.php",
+                'notify_url'       => "https://www.h5-mingyuanriji.cn/web/pay-notify/telephone.php",
                 'amount'           => 0,
             ];
             ksort($param);

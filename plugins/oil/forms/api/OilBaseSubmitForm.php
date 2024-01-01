@@ -186,7 +186,7 @@ class OilBaseSubmitForm extends BaseModel{
      */
     protected function getRegion(){
         $hostInfo = \Yii::$app->getRequest()->getHostInfo();
-        $hostInfo = "https://www.mingyuanriji.cn";
+        $hostInfo = "https://www.h5-mingyuanriji.cn";
         $poi = TencentMapHelper::toPoi($hostInfo, $this->lng, $this->lat);
 
         $province = isset($poi['province']) ? $poi['province'] : "";

@@ -1,5 +1,6 @@
 // 正式服务器
-let api_host = "https://www.mingyuanriji.cn";
+// let api_host = "https://www.mingyuanriji.cn";
+let api_host = "https://h5-mingyuanriji.cn";
 
 // 测试服务器
 // let api_host = "http://dev.mingyuanriji.cn";

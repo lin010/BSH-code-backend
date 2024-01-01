@@ -26,13 +26,14 @@ class BsPayClient extends BsPay
      */
     public function postRequest($request, $tag = false) {
         try {
+//            throw new \Exception("1xxxx".$request);
             // 请求接口获取应答
             if (is_object($request)) {
                 $data = $this->objectToArray($request);
             } else {
                 $data = $request;
             }
-
+//            throw new \Exception("2xxxx".$tag);
             // 处理文件上传接口
             if (is_object($tag)) {
                 $data['params']['needSign'] = false;    // 请求不加签名
@@ -45,9 +46,10 @@ class BsPayClient extends BsPay
                 $data['params']['needSign'] = true;     // 请求加签名
                 $data['params']['needVerfySign'] = false;   // 返回数据不验证签名
             }
-
+//            throw new \Exception("3xxxx".$data['params']['needSign']);
             return self::post($data['funcCode'], $data['params'], "", $this->merChantKey);
         } catch (Exception $e) {
+//            throw new \Exception("5xxxx".$e->getMessage());
             echo $e->getMessage();
             return null;
         }
