@@ -2,11 +2,11 @@
 	<view class="root">
 		
 		<!-- #ifdef MP-WEIXIN -->
-		<com-nav-bar title="兰亭名品" :fixed="true" :statusBar="true"></com-nav-bar>
+		<com-nav-bar title="兰亭臻选" :fixed="true" :statusBar="true"></com-nav-bar>
 		<!-- #endif -->
 		
 		<!-- #ifdef H5 -->
-		<view class="foucs_H5" style="width: 100%;height: 96rpx;background:#3e4144;position: fixed;top: 0rpx;left: 0;z-index: 999;" v-if="showFoucs">
+<!-- 		<view class="foucs_H5" style="width: 100%;height: 96rpx;background:#3e4144;position: fixed;top: 0rpx;left: 0;z-index: 999;" v-if="showFoucs">
 			<image :src="img_url+'/fillShop.png'" mode="" style="width: 100rpx;height: 96rpx;display: block;float: left;"></image>
 			<view class="foucs_H5_messga" style="float: left;">
 				<text style="display: block;font-size: 25rpx;color: #fff;margin-top: 8rpx;">欢迎访问兰亭名品</text>
@@ -18,7 +18,7 @@
 				@click='foucusInfo'>关注</button> 
 				<text @click="showFoucs = false" style="color:#fff;margin:0 20rpx;font-size:28rpx;border-left:1px solid #aaa;padding-left:20rpx;">关闭</text>
 			</view>
-		</view><strong></strong>
+		</view><strong></strong> -->
 		<!--#endif -->	
 		
 		<!-- #ifdef H5 || APP-PLUS--> 
@@ -500,13 +500,13 @@
 					if(res.code==0){
 						this.modelSHOw=true
 						if(res.wechat_subscribe==1){
-							this.showFoucs=false
+							// this.showFoucs=false
 						}else{
-							this.showFoucs=true
+							// this.showFoucs=true
 						}
 					}else{
-						this.modelSHOw=false
-						this.showFoucs=true
+						// this.modelSHOw=false
+						// this.showFoucs=true
 					}
 				})
 			},

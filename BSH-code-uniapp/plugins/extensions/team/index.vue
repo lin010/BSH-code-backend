@@ -2,7 +2,7 @@
 	<view class="app">
 		<!-- <view class="app-header">
 			<view class="back iconfont icon-fanhui" @click="back()"></view>
-			<view class="title">我的团队</view>
+			<view class="title">我的供货商</view>
 		</view> -->
 		<com-nav-bar @clickLeft="back" left-icon="back" title="我的客户" :status-bar="true" :background-color="navBg" :border="false" :color="navCol"></com-nav-bar>
 		<view class="app-body">
@@ -57,22 +57,22 @@
 						</view>
 					</view> -->
 					<view class="card" v-if="team_commission">
-						<!-- <view class="title">客户佣金</view> -->
+						<!-- <view class="title">客户佣</view> -->
 						<view class="title">销售差价</view>
 						<view class="bill">
 							<view class="icon-text flex-column-x-center">
 								<view class="sum">{{ team_commission.direct_push_total }}人</view>
-								<!-- <view class="name">直推客户</view> -->
+								<!-- <view class="name">直客户</view> -->
 								<view class="name">我的客户</view>
 							</view>
 							<view class="icon-text flex-column-x-center">
 								<view class="sum">{{ team_commission.direct_push_total + team_commission.space_push_total }}人</view>
 								<!-- <view class="name">团队客户</view> -->
-								<view class="name">我的客户</view>
+								<view class="name">全部客户</view>
 							</view>
 							<view class="icon-text flex-column-x-center"  @click="toTeamOrder">
 								<view class="sum">{{ team_commission.team_order_count || '0' }}单</view>
-								<view class="name">团队订单</view>
+								<view class="name">全部订单</view>
 							</view>
 							<view class="icon-text flex-column-x-center">
 								<view class="sum">{{ team_commission.team_order_total }}元</view>
@@ -87,12 +87,12 @@
 							</view>
 						</view> -->
 						<!-- <div class="status">
-							<view class="name" :style="{'border-bottom':type == 1?'1px solid'+'#FF7104':''}" @click="switchTab(1)">直推客户({{ team_commission.direct_push_total }}人)</view>
-							<view class="name" :style="{'border-bottom':type == 2?'1px solid'+'#FF7104':''}" @click="switchTab(2)">间推客户({{ team_commission.space_push_total }}人)</view>
+							<view class="name" :style="{'border-bottom':type == 1?'1px solid'+'#FF7104':''}" @click="switchTab(1)">直客户({{ team_commission.direct_push_total }}人)</view>
+							<view class="name" :style="{'border-bottom':type == 2?'1px solid'+'#FF7104':''}" @click="switchTab(2)">间客户({{ team_commission.space_push_total }}人)</view>
 						</div> -->
 						<div class="status">
 							<view class="name" :style="{'border-bottom':type == 1?'1px solid'+'#FF7104':''}" @click="switchTab(1)">我的客户({{ team_commission.direct_push_total }}人)</view>
-							<view class="name" :style="{'border-bottom':type == 2?'1px solid'+'#FF7104':''}" @click="switchTab(2)">我的客户({{ team_commission.space_push_total }}人)</view>
+							<view class="name" :style="{'border-bottom':type == 2?'1px solid'+'#FF7104':''}" @click="switchTab(2)">全部客户({{ team_commission.space_push_total }}人)</view>
 						</div>
 						<view class="order-items" v-if="dataList && dataList.length">
 							<view class="item" v-for="(item, i) in dataList" :key="i">
@@ -118,7 +118,7 @@
 									</view>
 									<view class="money">
 										<view class="order-money">订单金额: {{ item.total_price }}元</view>
-										<view class="commission" :style="{color:'#FF7104'}">团队金额: {{ item.team_total_price }}元</view>
+										<!-- <view class="commission" :style="{color:'#FF7104'}">团队金额: {{ item.team_total_price }}元</view> -->
 									</view>
 								</view>
 								<view class="shop-name" style="font-size: 25rpx;">
@@ -191,7 +191,7 @@ export default {
 					type: 1
 				},
 				{
-					name: '团队',
+					name: '供货商',
 					type: 2
 				},
 				{

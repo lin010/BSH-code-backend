@@ -1143,7 +1143,7 @@
 				}, {
 					"path": "extensions/distribution/team",
 					"style": {
-						"navigationBarTitleText": "团队奖励",
+						"navigationBarTitleText": "供货商奖励",
 						"navigationBarTextStyle": "black",
 						"navigationBarBackgroundColor": "#FFFFFF",
 						"navigationStyle": "custom",
@@ -1173,7 +1173,7 @@
 					}
 				}, {
 					"path": "extensions/team/order",
-					"navigationBarTitleText": "客户分佣订单",
+					"navigationBarTitleText": "客户统计订单",
 					"navigationBarBackgroundColor": "#F7F7F7",
 					"navigationBarTextStyle": "black",
 					"enablePullDownRefresh": false,
@@ -1246,7 +1246,7 @@
 				}, {
 					"path": "extensions/dealer/team",
 					"style": {
-						"navigationBarTitleText": "我的团队",
+						"navigationBarTitleText": "我的供货商",
 						"navigationBarBackgroundColor": "#FFFFFF",
 						"navigationBarTextStyle": "black",
 						"navigationStyle": "custom"
@@ -1267,7 +1267,7 @@
 				}, {
 					"path": "extensions/partner/agency",
 					"style": {
-						"navigationBarTitleText": "我的团队",
+						"navigationBarTitleText": "我的供货商",
 						"navigationBarBackgroundColor": "#FFFFFF",
 						"navigationBarTextStyle": "black",
 						"navigationStyle": "custom"

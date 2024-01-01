@@ -84,9 +84,9 @@
 								</view>
 								<view class="info">
 									<view class="mark flex-x-between">
-										<view class="order-id">团队总数: {{ item.team_count }}个</view>
-										<view class="goods-name">直推总数: {{ item.first_team_count }}人</view>
-										<view class="goods-name">间推总数: {{ item.other_team_count }}人</view>
+										<view class="order-id">供货商总数: {{ item.team_count }}个</view>
+										<view class="goods-name">直总数: {{ item.first_team_count }}人</view>
+										<view class="goods-name">间总数: {{ item.other_team_count }}人</view>
 									</view>
 									<view class="money flex-x-between">
 										<view class="commission" :style="{color:textColor}">累计收益: {{ item.total_price }}元</view>

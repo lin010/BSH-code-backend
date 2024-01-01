@@ -36,14 +36,14 @@
 				</view>
 				<view class="rebuy"  v-if="detail&&detail.is_team==1">
 					<view class="rebuy-box">
-						<view class="rebuy-title">团队奖励</view>
+						<view class="rebuy-title">.总奖励</view>
 						<view class="rebuy-check"><navigator url="./team">立即查看></navigator></view>
 					</view>
 				</view>
 			</view>
 				<view class="content-bottom" v-if="detail">
 					<view class="card">
-						<view class="title">分销佣金</view>
+						<view class="title">佣</view>
 						<view class="bill">
 							<view class="icon-text flex-column-x-center">
 								<view class="icon iconfont icon-jiesuancopy"></view>
@@ -179,7 +179,7 @@ export default {
 	},
 	filters: {
 		brokerage(type, money) {
-			let text = type > 1 ? '间推佣金' : '直推佣金';
+			let text = type > 1 ? '间佣' : '直佣';
 			return `${text}: ${money}元`;
 		}
 	},
@@ -191,11 +191,11 @@ export default {
 					type: 0
 				},
 				{
-					name: '直推订单',
+					name: '直订单',
 					type: 1
 				},
 				{
-					name: '间推订单',
+					name: '间订单',
 					type: 2
 				}
 			];

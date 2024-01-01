@@ -1,6 +1,6 @@
 <template>
 	<view class="app">
-		<com-nav-bar @clickLeft="back" left-icon="back" title="我的团队" :status-bar="true" background-color="#BC0100" :border="false" color="#ffffff"></com-nav-bar>
+		<com-nav-bar @clickLeft="back" left-icon="back" title="我的供货商" :status-bar="true" background-color="#BC0100" :border="false" color="#ffffff"></com-nav-bar>
 		<view class="container">
 			<view class="content">
 				<!-- <view class="content-head" v-if="parent"> -->
@@ -21,14 +21,14 @@
 							<view class="tel">
 								<span class="iconfont icon-dianhua3"></span>
 								<!-- {{ parent.mobile || '15015756796' }} -->
-								{{ '15015756796' }}
+								{{ '15015756666' }}
 							</view>
 						</view>
 					</view>
 				</view>
 				<view class="content-bottom">
 					<view class="card">
-						<view class="title">团队会员</view>
+						<view class="title">.总会员</view>
 						<view class="bill">
 							<view class="icon-text flex-column-x-center">
 								<view class="sum">{{ '1776' }}人</view>
@@ -55,8 +55,8 @@
 							</view>
 						</view>
 						<div class="status">
-							<view class="name" :class="type == 1 ? 'active' : ''" @click="switchState(1)">直推客户({{ '59' }}人)</view>
-							<view class="name" :class="type == 2 ? 'active' : ''" @click="switchState(2)">间推客户({{ '1549' }}人)</view>
+							<view class="name" :class="type == 1 ? 'active' : ''" @click="switchState(1)">直客户({{ '59' }}人)</view>
+							<view class="name" :class="type == 2 ? 'active' : ''" @click="switchState(2)">间客户({{ '1549' }}人)</view>
 						</div>
 						<view class="order-items" v-if="dataList && dataList.length > 0">
 							<view class="item" v-for="(item, i) in dataList" :key="i">
@@ -78,11 +78,11 @@
 								<view class="info">
 									<view class="mark">
 										<view class="goods-name">订单数量: {{ item.order_count }}个</view>
-										<view class="order-id">团队人数: {{ item.team_user_count }}个</view>
+										<view class="order-id">.总人数: {{ item.team_user_count }}个</view>
 									</view>
 									<view class="money">
 										<view class="order-money">订单金额: {{ item.total_price }}元</view>
-										<view class="commission">团队金额: {{ item.team_total_price }}元</view>
+										<view class="commission">.总金额: {{ item.team_total_price }}元</view>
 									</view>
 								</view>
 							</view>
@@ -144,7 +144,7 @@ export default {
 					type: 1
 				},
 				{
-					name: '团队',
+					name: '供货商',
 					type: 2
 				},
 				{

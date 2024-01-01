@@ -41,7 +41,7 @@
 						<view class="team-benefits margin-bottom-30rpx">
 							<view class="text-icon flex flex-column-x-center" @click="openUrl('/plugins/extensions/dealer/agency')">
 								<view class="icon iconfont icon-tuandui" :style="{color:textColor}"></view>
-								<view class="text">我的团队</view>
+								<view class="text">我的供货商</view>
 							</view>
 							<view class="text-icon flex flex-column-x-center" @click="openUrl('/plugins/short-video/dividends/myIncome')">
 								<view class="icon iconfont icon-icon" :style="{color:textColor}"></view>
@@ -241,7 +241,7 @@
 		},
 		filters: {
 			brokerage(type, money) {
-				let text = type > 1 ? '间推佣金' : '直推佣金';
+				let text = type > 1 ? '间佣' : '直佣';
 				return `${text}: ${money}元`;
 			}
 		},

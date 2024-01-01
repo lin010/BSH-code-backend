@@ -3,13 +3,13 @@
 		<view>
 
 			<view class="login-content">
-				<view class="common">
+				<!-- <view class="common">
 					<view class="iconCss iconfont icon-shouji"></view>
 					<input class="com-inp" type="number" v-model="dataForm.parent_mobile" placeholder="请输入邀请人的手机号" />
-				</view>
+				</view> -->
 				
 				<view class="common login-btn" @tap="submit" :style="{background:textColor}">
-					进入商城
+					点击进入商城
 				</view>
 			</view>
 		</view>
@@ -71,30 +71,30 @@
 			},
 			submit() {
 				let _self = this;
-				let {parent_mobile,mobile,captcha} = _self.dataForm;
-				if (!isNullOrEmpty(parent_mobile) || !isMobile(parent_mobile)) {
-					_self.$http.toast("请输入正确的我的供货商手机号")
-					return;
-				}
-				_self.$http.request({
-					url: this.$api.default.bindParent,
-					data: {
-						parent_mobile
-					},
-					method: 'POST',
-					showLoading: true
-				}).then((res) => {
-					_self.$http.toast(res.msg);
-					if (res.code == 0) {
-						// key 不存在则为 下单时绑定手机号
+				// let {parent_mobile,mobile,captcha} = _self.dataForm;
+				// if (!isNullOrEmpty(parent_mobile) || !isMobile(parent_mobile)) {
+				// 	_self.$http.toast("请输入正确的我的供货商手机号")
+				// 	return;
+				// }
+				// _self.$http.request({
+				// 	url: this.$api.default.bindParent,
+				// 	data: {
+				// 		parent_mobile
+				// 	},
+				// 	method: 'POST',
+				// 	showLoading: true
+				// }).then((res) => {
+				// 	_self.$http.toast(res.msg);
+				// 	if (res.code == 0) {
+				// 		// key 不存在则为 下单时绑定手机号
 						let url = uni.getStorageSync('_login_pre_url') ? uni.getStorageSync('_login_pre_url') : '/pages/user/index';
-						setTimeout(() => {
+						// setTimeout(() => {
 							uni.redirectTo({
 								url
 							})
-						}, 1000)
-					}
-				})
+				// 		}, 1000)
+				// 	}
+				// })
 			}
 		}
 	}

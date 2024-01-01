@@ -50,7 +50,7 @@
 				
 				<view class="content-center">
 					<view class="title">
-						团队会员
+						.总会员
 					</view>
 					<view class="main-content flex flex-x-between flex-y-cente">
 						<scroll-view :scroll-x="true" class="main-scroll">
@@ -104,9 +104,9 @@
 								</view>
 								<view class="info">
 									<view class="mark flex-x-between">
-										<view class="order-id">团队总数: {{ item.team_count }}个</view>
-										<view class="goods-name">直推总数: {{ item.first_team_count }}人</view>
-										<view class="goods-name">间推总数: {{ item.other_team_count }}人</view>
+										<view class="order-id">供货商总数: {{ item.team_count }}个</view>
+										<view class="goods-name">直总数: {{ item.first_team_count }}人</view>
+										<view class="goods-name">间总数: {{ item.other_team_count }}人</view>
 									</view>
 									<view class="money flex-x-between">
 										<view class="commission" :style="{color:textColor}">累计收益: {{ item.total_price }}元</view>
@@ -152,7 +152,7 @@
 				info: {
 					level_list:[],
 				},
-				type2_list:['直推客户','间推客户'],
+				type2_list:['直客户','间客户'],
 				type2_index:0,
 				
 				textColor:'#bc0100',

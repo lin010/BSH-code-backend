@@ -40,7 +40,7 @@
 				<!-- 	<view class="team-benefits margin-bottom-30rpx">
 						<view class="text-icon flex flex-column-x-center" @click="">
 							<view class="icon iconfont icon-tuandui"></view>
-							<view class="text">我的团队</view>
+							<view class="text">我的供货商</view>
 						</view>
 						<view class="text-icon flex flex-column-x-center" @click="">
 							<view class="icon iconfont icon-icon"></view>
@@ -85,7 +85,7 @@
 									</view>
 									<view class="money">
 										<view class="order-money">商品金额: {{ item.goods_price }}元</view>
-										<view class="commission" :style="{color:textColor}">佣金：{{ item.price }} 元</view>
+										<view class="commission" :style="{color:textColor}">佣：{{ item.price }} 元</view>
 									</view>
 								</view>
 							</view>
@@ -460,7 +460,7 @@
 		},
 		filters: {
 			brokerage(type, money) {
-				let text = type > 1 ? '间推佣金' : '直推佣金';
+				let text = type > 1 ? '间佣' : '直佣';
 				return `${text}: ${money}元`;
 			}
 		},

@@ -61,7 +61,7 @@
 				img_url: this.$api.img_url,
 				type_list:['全部客户','意向客户','比较客户','待成交','已成交'],
 				type_index:0,
-				type2_list:['直推客户','间推客户'],
+				type2_list:['直客户','间客户'],
 				type2_index:0,
 				is_modal:false,
 				business_list:['意向客户','比较客户','待成交客户','已成交客户'],

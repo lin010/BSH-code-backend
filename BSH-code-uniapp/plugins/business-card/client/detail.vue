@@ -321,7 +321,7 @@
 				remark:'',
 				
 				label_list:[],
-				tabs_list:['AI分析','浏览记录','跟进记录','团队列表'],
+				tabs_list:['AI分析','浏览记录','跟进记录','.总列表'],
 				tabs_index:0,
 				// 圆环图
 				cWidth:'',
@@ -331,7 +331,7 @@
 				pixelRatio:1,
 				type_list:['新客户','意向客户','比较客户','待成交','已成交'],
 				type_index:0,
-				type2_list:['直推客户','间推客户'],
+				type2_list:['直客户','间客户'],
 				type2_index:0,
 				team_list:[],
 				team_detail:'',

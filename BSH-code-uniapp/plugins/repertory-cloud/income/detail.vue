@@ -16,7 +16,7 @@
 						<view>{{7}}天</view>
 					</view>
 					<view class="flex margin-bottom-40rpx">
-						<view class="margin-right-74rpx">分佣时间:</view>
+						<view class="margin-right-74rpx">统计时间:</view>
 						<view>{{'2020-05-10 10:55:24'}}</view>
 					</view>
 					<view class="flex">

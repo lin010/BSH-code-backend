@@ -358,7 +358,7 @@
 		},
 		filters: {
 			brokerage(type, money) {
-				let text = type > 1 ? '间推佣金' : '直推佣金';
+				let text = type > 1 ? '间佣' : '直佣';
 				return `${text}: ${money}元`;
 			}
 		},

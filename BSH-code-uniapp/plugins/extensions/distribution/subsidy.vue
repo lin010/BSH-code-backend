@@ -42,7 +42,7 @@
 							<view class="reward-details-cont" v-if="list.length" v-for="(item,index) in list">
 								<view class="reward-details-cont-info">
 									<view class="reward-details-cont-info-n">结算月份：{{item.month}}</view>
-									<view class="reward-details-cont-info-n">新增团队熟练：{{item.team_new_count}}元</view>
+									<view class="reward-details-cont-info-n">新增供货商熟练：{{item.team_new_count}}元</view>
 									<view class="reward-details-cont-info-time">{{item.created_at}}</view>
 								</view>
 								<view class="reward-details-cont-num">+{{item.price}}<text>元</text></view>

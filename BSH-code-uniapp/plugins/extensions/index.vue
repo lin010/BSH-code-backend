@@ -57,7 +57,7 @@
 						<view class="card top left flex" v-if="data.distribution && data.distribution.is_display" @click.stop="openUrl('/plugins/extensions/distribution/index')">
 							<view class="icon iconfont icon-fenxiao1" :style="{color:'#FF7104'}"></view>
 							<view class="info">
-								<view class="title">{{'分销佣金'}}</view>
+								<view class="title">{{'分销$'}}</view>
 								<view class="desc">{{data.distribution.level_name || `青铜`}}</view>
 								<view class="money" :style="{color:'#FF7104'}">
 									<span class="dot">¥</span>
@@ -68,7 +68,7 @@
 						<view class="card top right flex" v-if="data.agent && data.agent.is_display" @click.stop="openUrl('/plugins/extensions/dealer/index')">
 							<view class="icon iconfont icon-tuandui2" :style="{color:'#FF7104'}"></view>
 							<view class="info">
-								<view class="title">{{'团队佣金'}}</view>
+								<view class="title">{{'供货商$'}}</view>
 								<view class="desc">{{data.agent.level_name || '区域服务商'}}</view>
 								<view class="money" :style="{color:'#FF7104'}">
 									<span class="dot">¥</span>
